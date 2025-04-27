@@ -1,5 +1,3 @@
-# Carport
-
 # Carport Projekt - Fog Semesteropgave
 
 Dette projekt er udviklet som en del af 2. semester eksamensprojektet på datamatikeruddannelsen.  
