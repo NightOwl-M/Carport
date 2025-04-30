@@ -154,3 +154,4 @@ extends <|-- (is-a)
 composition *-- (must-have)
 Aggregation o-- (can-have)
 Associering <--
+hej
