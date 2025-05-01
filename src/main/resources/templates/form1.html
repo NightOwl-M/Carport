@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Konfigurer carport</title>
+  <link rel="stylesheet" href="/css/styleform1.css">
+  <script>
+    function fetchSvg() {
+      const width = document.querySelector("#width").value;
+      const length = document.querySelector("#length").value;
+
+      if (!width || !length) {
+        alert("Indtast både bredde og længde.");
+        return;
+      }
+
+      fetch(`/api/carport-svg?width=${width}&length=${length}`)
+              .then(response => response.text())
+              .then(svg => {
+                document.getElementById("svgPreview").innerHTML = svg;
+                document.getElementById("nextBtn").disabled = false;
+              });
+    }
+  </script>
+</head>
+<body>
+
+<h2>Trin 1: Indtast mål</h2>
+
+<form id="dimensionForm" method="post" action="/carport/info">
+  <label for="width">Bredde (cm):</label>
+  <input type="number" id="width" name="width" required><br>
+
+  <label for="length">Længde (cm):</label>
+  <input type="number" id="length" name="length" required><br>
+
+  <button type="button" onclick="fetchSvg()">Se tegning</button><br><br>
+
+  <div id="svgPreview" style="margin-top: 20px;"></div><br>
+
+  <button type="submit" id="nextBtn" disabled>Næste</button>
+</form>
+
+</body>
+</html>

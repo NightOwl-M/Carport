@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Bekræftelse</title>
+</head>
+<body>
+
+<h2>Trin 3: Bekræft din ordre</h2>
+
+<p>Navn: <span th:text="${name}"></span></p>
+<p>Email: <span th:text="${email}"></span></p>
+<p>Adresse: <span th:text="${address}"></span></p>
+
+<h3>Din carport:</h3>
+<div th:utext="${svg}"></div>
+
+<form method="post" action="/carport/confirm">
+  <button type="submit">Godkend og gem ordre</button>
+</form>
+
+</body>
+</html>
