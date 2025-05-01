@@ -1,11 +1,37 @@
 @startuml
-'https://plantuml.com/sequence-diagram
+skinparam monochrome true
+skinparam shadowing false
+left to right direction
+title Carport Admin Flow
 
-autonumber
+start
+@startuml
 
-Alice -> Bob: Authentication Request
-Bob --> Alice: Authentication Response
+:admin-login.html;
+:Admin indtaster email + kodeord;
+:POST /admin/login;
+:AdminController.handleLogin();
+:UserMapper.findByEmailAndPassword();
 
-Alice -> Bob: Another authentication Request
-Alice <-- Bob: another authentication Response
+if (Login success?) then (yes)
+  :Redirect to /admin/dashboard;
+  :AdminController.showDashboard();
+  :OrderMapper.getAllOrders();
+
+  :Admin vælger specifik ordre;
+  :GET /admin/order/:id;
+  :AdminController.showOrderDetails();
+  :OrderMapper.getOrderById();
+
+  :Admin skriver tilbud + kommentar;
+  :POST /admin/order/:id/send;
+  :AdminController.handleSendOffer();
+  :OrderMapper.updateOrder();
+  :EmailService.sendOfferEmail();
+  :Tilbud sendt til kunde;
+else (no)
+  :Vis login-fejl;
+endif
+
+stop
 @enduml
