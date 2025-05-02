@@ -23,7 +23,6 @@ public class OrderController {
         app.get("/carport/confirm", OrderController::showConfirmationPage);
     }
 
-
     // 👉 SVG til AJAX
     public static void getCarportSvg(Context ctx) {
         int width = ctx.queryParamAsClass("width", Integer.class).getOrDefault(300);
