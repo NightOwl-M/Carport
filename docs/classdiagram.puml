@@ -242,9 +242,12 @@ Main -- "config"
 "mapper" -- "entities": Laver Entities objekter
 
 
-'Entitet relationer
-
-
+'Entitetsrelationer:'
+User o-- Order
+Order *-- User
+Order *-- Component
+Component *-- MaterialVariant
+MaterialVariant *-- Material
 
 
 @enduml
