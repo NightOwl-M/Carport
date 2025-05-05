@@ -243,6 +243,12 @@ Main -- "config"
 
 
 'Entitet relationer
+User o-- Order
+Order *-- User
+Order *-- Component
+Component *-- MaterialVariant
+MaterialVariant *-- Material
+
 
 
 
