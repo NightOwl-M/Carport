@@ -1,11 +1,256 @@
 @startuml
 'https://plantuml.com/sequence-diagram
 
-autonumber
+class Main {
+}
 
-Alice -> Bob: Authentication Request
-Bob --> Alice: Authentication Response
 
-Alice -> Bob: Another authentication Request
-Alice <-- Bob: another authentication Response
+package "config"{
+
+ class SessionConfig {
+     + {static} sessionConfig()
+     }
+ class ThymeleafConfig{
+    + {static} templateEngine()
+    }
+}
+
+package "controllers"{
+
+class CustomerController {
++ {static} addRoutes()
++ {static} getUserById()
++ {static} updateUser()
++ {static} createUser()
++ {static} deleteUser()
+}
+
+class AdminController {
++ {static} addRoutes()
++ {static} createUser()
++ {static} updateUser()
++ {static} deleteUser()
+}
+
+class LoginController {
++ {static} addRoutes()
++ {static} login ()
++ {static} logout ()
+}
+
+class ComponentController {
++ {static} addRoutes()
++ {static} getAllComponentsByOrderId()
++ {static} addComponentsByOrderId()
+}
+
+class MaterialVariantController {
++ {static} addRoutes()
++ {static} getAllMaterialVariants()
+}
+
+class MaterialController {
++ {static} addRoutes()
++ {static} getAllMaterials()
+}
+
+class OrderController {
++ {static} addRoutes()
++ {static} getAllOrdersAndCustomerInfo()
++ {static} getAllOrders()
++ {static} getOrderByOrderId()
++ {static} deleteOrder()
++ {static} getOrdersByEmail()
++ {static} setOrderStatus()
++ {static} setOrderSalesPrice()
+}
+}
+
+package "entities"{
+class Component {
+- int componentId
+- Order order
+- MaterialVariant materialVariant
+- int quantity
+- String useDescription
+
++ getters and setters()
+}
+
+class Material {
+- int materialId
+- String description
+- String unit
+- double price
+
++ getters and setters()
+}
+
+class MaterialVariant {
+- Material material
+- int materialId
+- int length
+
++ getters and setters()
+}
+
+class Order {
+- int orderId
+- String orderStatus
+- int carport_width
+- int carport_length
+- String roofType
+- double salesPrice
+- String customerComment
+- String adminComment
+- LocalDate createdAt
+- List<Component> components
+- User user
+
++ getters and setters()
+}
+
+class User {
+- int userId
+- String fullName
+- String address
+- int zipcode
+- String email
+- String password ***hashed
+- String phoneNumber
+- String role
+
++ getters and setters()
+}
+
+
+}
+
+package "exceptions"{
+     class DatabaseException {
+     + DatabaseException ()
+      }
+}
+
+
+package "mapper"{
+
+package "user" {
+class userMapper {
++ {static} login()
++ {static} logout()
++ {static} createUser()
++ {static} updateUser()
++ {static} deleteUser()
++ {static} getUserById()
+}
+}
+
+package "order" {
+class OrderMapper {
+ + {static} getAllOrdersAndCustomerInfo()
+ + {static} getAllOrders()
+ + {static} getOrderByOrderId()
+ + {static} deleteOrder()
+ + {static} getOrdersByEmail()
+ + {static} setOrderStatus()
+ + {static} setOrderSalesPrice()
+}
+}
+
+package "material" {
+class MaterialMapper {
++ {static} getAllMaterials()
+}
+
+class MaterialVariantMapper {
++ {static} getAllMaterialVariants()
+}
+}
+
+package "component" {
+class ComponentMapper {
++ {static} getAllComponentsByOrderId()
++ {static} addComponentsByOrderId()
+}
+}
+}
+
+
+
+
+package "persistence"{
+ class ConnectionPool {
+- {static} volatile ConnectionPool instance
+- {static} HikariDataSource ds
+- {static} final Logger LOGGER
+
+- ConnectionPool()
+
++ {static} getInstance()
++ getConnection()
++ close()
++ {static} createHikariConnectionPool()
+}
+}
+
+
+
+
+
+package "service"{
+
+package "component" {
+class ComponentService {
+}
+
+}
+
+package "material" {
+class MaterialVariantService {
+}
+
+class MaterialService {
+}
+
+}
+
+package "order" {
+class OrderService {
+
+}
+}
+
+package "svg" {
+class CarportSvg {
+}
+
+class Svg {
+}
+}
+
+package "user" {
+class UserService {
+}
+}
+
+}
+
+Main -- "controllers"
+Main -- "config"
+
+"mapper" -- "entities": Laver Entities objekter
+
+
+'Entitet relationer
+
+
+
+
 @enduml
+
+implements ..|>
+extends <|-- (is-a)
+composition *-- (must-have)
+Aggregation o-- (can-have)
+Associering <--
