@@ -8,15 +8,27 @@
 
 <h2>Trin 3: Bekræft din ordre</h2>
 
-<p>Navn: <span th:text="${name}"></span></p>
-<p>Email: <span th:text="${email}"></span></p>
-<p>Adresse: <span th:text="${address}"></span></p>
+<p>Bredde: <span th:text="${currentOrder.carportWidth}"></span></p>
+<p>Længde: <span th:text="${currentOrder.carportLength}"></span></p>
+<p>Tag: <span th:text="${currentOrder.roofType}"></span></p>
+<p>Særlige bemærkninger/ønsker: <span th:text="${currentOrder.customerComment}"></span></p>
+
+
+<h3>Dine oplysninger:</h3>
+
+<p>Navn: <span th:text="${currentUser.name}"></span></p>
+<p>Adresse: <span th:text="${currentUser.address}"></span></p>
+<p>Postnummer: <span th:text="${currentUser.zipcode}"></span></p>
+<p>By: <span th:text="${currentUser.city}"></span></p>
+<p>Email: <span th:text="${currentUser.email}"></span></p>
+<p>Telefon: <span th:text="${currentUser.phoneNumber}"></span></p>
+
 
 <h3>Din carport:</h3>
 <div th:utext="${svg}"></div>
 
 <form method="post" action="/carport/confirm">
-  <button type="submit">Godkend og gem ordre</button>
+  <button type="submit">Indhent tilbud</button>
 </form>
 
 </body>
