@@ -242,7 +242,7 @@ Main -- "config"
 "mapper" -- "entities": Laver Entities objekter
 
 
-'Entitetsrelationer:'
+'Entitetsrelationer':
 User o-- Order
 Order *-- User
 Order *-- Component
