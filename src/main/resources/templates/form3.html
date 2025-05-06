@@ -26,13 +26,17 @@
 <h3>Din carport:</h3>
 <div th:utext="${svg}"></div>
 
+<form1-3-and-controller-update
 <form method="post" action="/carport/confirm">
   <label>
     <input type="checkbox" required>
     Fog må benytte de afgivne oplysninger til at kontakte mig i forbindelse med tilbud på en skræddersyet carport
   </label>
   <button type="submit">Indhent tilbud</button>
+<form method="post" action="/carport/confirm/save">
+  <button type="submit">Godkend og gem ordre</button>
 </form>
+
 
 </body>
 </html>
