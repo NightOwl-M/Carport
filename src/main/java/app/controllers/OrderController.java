@@ -39,9 +39,13 @@ public class OrderController {
     public static void handleCarportInfo(Context ctx) {
         int width = Integer.parseInt(ctx.formParam("width"));
         int length = Integer.parseInt(ctx.formParam("length"));
+        String userText = ctx.formParam("user-text");
+        String roofType = ctx.formParam("roof");
 
         ctx.sessionAttribute("width", width);
         ctx.sessionAttribute("length", length);
+        ctx.sessionAttribute("userText", userText);
+        ctx.sessionAttribute("roofType", roofType);
 
         ctx.render("form2.html");
     }
