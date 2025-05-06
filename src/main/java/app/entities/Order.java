@@ -25,6 +25,13 @@ public class Order {
         this.createdAt = createdAt;
     }
 
+    public Order(int carportWidth, int carportLength, String roof, String userText) {
+        this.carportWidth = carportWidth;
+        this.carportLength = carportLength;
+        this.roof = roof;
+        this.userText = userText;
+    }
+
     // Getters and Setters
     public int getOrderId() { return orderId; }
     public void setOrderId(int orderId) { this.orderId = orderId; }

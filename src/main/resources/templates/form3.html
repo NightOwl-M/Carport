@@ -8,17 +8,31 @@
 
 <h2>Trin 3: Bekræft din ordre</h2>
 
-<p>Navn: <span th:text="${name}"></span></p>
-<p>Email: <span th:text="${email}"></span></p>
-<p>Adresse: <span th:text="${address}"></span></p>
+<p>Bredde: <span th:text="${session.currentOrder.carportWidth}"></span></p>
+<p>Længde: <span th:text="${session.currentOrder.carportLength}"></span></p>
+<p>Tag: <span th:text="${session.currentOrder.roof}"></span></p>
+<p>Særlige bemærkninger/ønsker: <span th:text="${session.currentOrder.userText}"></span></p>
+
+
+<h3>Dine oplysninger:</h3>
+
+<p>Navn: <span th:text="${session.currentUser.name}"></span></p>
+<p>Adresse: <span th:text="${session.currentUser.address}"></span></p>
+<p>Postnummer: <span th:text="${session.currentUser.zipcode}"></span></p>
+<p>Email: <span th:text="${session.currentUser.email}"></span></p>
+<p>Telefon: <span th:text="${session.currentUser.phoneNumber}"></span></p>
+
 
 <h3>Din carport:</h3>
 <div th:utext="${svg}"></div>
 
-<form method="post" action="/carport/confirm/save">
-  <button type="submit">Godkend og gem ordre</button>
+<form method="post" action="/carport/confirm">
+  <label>
+    <input type="checkbox" required>
+    Fog må benytte de afgivne oplysninger til at kontakte mig i forbindelse med tilbud på en skræddersyet carport
+  </label>
+  <button type="submit">Indhent tilbud</button>
 </form>
-
 
 </body>
 </html>

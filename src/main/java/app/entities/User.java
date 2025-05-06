@@ -22,6 +22,14 @@ public class User {
         this.role = role;
     }
 
+    public User(String name, String address, int zipcode, String email, String phoneNumber) {
+        this.name = name;
+        this.address = address;
+        this.zipcode = zipcode;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+    }
+
     // Getters and Setters
     public int getUserId() { return userId; }
     public void setUserId(int userId) { this.userId = userId; }
