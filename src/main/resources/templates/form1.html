@@ -23,16 +23,67 @@
     }
   </script>
 </head>
+
 <body>
 
 <h2>Trin 1: Indtast mål</h2>
 
 <form id="dimensionForm" method="post" action="/carport/info">
   <label for="width">Bredde (cm):</label>
-  <input type="number" id="width" name="width" required><br>
+  <select id="width" name="width" required>
+    <option value=""></option>
+    <option value="240">240 cm</option>
+    <option value="270">270 cm</option>
+    <option value="300">300 cm</option>
+    <option value="330">330 cm</option>
+    <option value="360">360 cm</option>
+    <option value="390">390 cm</option>
+    <option value="420">420 cm</option>
+    <option value="450">450 cm</option>
+    <option value="480">480 cm</option>
+    <option value="510">510 cm</option>
+    <option value="540">540 cm</option>
+    <option value="570">570 cm</option>
+    <option value="600">600 cm</option>
+  </select><br>
 
   <label for="length">Længde (cm):</label>
-  <input type="number" id="length" name="length" required><br>
+    <select id="length" name="length" required>
+      <option value=""></option>
+      <option value="240">240 cm</option>
+      <option value="270">270 cm</option>
+      <option value="300">300 cm</option>
+      <option value="330">330 cm</option>
+      <option value="360">360 cm</option>
+      <option value="390">390 cm</option>
+      <option value="420">420 cm</option>
+      <option value="450">450 cm</option>
+      <option value="480">480 cm</option>
+      <option value="510">510 cm</option>
+      <option value="540">540 cm</option>
+      <option value="570">570 cm</option>
+      <option value="600">600 cm</option>
+      <option value="630">630 cm</option>
+      <option value="660">660 cm</option>
+      <option value="690">690 cm</option>
+      <option value="720">720 cm</option>
+      <option value="750">750 cm</option>
+      <option value="780">780 cm</option>
+    </select><br>
+
+  <label for="user-text">Særlige bemærkninger:</label>
+  <input type="text" id="user-text" name="user-text"><br>
+
+  <label for="roof">Tag:</label>
+  <select id="roof" name="roof" required>
+    <option value=""></option>
+    <option value="no-roof">Uden tagplader</option>
+    <option value="plasttrapezplader">Plasttrapezplader</option>
+
+  </select><br>
+
+
+
 
   <button type="button" onclick="fetchSvg()">Se tegning</button><br><br>
 
