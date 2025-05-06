@@ -1,5 +1,6 @@
 package app.controllers;
 
+import app.entities.Order;
 import app.service.svg.CarportSvg;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
@@ -42,10 +43,15 @@ public class OrderController {
         String userText = ctx.formParam("user-text");
         String roofType = ctx.formParam("roof");
 
+        Order currentOrder = new Order(width, length, userText, roofType); //TODO nødvendigt så at overloade constructor
+        ctx.sessionAttribute("currentOrder", currentOrder);
+
+        /*
         ctx.sessionAttribute("width", width);
         ctx.sessionAttribute("length", length);
         ctx.sessionAttribute("userText", userText);
         ctx.sessionAttribute("roofType", roofType);
+         */
 
         ctx.render("form2.html");
     }
