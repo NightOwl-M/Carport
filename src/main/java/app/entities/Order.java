@@ -64,6 +64,18 @@ public class Order {
         this.createdAt = createdAt;
     }
 
+    // Constructor til at oprette en ordre uden timestamp/createdAt
+    public Order(int orderId, int customerId, int carportWidth, int carportLength, String roof, String customerText, int statusId, double salesPrice) {
+        this.orderId = orderId;
+        this.customerId = customerId;
+        this.carportWidth = carportWidth;
+        this.carportLength = carportLength;
+        this.roof = roof;
+        this.customerText = customerText;
+        this.statusId = statusId;
+        this.salesPrice = salesPrice;
+    }
+
     // --- Getters ---
     public int getOrderId() { return orderId; }
     public int getCustomerId() { return customerId; }

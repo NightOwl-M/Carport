@@ -5,6 +5,8 @@ import app.exceptions.DatabaseException;
 import app.persistence.ConnectionPool;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class OrderMapper {
 
@@ -89,6 +91,44 @@ public class OrderMapper {
 
         } catch (SQLException e) {
             throw new DatabaseException("Fejl under opdatering af ordre: " + e.getMessage(), e);
+        }
+    }
+
+    public static List<Order> getOrdersByStatusId(int status, ConnectionPool connectionPool) throws DatabaseException {
+
+        List<Order> orders = new ArrayList<>();
+
+        String sql = "SELECT * FROM orders o " +
+                "JOIN order_status s ON o.status_id = s.status_id " +
+                "JOIN customers c ON o.order_id = c.order_id " +
+                "WHERE o.status_id = ?";
+
+        try (Connection connection = connectionPool.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+
+            ps.setInt(1, status);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+
+                int orderId = rs.getInt("order_id");
+                int customerId = rs.getInt("user_id");
+                int carportWidth = rs.getInt("carport_width");
+                int carportLength = rs.getInt("carport_length");
+                String roof = rs.getString("roof");
+                String customerText = rs.getString("user_text");
+                int statusId = rs.getInt("status_id");
+                double salesPrice = rs.getDouble("sales_price");
+
+                Order order = new Order(orderId, customerId, carportWidth, carportLength, roof, customerText, statusId, salesPrice);
+                orders.add(order);
+
+            }
+
+            return orders;
+
+        } catch (SQLException e) {
+            throw new DatabaseException("Fejl ved hentning af ordrer: " + e.getMessage());
         }
     }
 
