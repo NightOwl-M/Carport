@@ -9,6 +9,7 @@ import app.service.customer.CustomerService;
 import app.service.order.OrderService;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
+import java.util.List;
 
 
 public class OrderController {
@@ -131,4 +132,21 @@ public class OrderController {
             ctx.redirect("/carport/confirm");
         }
     }
+
+    public static void getOrdersByStatusId(Context ctx, OrderService orderService) {
+        try {
+            int status = Integer.parseInt(ctx.pathParam("id"));
+            List<Order> orders = orderService.getOrdersByStatusId(status);
+            if (orders != null) {
+                ctx.json(orders);
+            } else {
+                ctx.status(404).result("Order not found");
+            }
+        } catch (NumberFormatException e) {
+            ctx.status(400).result("Invalid order ID");
+        } catch (DatabaseException e) {
+            ctx.status(500).result("Error fetching order: " + e.getMessage());
+        }
+    }
+
 }
