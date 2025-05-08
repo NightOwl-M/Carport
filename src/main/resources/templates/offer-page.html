@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link href="../public/css/offer-page.css" th:href="@{/css/offer-page.css}" rel="stylesheet"/>
+  <title>Title</title>
+</head>
+
+<body>
+
+<div class="column-container">
+<div class="columns">
+  <h3>Indtast mål på carport</h3>
+</div>
+
+<div class="columns">
+  <h2>Her kommer der til at stå priser</h2>
+</div>
+
+
+
+<div class="columns">
+  <p>Bredde: <span th:text="${currentOrder.carportWidth}"></span></p>
+  <p>Længde: <span th:text="${currentOrder.carportLength}"></span></p>
+  <p>Tag: <span th:text="${currentOrder.roofType}"></span></p>
+  <p>Særlige bemærkninger/ønsker: <span th:text="${currentOrder.customerComment}"></span></p>
+  <br>
+  <p>Navn: <span th:text="${currentCustomer.name}"></span></p>
+  <p>Adresse: <span th:text="${currentCustomer.address}"></span></p>
+  <p>Postnummer: <span th:text="${currentCustomer.zipcode}"></span></p>
+  <p>Email: <span th:text="${currentCustomer.email}"></span></p>
+  <p>Telefon: <span th:text="${currentCustomer.phoneNumber}"></span></p>
+</div>
+</div>
+
+
+
+
+</body>
+</html>

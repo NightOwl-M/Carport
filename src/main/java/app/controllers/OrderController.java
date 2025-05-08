@@ -168,4 +168,40 @@ public class OrderController {
             ctx.redirect("/carport/confirm");
         }
     }
+/*
+    public static void saveCustomerToDatabase (Context ctx, ConnectionPool connectionPool) {
+        try {
+            // Hent oplysninger fra session
+            int width = ctx.sessionAttribute("width");
+            int length = ctx.sessionAttribute("length");
+            String name = ctx.sessionAttribute("name");
+            String email = ctx.sessionAttribute("email");
+            String address = ctx.sessionAttribute("address");
+
+            String roof = "standard";
+            String userText = "Ingen kommentar";
+
+            User currentUser = ctx.sessionAttribute("currentUser");
+
+            // Gem ordren via service-lag
+            Customer newCustomer = CustomerService.createCustomer(
+                    currentUser.getUserId(),
+                    width,
+                    length,
+                    roof,
+                    userText,
+                    connectionPool
+            );
+
+            // Gem ny ordre i session og redirect
+            ctx.sessionAttribute("currentOrder", newOrder);
+            ctx.redirect("/thankyou");
+
+        } catch (Exception e) {
+            ctx.sessionAttribute("errorMessage", "Fejl ved oprettelse af ordre: " + e.getMessage());
+            ctx.redirect("/carport/confirm");
+        }
+    }
+
+ */
 }

@@ -25,6 +25,9 @@ public class Order {
         this.createdAt = createdAt;
     }
 
+    public Order(int width, int length, String userText, String roofType) {
+    }
+
     // Getters and Setters
     public int getOrderId() { return orderId; }
     public void setOrderId(int orderId) { this.orderId = orderId; }
