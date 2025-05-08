@@ -1,42 +1,36 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>Bekræftelse</title>
+  <title>Bekræft din ordre</title>
 </head>
 <body>
 
-<h2>Trin 3: Bekræft din ordre</h2>
+<h2>Trin 3: Bekræft din bestilling</h2>
 
-<p>Bredde: <span th:text="${currentOrder.carportWidth}"></span></p>
-<p>Længde: <span th:text="${currentOrder.carportLength}"></span></p>
-<p>Tag: <span th:text="${currentOrder.roofType}"></span></p>
-<p>Særlige bemærkninger/ønsker: <span th:text="${currentOrder.customerComment}"></span></p>
+<h3>Carport</h3>
+<ul>
+  <li>Bredde: <span th:text="${currentOrder.carportWidth}">[bredde]</span> cm</li>
+  <li>Længde: <span th:text="${currentOrder.carportLength}">[længde]</span> cm</li>
+  <li>Tagtype: <span th:text="${currentOrder.roof}">[tag]</span></li>
+  <li>Kommentar: <span th:text="${currentOrder.customerText}">[kommentar]</span></li>
+</ul>
 
+<h3>Kundeoplysninger</h3>
+<ul>
+  <li>Navn: <span th:text="${currentCustomer.customerName}">[navn]</span></li>
+  <li>Adresse: <span th:text="${currentCustomer.customerAddress}">[adresse]</span></li>
+  <li>Postnummer: <span th:text="${currentCustomer.customerZipcode}">[postnummer]</span></li>
+  <li>Email: <span th:text="${currentCustomer.customerEmail}">[email]</span></li>
+  <li>Telefon: <span th:text="${currentCustomer.customerPhone}">[telefon]</span></li>
+</ul>
 
-<h3>Dine oplysninger:</h3>
+<h3>Carport Tegning</h3>
+<div th:utext="${svg}">[SVG vises her]</div>
 
-<p>Navn: <span th:text="${currentUser.name}"></span></p>
-<p>Adresse: <span th:text="${currentUser.address}"></span></p>
-<p>Postnummer: <span th:text="${currentUser.zipcode}"></span></p>
-<p>Email: <span th:text="${currentUser.email}"></span></p>
-<p>Telefon: <span th:text="${currentUser.phoneNumber}"></span></p>
-
-
-<h3>Din carport:</h3>
-<div th:utext="${svg}"></div>
-
-<form1-3-and-controller-update
-<form method="post" action="/carport/confirm">
-  <label>
-    <input type="checkbox" required>
-    Fog må benytte de afgivne oplysninger til at kontakte mig i forbindelse med tilbud på en skræddersyet carport
-  </label>
-  <button type="submit">Indhent tilbud</button>
 <form method="post" action="/carport/confirm/save">
-  <button type="submit">Godkend og gem ordre</button>
+  <button type="submit">Gem ordre</button>
 </form>
-
 
 </body>
 </html>

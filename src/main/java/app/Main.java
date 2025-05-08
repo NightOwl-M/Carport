@@ -24,9 +24,7 @@ public class Main {
             config.fileRenderer(new JavalinThymeleaf(ThymeleafConfig.templateEngine()));
         }).start(7070);
 
-        // Tilføj ruter fra controllers
         OrderController.addRoutes(app, connectionPool);
-        // Skfit så AdminController også tager connectionPool(); som paremeter men først når vi går i gang med den.
-        AdminController.addRoutes(app);
+        AdminController.addRoutes(app, connectionPool);
     }
 }

@@ -1,170 +1,133 @@
 package app.controllers;
 
+import app.entities.Customer;
 import app.entities.Order;
-import app.entities.User;
+import app.exceptions.DatabaseException;
 import app.persistence.ConnectionPool;
+import app.service.order.CarportSvg;
+import app.service.customer.CustomerService;
 import app.service.order.OrderService;
-import app.service.svg.CarportSvg;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
+
 
 public class OrderController {
 
     public static void addRoutes(Javalin app, ConnectionPool connectionPool) {
-
         app.get("/", ctx -> ctx.render("form1.html"));
         app.get("/carport", ctx -> ctx.render("form1.html"));
-        app.get("/api/carport-svg", OrderController::getCarportSvg);
-        app.post("/carport/info", OrderController::handleCarportInfo);
+        app.get("/api/carport-svg", ctx -> getCarportSvg(ctx));
+        app.post("/carport/info", ctx -> handleCarportInfo(ctx));
         app.get("/carport/info", ctx -> ctx.render("form2.html"));
-        app.post("/carport/confirm", OrderController::handleConfirmation);
-        app.get("/carport/confirm", OrderController::showConfirmationPage);
-
+        app.post("/carport/confirm", ctx -> handleConfirmation(ctx, connectionPool));
+        app.get("/carport/confirm", ctx -> showConfirmationPage(ctx));
         app.post("/carport/confirm/save", ctx -> saveOrderToDatabase(ctx, connectionPool));
     }
 
-
-    // 👉 SVG til AJAX
     public static void getCarportSvg(Context ctx) {
         int width = ctx.queryParamAsClass("width", Integer.class).getOrDefault(300);
         int length = ctx.queryParamAsClass("length", Integer.class).getOrDefault(600);
 
         CarportSvg carport = new CarportSvg(width, length);
         carport.addBeams();
+        carport.addRafters();
+        carport.addPost();
         carport.addText();
 
+        ctx.contentType("text/html");
         ctx.result(carport.toString());
     }
 
-    // Når customer trykker "Næste" i form1.html
     public static void handleCarportInfo(Context ctx) {
         int width = Integer.parseInt(ctx.formParam("width"));
         int length = Integer.parseInt(ctx.formParam("length"));
-        String userText = ctx.formParam("user-text");
         String roofType = ctx.formParam("roof");
+        String customerText = ctx.formParam("user-text");
 
-        Order currentOrder = new Order(width, length, userText, roofType); //TODO check rækkefølge og eventuelt overload constructor
-        ctx.sessionAttribute("currentOrder", currentOrder);
-
-        /*
         ctx.sessionAttribute("width", width);
         ctx.sessionAttribute("length", length);
-        ctx.sessionAttribute("userText", userText);
-        ctx.sessionAttribute("roofType", roofType);
-         */
+        ctx.sessionAttribute("roof", roofType);
+        ctx.sessionAttribute("customerText", customerText);
 
         ctx.render("form2.html");
     }
 
-    // Når customer trykker "Bekræft" i form2.html
-    public static void handleConfirmation(Context ctx) {
-        String name = ctx.formParam("name");
-        String address = ctx.formParam("address");
-        int zipCode = Integer.parseInt(ctx.formParam("zip-code"));
-        String email = ctx.formParam("email");
-        String phone = ctx.formParam("phone");
+    public static void handleConfirmation(Context ctx, ConnectionPool connectionPool) {
+        try {
+            String name = ctx.formParam("name");
+            String address = ctx.formParam("address");
+            String zipCodeParam = ctx.formParam("zip-code");
+            String email = ctx.formParam("email");
+            String phone = ctx.formParam("phone");
 
-        User currentUser = new User (name, address, zipCode, email, phone); //TODO check rækkefølge og eventuelt overload constructor
-        ctx.sessionAttribute("currentUser", currentUser);
+            if (name == null || address == null || zipCodeParam == null || email == null || phone == null) {
+                ctx.sessionAttribute("errorMessage", "Alle felter skal udfyldes.");
+                ctx.redirect("/carport/info");
+                return;
+            }
 
-        /*
-        ctx.sessionAttribute("name", name);
-        ctx.sessionAttribute("email", email);
-        ctx.sessionAttribute("address", address);
-         */
+            int zipCode;
+            try {
+                zipCode = Integer.parseInt(zipCodeParam);
+            } catch (NumberFormatException e) {
+                ctx.sessionAttribute("errorMessage", "Postnummer skal være et tal.");
+                ctx.redirect("/carport/info");
+                return;
+            }
 
+            int width = ctx.sessionAttribute("width");
+            int length = ctx.sessionAttribute("length");
+            String roof = ctx.sessionAttribute("roof");
+            String customerText = ctx.sessionAttribute("customerText");
 
-        ctx.redirect("/carport/confirm");
+            Customer customer = CustomerService.createCustomer(name, email, address, zipCode, phone, connectionPool);
+            Order order = OrderService.createOrder(customer.getCustomerId(), width, length, roof, customerText, connectionPool);
+
+            ctx.sessionAttribute("currentOrder", order);
+            ctx.sessionAttribute("currentCustomer", customer);
+            ctx.redirect("/carport/confirm");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            ctx.sessionAttribute("errorMessage", "Fejl under oprettelse af ordre: " + e.getMessage());
+            ctx.redirect("/carport/info");
+        }
     }
 
-    // Viser bekræftelsesside med SVG og alle oplysninger
     public static void showConfirmationPage(Context ctx) {
-        User currentUser = ctx.sessionAttribute("currentUser");
-        Order currentOrder = ctx.sessionAttribute("currentOrder");
+        Order order = ctx.sessionAttribute("currentOrder");
+        Customer customer = ctx.sessionAttribute("currentCustomer");
 
-        /*
-        int width = ctx.sessionAttribute("width");
-        int length = ctx.sessionAttribute("length");
-        String name = ctx.sessionAttribute("name");
-        String email = ctx.sessionAttribute("email");
-        String address = ctx.sessionAttribute("address");
-         */
+        if (order == null || customer == null) {
+            ctx.sessionAttribute("errorMessage", "Ordreoplysninger mangler. Prøv igen.");
+            ctx.redirect("/carport/info");
+            return;
+        }
 
-        CarportSvg carport = new CarportSvg(currentOrder.getCarportWidth(), currentOrder.getCarportLength());
+        CarportSvg carport = new CarportSvg(order.getCarportWidth(), order.getCarportLength());
         carport.addBeams();
         carport.addText();
 
         ctx.attribute("svg", carport.toString());
+        ctx.attribute("currentOrder", order);
+        ctx.attribute("currentCustomer", customer);
 
-        /*
-        ctx.attribute("name", name);
-        ctx.attribute("email", email);
-        ctx.attribute("address", address);
-         */
-
-
-        // Kalder bekræftelsessiden (form3.html)
         ctx.render("form3.html");
     }
 
 
-        public static void createOrder(Context ctx, ConnectionPool connectionPool) {
-            try {
-                int width = Integer.parseInt(ctx.formParam("width"));
-                int length = Integer.parseInt(ctx.formParam("length"));
-                String roof = ctx.formParam("roof");
-                String userText = ctx.formParam("comment");
-
-                User currentUser = ctx.sessionAttribute("currentUser");
-
-                Order newOrder = OrderService.createOrder(
-                        currentUser.getUserId(),
-                        width,
-                        length,
-                        roof,
-                        userText,
-                        connectionPool
-                );
-
-                ctx.sessionAttribute("currentOrder", newOrder);
-                ctx.redirect("/step2");
-
-            } catch (Exception e) {
-                ctx.sessionAttribute("errorMessage", "Fejl ved oprettelse af ordre: " + e.getMessage());
-                ctx.redirect("/createorder");
-            }
-        }
-
     public static void saveOrderToDatabase(Context ctx, ConnectionPool connectionPool) {
         try {
-            // Hent oplysninger fra session
-            int width = ctx.sessionAttribute("width");
-            int length = ctx.sessionAttribute("length");
-            String name = ctx.sessionAttribute("name");
-            String email = ctx.sessionAttribute("email");
-            String address = ctx.sessionAttribute("address");
+            OrderService.saveSessionOrder(ctx, connectionPool);
+            ctx.render("thankyoupage.html");
 
-            String roof = "standard";
-            String userText = "Ingen kommentar";
-
-            User currentUser = ctx.sessionAttribute("currentUser");
-
-            // Gem ordren via service-lag
-            Order newOrder = OrderService.createOrder(
-                    currentUser.getUserId(),
-                    width,
-                    length,
-                    roof,
-                    userText,
-                    connectionPool
-            );
-
-            // Gem ny ordre i session og redirect
-            ctx.sessionAttribute("currentOrder", newOrder);
-            ctx.redirect("/thankyou");
+        } catch (DatabaseException e) {
+            ctx.sessionAttribute("errorMessage", "Databasefejl: " + e.getMessage());
+            ctx.redirect("/carport/confirm");
 
         } catch (Exception e) {
-            ctx.sessionAttribute("errorMessage", "Fejl ved oprettelse af ordre: " + e.getMessage());
+            e.printStackTrace();
+            ctx.sessionAttribute("errorMessage", "Ukendt fejl: " + e.getMessage());
             ctx.redirect("/carport/confirm");
         }
     }

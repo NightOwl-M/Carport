@@ -5,6 +5,7 @@
   <title>Konfigurer carport</title>
   <link rel="stylesheet" href="/css/styleform1.css">
   <script>
+
     function fetchSvg() {
       const width = document.querySelector("#width").value;
       const length = document.querySelector("#length").value;
@@ -17,10 +18,20 @@
       fetch(`/api/carport-svg?width=${width}&length=${length}`)
               .then(response => response.text())
               .then(svg => {
-                document.getElementById("svgPreview").innerHTML = svg;
+                console.log("SVG Data:", svg); // Debugging
+
+                const svgContainer = document.getElementById("svgPreview");
+                svgContainer.innerHTML = ""; // Ryd tidligere indhold
+                svgContainer.innerHTML = svg; // Indsæt SVG som HTML
+
                 document.getElementById("nextBtn").disabled = false;
+              })
+              .catch(err => {
+                console.error("Fejl ved hentning af SVG:", err);
               });
     }
+
+
   </script>
 </head>
 

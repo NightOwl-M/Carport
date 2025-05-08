@@ -1,21 +1,35 @@
-
 package app.service.order;
 
 import app.entities.Order;
 import app.exceptions.DatabaseException;
 import app.mapper.order.OrderMapper;
 import app.persistence.ConnectionPool;
-
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
+import io.javalin.http.Context;
 
 public class OrderService {
 
-    public static Order createOrder(int userId, int width, int length, String roof, String userText, ConnectionPool connectionPool) throws DatabaseException {
-        int status = 1; // Forespørgsel
-        double price = 0.0; // Sættes senere
-        Timestamp createdAt = Timestamp.valueOf(LocalDateTime.now());
-
-        return OrderMapper.insertOrder(userId, width, length, roof, userText, status, price, createdAt, connectionPool);
+    public static Order createOrder(int customerId, int width, int length, String roof, String userText, ConnectionPool connectionPool) throws DatabaseException {
+        Order order = new Order(customerId, width, length, roof, userText);
+        return OrderMapper.insertOrder(order, connectionPool);
     }
+
+    public static void updateOrderForSeller(int orderId, int width, int length, String roof, String customerText, String adminText, double salesPrice, int statusId, ConnectionPool connectionPool) throws DatabaseException {
+        Order order = new Order(orderId, width, length, roof, customerText, adminText, salesPrice, statusId);
+        OrderMapper.updateOrder(order, connectionPool);
+    }
+
+    public static void updateOrderStatus(int orderId, int statusId, ConnectionPool connectionPool) throws DatabaseException {
+        OrderMapper.updateOrderStatus(orderId, statusId, connectionPool);
+    }
+
+    public static void saveSessionOrder(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
+        Order order = ctx.sessionAttribute("currentOrder");
+
+        if (order == null) {
+            throw new DatabaseException("Ingen ordre fundet i sessionen.");
+        }
+
+        OrderMapper.saveSessionOrder(order, connectionPool);
+    }
+
 }
