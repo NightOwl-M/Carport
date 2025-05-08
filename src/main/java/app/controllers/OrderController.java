@@ -131,4 +131,22 @@ public class OrderController {
             ctx.redirect("/carport/confirm");
         }
     }
+
+    public static void getOrderByOrderId(Context ctx, ConnectionPool connectionPool) {
+        try {
+            int orderId = Integer.parseInt(ctx.pathParam("id"));
+            Order order = OrderService.getOrderById(orderId, connectionPool);
+            if (order != null) {
+                ctx.json(order);
+            } else {
+                ctx.status(404).result("Order not found");
+            }
+        } catch (NumberFormatException e) {
+            ctx.status(400).result("Invalid order ID");
+        } catch (DatabaseException e) {
+            ctx.status(500).result("Error fetching order: " + e.getMessage());
+        }
+    }
+
+
 }
