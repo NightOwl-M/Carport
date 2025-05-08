@@ -63,14 +63,14 @@
       <option value="Plasttrapezplader">Plasttrapezplader</option>
     </select><br>
 
-    <label for="coverage-rate">Dækningsgrad:</label>
-    <input type="number" id="coverage-rate" name="coverage-rate" placeholder="40" required><br>
-
     <form th:action="@{/offer-page/calculate-BOM}" method="post">
       <button class="custom-btn" type="submit">Se stykliste</button>
     </form>
 
-    <form th:action="@{/offer-page/caluclate-price}" method="post">
+    <form th:action="@{/offer-page/calculate-price}" method="post">
+      <label for="coverage-rate">Dækningsgrad:</label>
+      <input type="number" id="coverage-rate" name="coverage-rate" placeholder="40" required><br>
+
       <button class="custom-btn" type="submit">Beregn pris</button>
     </form>
 
@@ -85,14 +85,14 @@
     <h2>Her kommer der til at stå priser</h2>
 
     <p>Indkøbspris: <span th:text="${materialCost}"></span></p>
-    <p>Beregnet salgspris: <span th:text="${proposedSalesPrice}"></span></p>
+    <p>Beregnet salgspris: <span th:text="${estimatedSalesPrice}"></span></p>
 
     <label for="admin-text">Besked til kunde:</label>
     <input type="text" id="admin-text" name="admin-text"><br>
 
   </div>
 
-
+  <!--
   <div class="columns">
     <h2>Kunde/ordre information</h2>
 
@@ -115,6 +115,7 @@
 <form th:action="@{/offer-page/send-offer}" method="post">
   <button class="send-offer-button" type="submit">Send offer</button>
 </form>
+-->
 
 </body>
 </html>

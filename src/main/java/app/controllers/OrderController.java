@@ -7,6 +7,7 @@ import app.service.order.OrderService;
 import app.service.svg.CarportSvg;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
+import org.jetbrains.annotations.NotNull;
 
 public class OrderController {
 
@@ -21,6 +22,20 @@ public class OrderController {
         app.get("/carport/confirm", OrderController::showConfirmationPage);
 
         app.post("/carport/confirm/save", ctx -> saveOrderToDatabase(ctx, connectionPool));
+
+        app.get("/offer-page", ctx -> ctx.render("offer-page.html"));
+        app.post("/offer-page/calculate-price", ctx -> calculatePrice(ctx, connectionPool));
+    }
+
+    private static void calculatePrice(Context ctx, ConnectionPool connectionPool) {
+        double coverageRate = Double.parseDouble(ctx.formParam("coverage-rate"));
+        System.out.println(coverageRate);
+
+
+        double estimatedSalesPrice = 1000 * (1 + (coverageRate/100));
+
+        ctx.sessionAttribute("estimatedSalesPrice", estimatedSalesPrice);
+        ctx.redirect("/offer-page");
     }
 
 
