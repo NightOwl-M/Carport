@@ -1,55 +1,78 @@
 package app.entities;
+
 import java.sql.Timestamp;
 
 public class Order {
     private int orderId;
-    private int userId;
+    private int customerId;
     private int carportWidth;
     private int carportLength;
     private String roof;
-    private String userText;
-    private int status;
+    private String customerText;
+    private String adminText;
+    private int statusId;
     private double salesPrice;
     private Timestamp createdAt;
 
-
-    public Order(int orderId, int userId, int carportWidth, int carportLength, String roof, String userText, int status, double salesPrice, Timestamp createdAt) {
-        this.orderId = orderId;
-        this.userId = userId;
+    /**
+     * Constructor til oprettelse af en ny ordre (før insert).
+     * Bruges når customer opretter en ny odre, og orderId endnu ikke er blevet generet af databasen.
+     */
+    public Order(int customerId, int carportWidth, int carportLength, String roof, String customerText) {
+        this.customerId = customerId;
         this.carportWidth = carportWidth;
         this.carportLength = carportLength;
         this.roof = roof;
-        this.userText = userText;
-        this.status = status;
+        this.customerText = customerText;
+        this.adminText = null; // Default: ingen admin kommentar ved oprettelse
+        this.statusId = 1; // Default: "Forespørgsel"
+        this.salesPrice = 0.0; // Default: 0.0 indtil prisen beregnes
+        this.createdAt = new Timestamp(System.currentTimeMillis()); // Sætter oprettelsestidspunktet til nu
+    }
+
+    /**
+     * Constructor til opdatering af en eksisterende ordre.
+     * Bruges når sælgeren skal redigere en eksisterende ordre.
+     * Denne constructor indeholder ikke customerId eller createdAt, da disse ikke skal ændres.
+     */
+    public Order(int orderId, int carportWidth, int carportLength, String roof, String customerText, String adminText, double salesPrice, int statusId) {
+        this.orderId = orderId;
+        this.carportWidth = carportWidth;
+        this.carportLength = carportLength;
+        this.roof = roof;
+        this.customerText = customerText;
+        this.adminText = adminText;
+        this.salesPrice = salesPrice;
+        this.statusId = statusId;
+    }
+
+    /**
+     * Constructor med alle felter.
+     * Bruges når en ordre hentes fra databasen og indeholder alle datafelter. (efter insert)
+     */
+    public Order(int orderId, int customerId, int carportWidth, int carportLength, String roof,
+                 String customerText, String adminText, int statusId, double salesPrice, Timestamp createdAt) {
+        this.orderId = orderId;
+        this.customerId = customerId;
+        this.carportWidth = carportWidth;
+        this.carportLength = carportLength;
+        this.roof = roof;
+        this.customerText = customerText;
+        this.adminText = adminText;
+        this.statusId = statusId;
         this.salesPrice = salesPrice;
         this.createdAt = createdAt;
     }
 
-    // Getters and Setters
+    // --- Getters ---
     public int getOrderId() { return orderId; }
-    public void setOrderId(int orderId) { this.orderId = orderId; }
-
-    public int getUserId() { return userId; }
-    public void setUserId(int userId) { this.userId = userId; }
-
+    public int getCustomerId() { return customerId; }
     public int getCarportWidth() { return carportWidth; }
-    public void setCarportWidth(int carportWidth) { this.carportWidth = carportWidth; }
-
     public int getCarportLength() { return carportLength; }
-    public void setCarportLength(int carportLength) { this.carportLength = carportLength; }
-
     public String getRoof() { return roof; }
-    public void setRoof(String roof) { this.roof = roof; }
-
-    public String getUserText() { return userText; }
-    public void setUserText(String userText) { this.userText = userText; }
-
-    public int getStatus() { return status; }
-    public void setStatus(int status) { this.status = status; }
-
+    public String getCustomerText() { return customerText; }
+    public String getAdminText() { return adminText; }
+    public int getStatusId() { return statusId; }
     public double getSalesPrice() { return salesPrice; }
-    public void setSalesPrice(double salesPrice) { this.salesPrice = salesPrice; }
-
     public Timestamp getCreatedAt() { return createdAt; }
-    public void setCreatedAt(Timestamp createdAt) { this.createdAt = createdAt; }
 }

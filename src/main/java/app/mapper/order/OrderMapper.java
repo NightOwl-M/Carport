@@ -8,41 +8,88 @@ import java.sql.*;
 
 public class OrderMapper {
 
-    public static Order insertOrder(int userId, int width, int length, String roof, String userText, int status, double price, Timestamp createdAt, ConnectionPool connectionPool) throws DatabaseException {
-        String sql = "INSERT INTO orders (user_id, carport_width, carport_length, roof, user_text, status, sales_price, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-        Order newOrder = null;
+    public static Order insertOrder(Order order, ConnectionPool connectionPool) throws DatabaseException {
+        String sql = "INSERT INTO orders (customer_id, carport_width, carport_length, roof, customer_text, status_id) VALUES (?, ?, ?, ?, ?, ?)";
 
-        try (Connection connection = connectionPool.getConnection();
-             PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        try (Connection conn = connectionPool.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
-            ps.setInt(1, userId);
-            ps.setInt(2, width);
-            ps.setInt(3, length);
-            ps.setString(4, roof);
-            ps.setString(5, userText);
-            ps.setInt(6, status);
-            ps.setDouble(7, price);
-            ps.setTimestamp(8, createdAt);
+            ps.setInt(1, order.getCustomerId());
+            ps.setInt(2, order.getCarportWidth());
+            ps.setInt(3, order.getCarportLength());
+            ps.setString(4, order.getRoof());
+            ps.setString(5, order.getCustomerText());
+            ps.setInt(6, order.getStatusId());
 
-            int rowsAffected = ps.executeUpdate();
-
-            if (rowsAffected == 1) {
-                try (ResultSet rs = ps.getGeneratedKeys()) {
-                    if (rs.next()) {
-                        int orderId = rs.getInt(1);
-                        newOrder = new Order(orderId, userId, width, length, roof, userText, status, price, createdAt);
-                    }
-                }
-            } else {
-                throw new DatabaseException("Ordren blev ikke oprettet.");
-            }
+            ps.executeUpdate();
+            return order;
 
         } catch (SQLException e) {
-            throw new DatabaseException("Databasefejl: " + e.getMessage());
+            throw new DatabaseException("Fejl under indsættelse af ordre: " + e.getMessage(), e);
         }
-
-        return newOrder;
     }
+
+
+    public static void updateOrder(Order order, ConnectionPool connectionPool) throws DatabaseException {
+        String sql = "UPDATE orders SET carport_width = ?, carport_length = ?, roof = ?, customer_text = ?, admin_text = ?, sales_price = ?, status_id = ? WHERE order_id = ?";
+
+        try (Connection conn = connectionPool.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, order.getCarportWidth());
+            ps.setInt(2, order.getCarportLength());
+            ps.setString(3, order.getRoof());
+            ps.setString(4, order.getCustomerText());
+            ps.setString(5, order.getAdminText());
+            ps.setDouble(6, order.getSalesPrice());
+            ps.setInt(7, order.getStatusId());
+            ps.setInt(8, order.getOrderId());
+
+            ps.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new DatabaseException("Fejl under opdatering af ordre: " + e.getMessage(), e);
+        }
+    }
+
+
+    public static void updateOrderStatus(int orderId, int statusId, ConnectionPool connectionPool) throws DatabaseException {
+        String sql = "UPDATE orders SET status_id = ? WHERE order_id = ?";
+
+        try (Connection conn = connectionPool.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, statusId);
+            ps.setInt(2, orderId);
+
+            ps.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new DatabaseException("Fejl under opdatering af ordrestatus: " + e.getMessage(), e);
+        }
+    }
+
+
+    public static void saveSessionOrder(Order order, ConnectionPool connectionPool) throws DatabaseException {
+        String sql = "UPDATE orders SET carport_width = ?, carport_length = ?, roof = ?, customer_text = ?, admin_text = ?, sales_price = ?, status_id = ? WHERE order_id = ?";
+
+        try (Connection conn = connectionPool.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, order.getCarportWidth());
+            ps.setInt(2, order.getCarportLength());
+            ps.setString(3, order.getRoof());
+            ps.setString(4, order.getCustomerText());
+            ps.setString(5, order.getAdminText());
+            ps.setDouble(6, order.getSalesPrice());
+            ps.setInt(7, order.getStatusId());
+            ps.setInt(8, order.getOrderId());
+
+            ps.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new DatabaseException("Fejl under opdatering af ordre: " + e.getMessage(), e);
+        }
+    }
+
 }
-
-
