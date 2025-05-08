@@ -23,8 +23,28 @@ public class OrderController {
 
         app.post("/carport/confirm/save", ctx -> saveOrderToDatabase(ctx, connectionPool));
 
-        app.get("/offer-page", ctx -> ctx.render("offer-page.html"));
-        app.post("/offer-page/calculate-price", ctx -> calculatePrice(ctx, connectionPool));
+        app.get("/offer-page-1", ctx -> ctx.render("offer-page-1.html"));
+        app.post("/offer-page-2/calculate-price", ctx -> calculatePrice(ctx, connectionPool));
+
+        app.post("/offer-page/go-to-page-2", ctx -> handleAdminCarportInfo(ctx, connectionPool));
+        app.get("/offer-page-2/calculate", ctx -> showAdminConfirmationPage(ctx, connectionPool));
+    }
+
+    private static void showAdminConfirmationPage(Context ctx, ConnectionPool connectionPool) {
+        ctx.render("offer-page-2.html");
+
+    }
+
+    private static void handleAdminCarportInfo(Context ctx, ConnectionPool connectionPool) {
+        double coverageRate = Double.parseDouble(ctx.formParam("coverage-rate"));
+        System.out.println(coverageRate);
+
+
+        double estimatedSalesPrice = 1000 * (1 + (coverageRate/100));
+
+        ctx.sessionAttribute("estimatedSalesPrice", estimatedSalesPrice);
+       ctx.redirect("/offer-page-2/calculate");
+
     }
 
     private static void calculatePrice(Context ctx, ConnectionPool connectionPool) {
@@ -35,8 +55,10 @@ public class OrderController {
         double estimatedSalesPrice = 1000 * (1 + (coverageRate/100));
 
         ctx.sessionAttribute("estimatedSalesPrice", estimatedSalesPrice);
-        ctx.redirect("/offer-page");
+        ctx.render("offer-page-2.html");
     }
+
+
 
 
     // 👉 SVG til AJAX

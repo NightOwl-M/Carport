@@ -63,9 +63,10 @@
       <option value="Plasttrapezplader">Plasttrapezplader</option>
     </select><br>
 
-    <form th:action="@{/offer-page/calculate-BOM}" method="post">
-      <button class="custom-btn" type="submit">Se stykliste</button>
-    </form>
+    <label for="admin-text">Besked til kunde:</label>
+    <input type="text" id="admin-text" name="admin-text"><br>
+
+
 
     <form th:action="@{/offer-page/calculate-price}" method="post">
       <label for="coverage-rate">Dækningsgrad:</label>
@@ -78,6 +79,15 @@
       <button class="custom-btn" type="submit">Se skitse</button>
     </form>
 
+    <form th:action="@{/offer-page/calculate-BOM}" method="post">
+      <button class="custom-btn" type="submit">Se stykliste</button>
+    </form>
+    <br>
+
+    <form th:action="@{/offer-page/send-offer}" method="post">
+      <button class="send-offer-button" type="submit">Send offer</button>
+    </form>
+
   </div>
 
 
@@ -87,35 +97,30 @@
     <p>Indkøbspris: <span th:text="${materialCost}"></span></p>
     <p>Beregnet salgspris: <span th:text="${estimatedSalesPrice}"></span></p>
 
-    <label for="admin-text">Besked til kunde:</label>
-    <input type="text" id="admin-text" name="admin-text"><br>
-
   </div>
 
   <!--
-  <div class="columns">
-    <h2>Kunde/ordre information</h2>
+    <div class="columns">
+      <h2>Kunde/ordre information</h2>
 
-    <p>Ordre nummer:: <span th:text="${currentOrder.orderId}"></span></p>
-    <p>Oprettet: <span th:text="${currentOrder.createdAt}"></span></p>
-    <br>
-    <p>Bredde: <span th:text="${currentOrder.carportWidth}"></span></p>
-    <p>Længde: <span th:text="${currentOrder.carportLength}"></span></p>
-    <p>Tag: <span th:text="${currentOrder.roofType}"></span></p>
-    <p>Særlige bemærkninger/ønsker: <span th:text="${currentOrder.customerComment}"></span></p>
-    <br>
-    <p>Navn: <span th:text="${currentCustomer.name}"></span></p>
-    <p>Adresse: <span th:text="${currentCustomer.address}"></span></p>
-    <p>Postnummer: <span th:text="${currentCustomer.zipcode}"></span></p>
-    <p>Email: <span th:text="${currentCustomer.email}"></span></p>
-    <p>Telefon: <span th:text="${currentCustomer.phoneNumber}"></span></p>
+      <p>Ordre nummer:: <span th:text="${currentOrder.orderId}"></span></p>
+      <p>Oprettet: <span th:text="${currentOrder.createdAt}"></span></p>
+      <br>
+      <p>Bredde: <span th:text="${currentOrder.carportWidth}"></span></p>
+      <p>Længde: <span th:text="${currentOrder.carportLength}"></span></p>
+      <p>Tag: <span th:text="${currentOrder.roofType}"></span></p>
+      <p>Særlige bemærkninger/ønsker: <span th:text="${currentOrder.customerComment}"></span></p>
+      <br>
+      <p>Navn: <span th:text="${currentCustomer.name}"></span></p>
+      <p>Adresse: <span th:text="${currentCustomer.address}"></span></p>
+      <p>Postnummer: <span th:text="${currentCustomer.zipcode}"></span></p>
+      <p>Email: <span th:text="${currentCustomer.email}"></span></p>
+      <p>Telefon: <span th:text="${currentCustomer.phoneNumber}"></span></p>
+    </div>
   </div>
-</div>
 
-<form th:action="@{/offer-page/send-offer}" method="post">
-  <button class="send-offer-button" type="submit">Send offer</button>
-</form>
--->
+     Dette er en kommentar -->
 
-</body>
-</html>
+
+  </body>
+  </html>
