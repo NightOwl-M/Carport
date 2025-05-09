@@ -65,7 +65,12 @@ public class Order {
         this.createdAt = createdAt;
     }
 
-    public Order(int orderId, int carportWidth, int carportLength, String roof, String customerText, String adminText, int statusId, double salesPrice, Timestamp createdAt, Customer customer) {
+    /**
+     * Constructor der bruges når alt info på en ordre og en kunde hentes fra DB
+     * Indeholder en reference til den customer, som ordren er lavet af via et Customer-objekt
+     */
+    public Order(int orderId, int carportWidth, int carportLength, String roof, String customerText, String adminText,
+                 int statusId, double salesPrice, Timestamp createdAt, Customer customer) {
         this.orderId = orderId;
         this.carportWidth = carportWidth;
         this.carportLength = carportLength;
