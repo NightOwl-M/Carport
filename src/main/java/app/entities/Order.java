@@ -13,6 +13,7 @@ public class Order {
     private int statusId;
     private double salesPrice;
     private Timestamp createdAt;
+    private Customer customer;
 
     /**
      * Constructor til oprettelse af en ny ordre (før insert).
@@ -62,6 +63,19 @@ public class Order {
         this.statusId = statusId;
         this.salesPrice = salesPrice;
         this.createdAt = createdAt;
+    }
+
+    public Order(int orderId, int carportWidth, int carportLength, String roof, String customerText, String adminText, int statusId, double salesPrice, Timestamp createdAt, Customer customer) {
+        this.orderId = orderId;
+        this.carportWidth = carportWidth;
+        this.carportLength = carportLength;
+        this.roof = roof;
+        this.customerText = customerText;
+        this.adminText = adminText;
+        this.statusId = statusId;
+        this.salesPrice = salesPrice;
+        this.createdAt = createdAt;
+        this.customer = customer;
     }
 
     // --- Getters ---

@@ -131,4 +131,23 @@ public class OrderController {
             ctx.redirect("/carport/confirm");
         }
     }
+
+    private static void adminGetOrderByOrderId(Context ctx, ConnectionPool connectionPool) {
+        try {
+            int orderId = 1; //TODO orderId, skal hentes fra session når admin vælger en ordre at skulle bearbejde
+            Order currentOrder = OrderService.getOrderAndCustomerInfoByOrderId(orderId, ctx, connectionPool);
+
+
+            ctx.render(".html");
+
+        } catch (DatabaseException e) {
+            ctx.sessionAttribute("errorMessage", "Databasefejl: " + e.getMessage());
+            ctx.redirect("");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            ctx.sessionAttribute("errorMessage", "Ukendt fejl: " + e.getMessage());
+            ctx.redirect("");
+        }
+    }
 }

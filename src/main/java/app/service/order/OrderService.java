@@ -32,4 +32,8 @@ public class OrderService {
         OrderMapper.saveSessionOrder(order, connectionPool);
     }
 
+    public static Order getOrderAndCustomerInfoByOrderId(int orderId, Context ctx, ConnectionPool connectionPool) throws DatabaseException {
+        Order order = OrderMapper.getOrderAndCustomerInfoByOrderId(orderId, connectionPool);
+        return order;
+    }
 }
