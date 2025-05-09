@@ -15,8 +15,21 @@ public class Order {
     private Timestamp createdAt;
 
     /**
+     * Constructor til midlertidig lagring i sessionen (uden customerId).
+     */
+    public Order(int carportWidth, int carportLength, String roof, String customerText) {
+        this.carportWidth = carportWidth;
+        this.carportLength = carportLength;
+        this.roof = roof;
+        this.customerText = customerText;
+        this.adminText = null;
+        this.statusId = 1;
+        this.salesPrice = 0.0;
+    }
+
+    /**
      * Constructor til oprettelse af en ny ordre (før insert).
-     * Bruges når customer opretter en ny odre, og orderId endnu ikke er blevet generet af databasen.
+     * Bruges når customer opretter en ny ordre, og orderId endnu ikke er blevet genereret af databasen.
      */
     public Order(int customerId, int carportWidth, int carportLength, String roof, String customerText) {
         this.customerId = customerId;
@@ -24,16 +37,14 @@ public class Order {
         this.carportLength = carportLength;
         this.roof = roof;
         this.customerText = customerText;
-        this.adminText = null; // Default: ingen admin kommentar ved oprettelse
-        this.statusId = 1; // Default: "Forespørgsel"
-        this.salesPrice = 0.0; // Default: 0.0 indtil prisen beregnes
-        this.createdAt = new Timestamp(System.currentTimeMillis()); // Sætter oprettelsestidspunktet til nu
+        this.adminText = null;
+        this.statusId = 1;
+        this.salesPrice = 0.0;
+        this.createdAt = new Timestamp(System.currentTimeMillis());
     }
 
     /**
      * Constructor til opdatering af en eksisterende ordre.
-     * Bruges når sælgeren skal redigere en eksisterende ordre.
-     * Denne constructor indeholder ikke customerId eller createdAt, da disse ikke skal ændres.
      */
     public Order(int orderId, int carportWidth, int carportLength, String roof, String customerText, String adminText, double salesPrice, int statusId) {
         this.orderId = orderId;
@@ -48,7 +59,6 @@ public class Order {
 
     /**
      * Constructor med alle felter.
-     * Bruges når en ordre hentes fra databasen og indeholder alle datafelter. (efter insert)
      */
     public Order(int orderId, int customerId, int carportWidth, int carportLength, String roof,
                  String customerText, String adminText, int statusId, double salesPrice, Timestamp createdAt) {
@@ -75,4 +85,9 @@ public class Order {
     public int getStatusId() { return statusId; }
     public double getSalesPrice() { return salesPrice; }
     public Timestamp getCreatedAt() { return createdAt; }
+
+    // --- Setters ---
+    public void setOrderId(int orderId) {
+        this.orderId = orderId;
+    }
 }
