@@ -100,7 +100,7 @@ public class OrderMapper {
                 "JOIN zipcode ON customer.customer_zipcode = zipcode.zipcode\n" +
                 "WHERE order_id = ?";
 
-        //TODO lav eventulet til et view
+        //TODO lav eventulet til et view i pgAdmin
         //TODO tilføj eventuelt String orderStatusText til Order entity, da det er mere sigende end int statusId
 
         try (Connection connection = connectionPool.getConnection();

@@ -33,7 +33,10 @@ public class OrderService {
     }
 
     public static Order getOrderAndCustomerInfoByOrderId(int orderId, Context ctx, ConnectionPool connectionPool) throws DatabaseException {
-        Order order = OrderMapper.getOrderAndCustomerInfoByOrderId(orderId, connectionPool);
-        return order;
+        return OrderMapper.getOrderAndCustomerInfoByOrderId(orderId, connectionPool);
+    }
+
+    public static double calculateEstimatedSalesPrice(double coverageRate, double carportTotalPrice) { //TODO flyt eventuelt til en Calculator klasse i Service-mappen
+        return carportTotalPrice * (1 + (coverageRate/100));
     }
 }

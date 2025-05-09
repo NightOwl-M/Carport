@@ -75,11 +75,11 @@
             <button class="custom-btn" type="submit">Beregn pris</button>
         </form>
 
-        <form th:action="@{/offerpage/show-svg}" method="post">
+        <form th:action="@{/offerpage/show-svg}" method="get">
             <button class="custom-btn" type="submit">Se skitse</button>
         </form>
 
-        <form th:action="@{/offerpage/show-BOM}" method="post">
+        <form th:action="@{/offerpage/show-bom}" method="get">
             <button class="custom-btn" type="submit">Se stykliste</button>
         </form>
         <br>
@@ -94,8 +94,8 @@
     <div class="columns">
         <h2>Her kommer der til at stå priser</h2>
 
-        <p>Indkøbspris: <span th:text="${materialCost}"></span></p>
-        <p>Beregnet salgspris: <span th:text="${session.estimatedSalesPrice}"></span></p>
+        <p>Indkøbspris: <span th:text="${materialCostPrice}"></span></p>
+        <p>Beregnet salgspris: <span th:text="${estimatedSalesPrice}"></span></p>
 
     </div>
 
