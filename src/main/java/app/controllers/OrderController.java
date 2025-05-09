@@ -23,7 +23,13 @@ public class OrderController {
         app.get("/carport/confirm", ctx -> showConfirmationPage(ctx));
         app.post("/carport/confirm/save", ctx -> saveOrderToDatabase(ctx, connectionPool));
 
+        //Viser offerpage med ordredata
         app.get("/offerpage", ctx -> showOfferPage(ctx, connectionPool));
+
+        //Når man trykker på "beregn pris"
+        app.post("/offerpage/show-prices", ctx -> showPrices(ctx, connectionPool));
+
+
     }
 
     public static void getCarportSvg(Context ctx) {
@@ -136,7 +142,7 @@ public class OrderController {
 
     private static void showOfferPage(Context ctx, ConnectionPool connectionPool) {
         try {
-            int orderId = 1; //TODO orderId, skal hentes fra session når admin vælger en ordre at skulle bearbejde
+            int orderId = 1; //TODO orderId hardcoded, skal hentes fra session når admin vælger en ordre at skulle bearbejde
             Order currentOrder = OrderService.getOrderAndCustomerInfoByOrderId(orderId, ctx, connectionPool);
 
             ctx.sessionAttribute("currentOrder", currentOrder);
@@ -144,12 +150,37 @@ public class OrderController {
 
         } catch (DatabaseException e) {
             ctx.sessionAttribute("errorMessage", "Databasefejl: " + e.getMessage());
-            ctx.redirect("");
+            ctx.redirect(""); //TODO
 
         } catch (Exception e) {
             e.printStackTrace();
             ctx.sessionAttribute("errorMessage", "Ukendt fejl: " + e.getMessage());
-            ctx.redirect("");
+            ctx.redirect(""); //TODO
         }
     }
+
+    private static void showPrices(Context ctx, ConnectionPool connectionPool) {
+        try {
+            double coverageRate = Double.parseDouble(ctx.formParam("coverage-rate"));
+
+            //TODO calculateCarportPrice() metode der beregner carportens samlede materialepris
+            double carportTotalPrice = 20000; //TODO hardcoded indtil ovenstående metode er lavet
+            double estimatedSalesPrice = carportTotalPrice * (1 + (coverageRate/100)); //TODO hardcoded, skal kalde metode der beregner prisen
+
+
+            ctx.sessionAttribute("estimatedSalesPrice", estimatedSalesPrice);
+            ctx.render("offerpage.html");
+            /*
+        } catch (DatabaseException e) {
+            ctx.sessionAttribute("errorMessage", "Databasefejl: " + e.getMessage());
+            ctx.redirect(""); //TODO
+             */
+        } catch (Exception e) {
+            e.printStackTrace();
+            ctx.sessionAttribute("errorMessage", "Ukendt fejl: " + e.getMessage());
+            ctx.redirect(""); //TODO
+        }
+    }
+
+
 }
