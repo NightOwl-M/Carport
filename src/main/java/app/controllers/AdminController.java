@@ -14,7 +14,7 @@ public class AdminController {
     }
 
 
-     //Opdaterer en ordre baseret på admin-input.
+     // Henter data fra formular.
     private static void updateOrder(Context ctx, ConnectionPool connectionPool) {
         try {
             int orderId = Integer.parseInt(ctx.formParam("orderId"));
@@ -44,7 +44,6 @@ public class AdminController {
             ctx.redirect("/admin/order/update");
         }
     }
-
 
 
     //Opdaterer status for en ordre.
