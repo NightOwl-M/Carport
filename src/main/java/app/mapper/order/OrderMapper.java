@@ -108,7 +108,7 @@ public class OrderMapper {
             ps.setInt(1, orderId);
             ResultSet rs = ps.executeQuery();
 
-            while (rs.next()) {
+            if (rs.next()) {
                 int customerId = rs.getInt("customer_id");
                 String customerName = rs.getString("customer_name");
                 String customerEmail = rs.getString("customer_email");
@@ -128,8 +128,6 @@ public class OrderMapper {
 
                 Customer customer = new Customer(customerId, customerName, customerEmail, customerAddress, customerZipcode, customerPhone);
                 Order order = new Order(orderId, carportWidth, carportLength, roof, customerText, adminText, statusId, salesPrice, createdAt, customer);
-
-                ps.executeUpdate();
                 return order;
             }
         } catch (SQLException e) {

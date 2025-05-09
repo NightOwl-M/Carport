@@ -22,6 +22,8 @@ public class OrderController {
         app.post("/carport/confirm", ctx -> handleConfirmation(ctx, connectionPool));
         app.get("/carport/confirm", ctx -> showConfirmationPage(ctx));
         app.post("/carport/confirm/save", ctx -> saveOrderToDatabase(ctx, connectionPool));
+
+        app.get("/offerpage", ctx -> showOfferPage(ctx, connectionPool));
     }
 
     public static void getCarportSvg(Context ctx) {
@@ -132,13 +134,13 @@ public class OrderController {
         }
     }
 
-    private static void adminGetOrderByOrderId(Context ctx, ConnectionPool connectionPool) {
+    private static void showOfferPage(Context ctx, ConnectionPool connectionPool) {
         try {
             int orderId = 1; //TODO orderId, skal hentes fra session når admin vælger en ordre at skulle bearbejde
             Order currentOrder = OrderService.getOrderAndCustomerInfoByOrderId(orderId, ctx, connectionPool);
 
-
-            ctx.render(".html");
+            ctx.sessionAttribute("currentOrder", currentOrder);
+            ctx.render("offerpage.html");
 
         } catch (DatabaseException e) {
             ctx.sessionAttribute("errorMessage", "Databasefejl: " + e.getMessage());

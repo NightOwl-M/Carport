@@ -89,4 +89,5 @@ public class Order {
     public int getStatusId() { return statusId; }
     public double getSalesPrice() { return salesPrice; }
     public Timestamp getCreatedAt() { return createdAt; }
+    public Customer getCustomer() {return customer;}
 }

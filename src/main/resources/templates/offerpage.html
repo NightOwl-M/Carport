@@ -99,28 +99,24 @@
 
     </div>
 
-    <!--
+
       <div class="columns">
         <h2>Kunde/ordre information</h2>
 
-        <p>Ordre nummer:: <span th:text="${currentOrder.orderId}"></span></p>
-        <p>Oprettet: <span th:text="${currentOrder.createdAt}"></span></p>
+        <p>Ordre nummer: <span th:text="${session.currentOrder.orderId}"></span></p>
+        <p>Oprettet: <span th:text="${session.currentOrder.createdAt}"></span></p>
         <br>
-        <p>Bredde: <span th:text="${currentOrder.carportWidth}"></span></p>
-        <p>Længde: <span th:text="${currentOrder.carportLength}"></span></p>
-        <p>Tag: <span th:text="${currentOrder.roofType}"></span></p>
-        <p>Særlige bemærkninger/ønsker: <span th:text="${currentOrder.customerComment}"></span></p>
+        <p>Bredde: <span th:text="${session.currentOrder.carportWidth}"></span></p>
+        <p>Længde: <span th:text="${session.currentOrder.carportLength}"></span></p>
+        <p>Tag: <span th:text="${session.currentOrder.roof}"></span></p>
+        <p>Særlige bemærkninger/ønsker: <span th:text="${session.currentOrder.customerText}"></span></p>
         <br>
-        <p>Navn: <span th:text="${currentCustomer.name}"></span></p>
-        <p>Adresse: <span th:text="${currentCustomer.address}"></span></p>
-        <p>Postnummer: <span th:text="${currentCustomer.zipcode}"></span></p>
-        <p>Email: <span th:text="${currentCustomer.email}"></span></p>
-        <p>Telefon: <span th:text="${currentCustomer.phoneNumber}"></span></p>
+        <p>Navn: <span th:text="${session.currentOrder.customer.customerName}"></span></p>
+        <p>Adresse: <span th:text="${session.currentOrder.customer.customerAddress}"></span></p>
+        <p>Postnummer: <span th:text="${session.currentOrder.customer.customerZipcode}"></span></p>
+        <p>Email: <span th:text="${session.currentOrder.customer.customerEmail}"></span></p>
+        <p>Telefon: <span th:text="${session.currentOrder.customer.customerPhone}"></span></p>
       </div>
     </div>
-
-       Dette er en kommentar -->
-
-
 </body>
 </html>
