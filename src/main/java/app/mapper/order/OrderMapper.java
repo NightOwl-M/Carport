@@ -3,12 +3,13 @@ package app.mapper.order;
 import app.entities.Order;
 import app.exceptions.DatabaseException;
 import app.persistence.ConnectionPool;
-
 import java.sql.*;
+
 
 public class OrderMapper {
 
-    public static Order insertOrder(Order order, ConnectionPool connectionPool) throws DatabaseException {
+    // Gemmer customers order i databasen
+    public static Order saveSessionOrder(Order order, ConnectionPool connectionPool) throws DatabaseException {
         String sql = "INSERT INTO orders (customer_id, carport_width, carport_length, roof, customer_text, status_id) VALUES (?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = connectionPool.getConnection();
@@ -19,9 +20,16 @@ public class OrderMapper {
             ps.setInt(3, order.getCarportLength());
             ps.setString(4, order.getRoof());
             ps.setString(5, order.getCustomerText());
-            ps.setInt(6, order.getStatusId());
+            ps.setInt(6, 1); // Standard status ved oprettelse
 
             ps.executeUpdate();
+
+            try (ResultSet rs = ps.getGeneratedKeys()) {
+                if (rs.next()) {
+                    order.setOrderId(rs.getInt(1));
+                }
+            }
+
             return order;
 
         } catch (SQLException e) {
@@ -29,8 +37,8 @@ public class OrderMapper {
         }
     }
 
-
-    public static void updateOrder(Order order, ConnectionPool connectionPool) throws DatabaseException {
+    // updatere customers order med Admins tilbud
+    public static void updateOrderForSeller(Order order, ConnectionPool connectionPool) throws DatabaseException {
         String sql = "UPDATE orders SET carport_width = ?, carport_length = ?, roof = ?, customer_text = ?, admin_text = ?, sales_price = ?, status_id = ? WHERE order_id = ?";
 
         try (Connection conn = connectionPool.getConnection();
@@ -52,7 +60,7 @@ public class OrderMapper {
         }
     }
 
-
+    // Ændre statuskode
     public static void updateOrderStatus(int orderId, int statusId, ConnectionPool connectionPool) throws DatabaseException {
         String sql = "UPDATE orders SET status_id = ? WHERE order_id = ?";
 
@@ -68,28 +76,4 @@ public class OrderMapper {
             throw new DatabaseException("Fejl under opdatering af ordrestatus: " + e.getMessage(), e);
         }
     }
-
-
-    public static void saveSessionOrder(Order order, ConnectionPool connectionPool) throws DatabaseException {
-        String sql = "UPDATE orders SET carport_width = ?, carport_length = ?, roof = ?, customer_text = ?, admin_text = ?, sales_price = ?, status_id = ? WHERE order_id = ?";
-
-        try (Connection conn = connectionPool.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setInt(1, order.getCarportWidth());
-            ps.setInt(2, order.getCarportLength());
-            ps.setString(3, order.getRoof());
-            ps.setString(4, order.getCustomerText());
-            ps.setString(5, order.getAdminText());
-            ps.setDouble(6, order.getSalesPrice());
-            ps.setInt(7, order.getStatusId());
-            ps.setInt(8, order.getOrderId());
-
-            ps.executeUpdate();
-
-        } catch (SQLException e) {
-            throw new DatabaseException("Fejl under opdatering af ordre: " + e.getMessage(), e);
-        }
-    }
-
 }
