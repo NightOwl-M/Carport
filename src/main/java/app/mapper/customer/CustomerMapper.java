@@ -1,6 +1,7 @@
 package app.mapper.customer;
 
 import app.entities.Customer;
+import app.exceptions.DatabaseException;
 import app.persistence.ConnectionPool;
 
 import java.sql.*;
@@ -42,4 +43,25 @@ public class CustomerMapper {
             throw new Exception("Databasefejl ved indsættelse af kunde: " + e.getMessage());
         }
     }
+
+    public static String getCustomerEmailById(int customerId, ConnectionPool connectionPool) throws DatabaseException {
+        String sql = "SELECT customer_email FROM customer WHERE customer_id = ?";
+
+        try (Connection conn = connectionPool.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, customerId);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return rs.getString("customer_email");
+            }
+
+        } catch (SQLException e) {
+            throw new DatabaseException("Fejl ved hentning af email for customer_id: " + customerId, e);
+        }
+
+        return null;
+    }
+
 }

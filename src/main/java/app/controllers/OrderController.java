@@ -22,6 +22,11 @@ public class OrderController {
         app.post("/carport/confirm", ctx -> handleConfirmation(ctx, connectionPool));
         app.get("/carport/confirm", ctx -> showConfirmationPage(ctx));
         app.post("/carport/confirm/save", ctx -> saveOrderToDatabase(ctx, connectionPool));
+
+        // Ruter til betaling
+        app.get("/pay/{orderId}", ctx -> showPaymentPage(ctx, connectionPool));
+        app.post("/pay/confirm", ctx -> confirmPayment(ctx, connectionPool));
+
     }
 
     // Generer SVG basseret på på width og length.
@@ -172,5 +177,57 @@ public class OrderController {
             ctx.redirect("/carport/confirm");
         }
     }
+
+    private static void showPaymentPage(Context ctx, ConnectionPool connectionPool) {
+        String orderIdParam = ctx.queryParam("orderId");
+
+        if (orderIdParam == null) {
+            ctx.sessionAttribute("errorMessage", "Ordre-ID mangler.");
+            ctx.redirect("/");
+            return;
+        }
+
+        try {
+            int orderId = Integer.parseInt(orderIdParam);
+            Order order = OrderService.getOrderById(orderId, connectionPool);
+
+            if (order == null) {
+                ctx.sessionAttribute("errorMessage", "Ordre ikke fundet.");
+                ctx.redirect("/");
+                return;
+            }
+
+            ctx.attribute("currentOrder", order);
+            ctx.render("pay.html");
+
+        } catch (NumberFormatException e) {
+            ctx.sessionAttribute("errorMessage", "Ugyldigt ordre-ID.");
+            ctx.redirect("/");
+
+        } catch (DatabaseException e) {
+            ctx.sessionAttribute("errorMessage", "Databasefejl: " + e.getMessage());
+            ctx.redirect("/");
+        }
+    }
+
+    private static void confirmPayment(Context ctx, ConnectionPool connectionPool) {
+        try {
+            int orderId = Integer.parseInt(ctx.formParam("orderId"));
+
+            // Opdaterer ordrestatus til "Processed" (statusId = 3)
+            OrderService.updateOrderStatus(orderId, 3, connectionPool);
+
+            ctx.redirect("/thankyoupage.html");
+
+        } catch (NumberFormatException e) {
+            ctx.sessionAttribute("errorMessage", "Ugyldigt ordre-ID.");
+            ctx.redirect("/pay");
+
+        } catch (DatabaseException e) {
+            ctx.sessionAttribute("errorMessage", "Fejl ved opdatering af ordrestatus.");
+            ctx.redirect("/pay");
+        }
+    }
+
 
 }

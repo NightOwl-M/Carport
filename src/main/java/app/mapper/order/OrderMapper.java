@@ -4,6 +4,8 @@ import app.entities.Order;
 import app.exceptions.DatabaseException;
 import app.persistence.ConnectionPool;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class OrderMapper {
@@ -76,4 +78,65 @@ public class OrderMapper {
             throw new DatabaseException("Fejl under opdatering af ordrestatus: " + e.getMessage(), e);
         }
     }
+    public static Order getOrderById(int orderId, ConnectionPool connectionPool) throws DatabaseException {
+        String sql = "SELECT * FROM orders WHERE order_id = ?";
+
+        try (Connection conn = connectionPool.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, orderId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return new Order(
+                            rs.getInt("order_id"),
+                            rs.getInt("customer_id"),
+                            rs.getInt("carport_width"),
+                            rs.getInt("carport_length"),
+                            rs.getString("roof"),
+                            rs.getString("customer_text"),
+                            rs.getString("admin_text"),
+                            rs.getInt("status_id"),
+                            rs.getDouble("sales_price"),
+                            rs.getTimestamp("created_at")
+                    );
+                }
+            }
+        } catch (SQLException e) {
+            throw new DatabaseException("Fejl ved hentning af ordre: " + e.getMessage(), e);
+        }
+        return null;
+    }
+
+    public static List<Order> getOrdersByStatus(int statusId, ConnectionPool connectionPool) throws DatabaseException {
+        String sql = "SELECT * FROM orders WHERE status_id = ?";
+        List<Order> orders = new ArrayList<>();
+
+        try (Connection conn = connectionPool.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, statusId);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                orders.add(new Order(
+                        rs.getInt("order_id"),
+                        rs.getInt("customer_id"),
+                        rs.getInt("carport_width"),
+                        rs.getInt("carport_length"),
+                        rs.getString("roof"),
+                        rs.getString("customer_text"),
+                        rs.getString("admin_text"),
+                        rs.getInt("status_id"),
+                        rs.getDouble("sales_price"),
+                        rs.getTimestamp("created_at")
+                ));
+            }
+
+            return orders;
+
+        } catch (SQLException e) {
+            throw new DatabaseException("Fejl ved hentning af ordrer med status ID: " + statusId, e);
+        }
+    }
+
 }
