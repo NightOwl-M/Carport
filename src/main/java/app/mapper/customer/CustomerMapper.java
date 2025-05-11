@@ -8,7 +8,7 @@ import java.sql.*;
 
 public class CustomerMapper {
 
-    public static Customer insertCustomer(Customer customer, ConnectionPool connectionPool) throws Exception {
+    public static Customer saveSessionCustomer(Customer customer, ConnectionPool connectionPool) throws Exception {
         String sql = "INSERT INTO customer (customer_name, customer_email, customer_address, customer_zipcode, customer_phone) VALUES (?, ?, ?, ?, ?)";
 
         try (Connection conn = connectionPool.getConnection();
