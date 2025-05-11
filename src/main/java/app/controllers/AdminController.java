@@ -13,6 +13,7 @@ import java.util.List;
 public class AdminController {
 
     public static void addRoutes(Javalin app, ConnectionPool connectionPool) {
+        app.get("/admin", ctx -> ctx.render("admindashboard.html"));
         app.post("/admin/order/update", ctx -> updateOrder(ctx, connectionPool));
         app.post("/admin/order/status", ctx -> updateOrderStatus(ctx, connectionPool));
 
