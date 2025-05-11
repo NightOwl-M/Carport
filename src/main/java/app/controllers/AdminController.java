@@ -3,6 +3,7 @@ package app.controllers;
 import app.entities.Order;
 import app.exceptions.DatabaseException;
 import app.persistence.ConnectionPool;
+import app.service.customer.CustomerService;
 import app.service.order.OrderService;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
@@ -82,6 +83,10 @@ public class AdminController {
     private static void showUnprocessedOrders(Context ctx, ConnectionPool connectionPool) {
         try {
             List<Order> orders = OrderService.getAllUnprocessedOrders(connectionPool);
+            for(Order order : orders) {
+                String customerEmail = CustomerService.getCustomerEmailById(order.getCustomerId(), connectionPool);
+                order.setCustomerEmail(customerEmail);
+            }
             ctx.attribute("orders", orders);
             ctx.render("unprocessed.html");
 
@@ -95,6 +100,10 @@ public class AdminController {
     private static void showPendingOrders(Context ctx, ConnectionPool connectionPool) {
         try {
             List<Order> orders = OrderService.getAllPendingOrders(connectionPool);
+            for(Order order : orders) {
+                String customerEmail = CustomerService.getCustomerEmailById(order.getCustomerId(), connectionPool);
+                order.setCustomerEmail(customerEmail);
+            }
             ctx.attribute("orders", orders);
             ctx.render("pending.html");
 
@@ -108,6 +117,10 @@ public class AdminController {
     private static void showProcessedOrders(Context ctx, ConnectionPool connectionPool) {
         try {
             List<Order> orders = OrderService.getAllProcessedOrders(connectionPool);
+            for(Order order : orders) {
+                String customerEmail = CustomerService.getCustomerEmailById(order.getCustomerId(), connectionPool);
+                order.setCustomerEmail(customerEmail);
+            }
             ctx.attribute("orders", orders);
             ctx.render("processed.html");
 

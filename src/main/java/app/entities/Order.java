@@ -13,6 +13,7 @@ public class Order {
     private int statusId;
     private double salesPrice;
     private Timestamp createdAt;
+    private String customerEmail;
 
     /**
      * Constructor til midlertidig lagring i sessionen (uden customerId).
@@ -85,9 +86,13 @@ public class Order {
     public int getStatusId() { return statusId; }
     public double getSalesPrice() { return salesPrice; }
     public Timestamp getCreatedAt() { return createdAt; }
-
+    public String getCustomerEmail() { return customerEmail; }
+    
     // --- Setters ---
     public void setOrderId(int orderId) {
         this.orderId = orderId;
+    }
+    public void setCustomerEmail(String customerEmail) {
+        this.customerEmail = customerEmail;
     }
 }
