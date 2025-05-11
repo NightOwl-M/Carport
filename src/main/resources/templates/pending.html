@@ -1,10 +1,23 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Afventer svar</title>
 </head>
 <body>
+<h1>Ordrer der afventer svar fra kunde:</h1>
 
+<table border="1">
+    <tr>
+        <th>Ordre ID</th>
+        <th>Email</th>
+        <th>Oprettet</th>
+    </tr>
+    <tr th:each="order : ${orders}">
+        <td th:text="${order.orderId}"></td>
+        <td th:text="${order.customerEmail}"></td>
+        <td th:text="${order.createdAt}"></td>
+    </tr>
+</table>
 </body>
 </html>
