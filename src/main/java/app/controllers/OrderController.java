@@ -159,7 +159,7 @@ public class OrderController {
                 return;
             }
 
-            Customer customer = CustomerService.createCustomer(name, email, address, zipCode, phone, connectionPool);
+            Customer customer = CustomerService.saveSessionCustomer(name, email, address, zipCode, phone, connectionPool);
             Order order = OrderService.saveSessionOrder(customer.getCustomerId(), width, length, roof, customerText, connectionPool);
 
             // Ryd sessionen efter gemning

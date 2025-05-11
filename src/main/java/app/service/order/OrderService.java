@@ -41,7 +41,7 @@ public class OrderService {
         Order order = getOrderById(orderId, connectionPool);
 
         if (order != null) {
-            // Hent kundens e-mail via CustomerService (IKKE OrderService længere)
+            // Hent kundens e-mail via CustomerService (IKKE OrderService)
             String customerEmail = CustomerService.getCustomerEmailById(order.getCustomerId(), connectionPool);
 
             if (customerEmail != null) {
