@@ -34,22 +34,25 @@ public class OrderService {
 
     public static void updateOrderAndSendOffer(int orderId, int width, int length, String roof, String customerText, String adminText, double salesPrice, int statusId, ConnectionPool connectionPool) throws DatabaseException, IOException {
 
-        // Opdater ordre
+        // Først tjekker vi, om ordren eksisterer
+        Order existingOrder = getOrderById(orderId, connectionPool);
+
+        if (existingOrder == null) {
+            throw new DatabaseException("Ordre med ID " + orderId + " findes ikke og kan derfor ikke opdateres.");
+        }
+
+        // Opdaterer ordren, da vi nu er sikre på, at den eksisterer
         updateOrderForSeller(orderId, width, length, roof, customerText, adminText, salesPrice, statusId, connectionPool);
 
-        // Hent den opdaterede ordre
-        Order order = getOrderById(orderId, connectionPool);
+        // Hent kundens e-mail via CustomerService
+        String customerEmail = CustomerService.getCustomerEmailById(existingOrder.getCustomerId(), connectionPool);
 
-        if (order != null) {
-            // Hent kundens e-mail via CustomerService (IKKE OrderService)
-            String customerEmail = CustomerService.getCustomerEmailById(order.getCustomerId(), connectionPool);
-
-            if (customerEmail != null) {
-                // Send email via EmailService
-                EmailService.sendOfferEmail(order, customerEmail);
-            }
+        if (customerEmail != null) {
+            // Send email via EmailService
+            EmailService.sendOfferEmail(existingOrder, customerEmail);
         }
     }
+
 
     //Hent ordrer baseret på status
     public static List<Order> getAllUnprocessedOrders(ConnectionPool connectionPool) throws DatabaseException {
