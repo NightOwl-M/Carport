@@ -3,6 +3,7 @@ package app.controllers;
 import app.entities.Order;
 import app.exceptions.DatabaseException;
 import app.persistence.ConnectionPool;
+import app.service.admin.AdminLoginService;
 import app.service.order.OrderService;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
@@ -13,13 +14,56 @@ import java.util.List;
 public class AdminController {
 
     public static void addRoutes(Javalin app, ConnectionPool connectionPool) {
+
         app.post("/admin/order/update", ctx -> updateOrder(ctx, connectionPool));
         app.post("/admin/order/status", ctx -> updateOrderStatus(ctx, connectionPool));
 
         app.get("/admin/orders/unprocessed", ctx -> showUnprocessedOrders(ctx, connectionPool));
-        app.get("/admin/orders/pending", ctx -> showPendingOrders(ctx, connectionPool));
-        app.get("/admin/orders/processed", ctx -> showProcessedOrders(ctx, connectionPool));
+        app.get("/admin/orders/unprocessed/{orderId}", ctx -> showUnprocessedOrder(ctx, connectionPool));
 
+        app.get("/admin/orders/pending", ctx -> showPendingOrders(ctx, connectionPool));
+        app.get("/admin/orders/pending/{orderId}", ctx -> showPendingOrder(ctx, connectionPool));
+
+        app.get("/admin/orders/processed", ctx -> showProcessedOrders(ctx, connectionPool));
+        app.get("/admin/orders/processed/{orderId}", ctx -> showProcessedOrder(ctx, connectionPool));
+
+
+        app.post("/admin/login", ctx -> adminLogin(ctx, connectionPool));
+        app.get("/adminlogin", ctx -> ctx.render("adminlogin.html"));
+        app.get("/admindashboard", AdminController::checkAdminLogin);
+
+
+    }
+
+    private static void adminLogin(Context ctx, ConnectionPool connectionPool) {
+        String username = ctx.formParam("username");
+        String password = ctx.formParam("password");
+
+        try {
+            boolean isAdmin = AdminLoginService.checkAdminLogin(username, password, connectionPool);
+
+            if (isAdmin) {
+                ctx.sessionAttribute("isAdmin", true);
+                ctx.redirect("/admindashboard");
+            } else {
+                ctx.sessionAttribute("errorMessage", "Forkert admin-brugernavn eller password.");
+                ctx.redirect("/adminlogin.html");
+            }
+
+        } catch (DatabaseException e) {
+            ctx.sessionAttribute("errorMessage", "Databasefejl: " + e.getMessage());
+            ctx.redirect("/adminlogin.html");
+        }
+    }
+
+    private static void checkAdminLogin(Context ctx) {
+        Boolean isAdmin = ctx.sessionAttribute("isAdmin");
+
+        if (isAdmin == null || !isAdmin) {
+            ctx.redirect("/adminlogin.html");
+        } else {
+            ctx.render("admindashboard.html");
+        }
     }
 
      // Henter data fra formular.
@@ -90,6 +134,20 @@ public class AdminController {
         }
     }
 
+    private static void showUnprocessedOrder(Context ctx, ConnectionPool connectionPool) {
+        int orderId = Integer.parseInt(ctx.pathParam("orderId"));
+
+        try {
+            Order order = OrderService.getOrderById(orderId, connectionPool);
+            ctx.attribute("order", order);
+            ctx.render("unprocessedorder.html");
+
+        } catch (DatabaseException e) {
+            ctx.sessionAttribute("errorMessage", "Fejl ved hentning af ordre.");
+            ctx.redirect("/admin/orders/unprocessed");
+        }
+    }
+
     // Viser alle pending ordrer
     private static void showPendingOrders(Context ctx, ConnectionPool connectionPool) {
         try {
@@ -100,6 +158,20 @@ public class AdminController {
         } catch (DatabaseException e) {
             ctx.sessionAttribute("errorMessage", "Fejl ved hentning af pending ordrer.");
             ctx.redirect("/admindashboard");
+        }
+    }
+
+    private static void showPendingOrder(Context ctx, ConnectionPool connectionPool) {
+        int orderId = Integer.parseInt(ctx.pathParam("orderId"));
+
+        try {
+            Order order = OrderService.getOrderById(orderId, connectionPool);
+            ctx.attribute("order", order);
+            ctx.render("pendingorder.html");
+
+        } catch (DatabaseException e) {
+            ctx.sessionAttribute("errorMessage", "Fejl ved hentning af ordre.");
+            ctx.redirect("/admin/orders/pending");
         }
     }
 
@@ -115,5 +187,20 @@ public class AdminController {
             ctx.redirect("/admindashboard");
         }
     }
+
+    private static void showProcessedOrder(Context ctx, ConnectionPool connectionPool) {
+        int orderId = Integer.parseInt(ctx.pathParam("orderId"));
+
+        try {
+            Order order = OrderService.getOrderById(orderId, connectionPool);
+            ctx.attribute("order", order);
+            ctx.render("processedorder.html");
+
+        } catch (DatabaseException e) {
+            ctx.sessionAttribute("errorMessage", "Fejl ved hentning af ordre.");
+            ctx.redirect("/admin/orders/processed");
+        }
+    }
+
 
 }

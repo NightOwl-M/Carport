@@ -1,21 +1,25 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="da">
 <head>
     <meta charset="UTF-8">
     <title>Dashboard</title>
 </head>
 <body>
 <h1>Dashboard</h1>
-<h2>Order overview</h2>
+<h2>Order Overview</h2>
 <br>
-<a href="unprocessed.html">
+
+<a th:href="@{/admin/orders/unprocessed}">
     <button type="button">Nye forespørgsler</button>
 </a>
-<a href="pending.html">
+
+<a th:href="@{/admin/orders/pending}">
     <button type="button">Afventer svar fra kunde</button>
 </a>
-<a href="processed.html">
+
+<a th:href="@{/admin/orders/processed}">
     <button type="button">Betalte ordrer</button>
 </a>
+
 </body>
 </html>

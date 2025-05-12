@@ -1,10 +1,18 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="da">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Pending Orders</title>
 </head>
 <body>
+<h3>Pending Orders</h3>
+
+<ul>
+    <li th:each="order : ${orders}">
+        Ordre #{order.orderId} -
+        <a th:href="@{/admin/orders/pending/{orderId}(orderId=${order.orderId})}">Vis detaljer</a>
+    </li>
+</ul>
 
 </body>
 </html>
