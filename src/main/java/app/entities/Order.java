@@ -92,7 +92,7 @@ public class Order {
     public void setOrderId(int orderId) {
         this.orderId = orderId;
     }
-    public void setCustomerId(int customerId) {
+    public void setCustomerEmail(String customerEmail) {
         this.customerId = customerId;
     }
 }
