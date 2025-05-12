@@ -33,6 +33,13 @@ public class AdminController {
         app.get("/admindashboard", AdminController::checkAdminLogin);
 
 
+        //Viser offerpage med ordredata
+        app.get("/offerpage", ctx -> showOfferPage(ctx, connectionPool));
+        //Når man trykker på "beregn pris"
+        app.post("/offerpage/show-prices", ctx -> showPrices(ctx, connectionPool));
+        //Når admin trykker på "se stykliste" //TODO bruges hvis vi vil have at styklisten indlæses på en ny html-side og ikke på offerpage.html
+        app.get("/offerpage/show-bom", ctx -> ctx.render("bompage.html"));
+
     }
 
     private static void adminLogin(Context ctx, ConnectionPool connectionPool) {
@@ -188,6 +195,52 @@ public class AdminController {
         }
     }
 
+
+    //Kaldes når sælger trykker på "vælg" på en unprocessed order
+    private static void showOfferPage(Context ctx, ConnectionPool connectionPool) {
+        try {
+            int orderId = 1; //TODO orderId hardcoded, skal hentes fra sessionen, når admin vælger en ordre at skulle bearbejde
+            Order currentOrder = OrderService.getOrderAndCustomerInfoByOrderId(orderId, connectionPool);
+
+            ctx.sessionAttribute("currentOrder", currentOrder);
+            ctx.render("offerpage.html");
+
+        } catch (DatabaseException e) {
+            ctx.sessionAttribute("errorMessage", "Databasefejl: " + e.getMessage());
+            ctx.redirect(""); //TODO
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            ctx.sessionAttribute("errorMessage", "Ukendt fejl: " + e.getMessage());
+            ctx.redirect(""); //TODO
+        }
+    }
+
+    //Kaldes når der trykkes på "beregn pris"
+    private static void showPrices(Context ctx, ConnectionPool connectionPool) {
+        try {
+            double coverageRate = Double.parseDouble(ctx.formParam("coverage-rate"));
+
+            //TODO Mangler metode der beregner carportens samlede materialepris
+            double materialCostPrice = 20000; //TODO hardcoded indtil ovenstående metode er lavet
+            double estimatedSalesPrice = OrderService.calculateEstimatedSalesPrice(coverageRate, materialCostPrice);
+
+
+            ctx.attribute("materialCostPrice", materialCostPrice);
+            ctx.attribute("estimatedSalesPrice", estimatedSalesPrice);
+            ctx.render("offerpage.html");
+            /*
+        } catch (DatabaseException e) {
+            ctx.sessionAttribute("errorMessage", "Databasefejl: " + e.getMessage());
+            ctx.redirect(""); //TODO
+             */
+        } catch (Exception e) {
+            e.printStackTrace();
+            ctx.sessionAttribute("errorMessage", "Ukendt fejl: " + e.getMessage());
+            ctx.redirect(""); //TODO
+        }
+    }
+
     private static void showProcessedOrder(Context ctx, ConnectionPool connectionPool) {
         int orderId = Integer.parseInt(ctx.pathParam("orderId"));
 
@@ -201,6 +254,5 @@ public class AdminController {
             ctx.redirect("/admin/orders/processed");
         }
     }
-
 
 }

@@ -66,4 +66,13 @@ public class OrderService {
     public static List<Order> getAllProcessedOrders(ConnectionPool connectionPool) throws DatabaseException {
         return OrderMapper.getOrdersByStatus(3, connectionPool);  // Status ID 3 = Processed
     }
+
+    public static Order getOrderAndCustomerInfoByOrderId(int orderId, ConnectionPool connectionPool) throws DatabaseException {
+        return OrderMapper.getOrderAndCustomerInfoByOrderId(orderId, connectionPool);
+    }
+
+    //Beregner forslået salgspris ud fra dækningsgrad og samlede materialepris for en carport
+    public static double calculateEstimatedSalesPrice(double coverageRate, double carportTotalPrice) {
+        return carportTotalPrice * (1 + (coverageRate/100));
+    }
 }
