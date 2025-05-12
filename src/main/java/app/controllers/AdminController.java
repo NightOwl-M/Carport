@@ -41,6 +41,8 @@ public class AdminController {
         app.post("/offerpage/show-prices", ctx -> showPrices(ctx, connectionPool));
         //Når admin trykker på "se stykliste" //TODO bruges hvis vi vil have at styklisten indlæses på en ny html-side og ikke på offerpage.html
         app.get("/offerpage/show-bom", ctx -> showBomPage(ctx, connectionPool));
+        //Når admin trykker på "send tilbud
+        app.post("/offerpage/send-offer", ctx -> sendOffer(ctx, connectionPool));
 
     }
 
@@ -261,14 +263,37 @@ public class AdminController {
         try {
             Order currentOrder = ctx.sessionAttribute("currentOrder");
 
-            //TODO Vise currentOrders stykliste, dvs alle component-objekter
-
             CarportCalculatorService carportCalculatorService = new CarportCalculatorService(currentOrder.getCarportLength(), currentOrder.getCarportWidth(), connectionPool);
             List<Component> orderComponents = carportCalculatorService.calculateCarportBOM(currentOrder);
 
-            ctx.attribute("orderComponents", orderComponents);
+            ctx.sessionAttribute("orderComponents", orderComponents);
             ctx.render("bompage.html");
 
+            /*
+        } catch (DatabaseException e) {
+            ctx.sessionAttribute("errorMessage", "Databasefejl: " + e.getMessage());
+            ctx.redirect(""); //TODO
+             */
+        } catch (Exception e) {
+            e.printStackTrace();
+            ctx.sessionAttribute("errorMessage", "Ukendt fejl: " + e.getMessage());
+            ctx.redirect(""); //TODO
+        }
+    }
+
+    private static void sendOffer(Context ctx, ConnectionPool connectionPool) {
+        try {
+            Order currentOrder = ctx.sessionAttribute("currentOrder");
+            List<Component> orderComponents = ctx.sessionAttribute("orderComponents");
+
+            //TODO kald metode der ændrer på ordrestatus og ændre orderStatus i DB
+
+            //TODO kald på metode der indsætter components i DB
+           //Orderservice.insertOrderComponentsIntoDB(orderComponents, currentOrder.getOrderId(), connectionPool);
+
+            //TODO nulstil sessionAttributes
+
+            ctx.render("admindashboard.html"); //TODO hvor skal sælger hen efter sendt tilbud?
             /*
         } catch (DatabaseException e) {
             ctx.sessionAttribute("errorMessage", "Databasefejl: " + e.getMessage());

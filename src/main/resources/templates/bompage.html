@@ -20,13 +20,17 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="component : ${orderComponents}">
+        <tr th:each="component : ${session.orderComponents}">
             <td th:text="${component.materialVariant.material.name}"></td>
             <td th:text="${component.materialVariant.length}"></td>
             <td th:text="${component.quantity}"></td>
             <td th:text="${component.materialVariant.material.unit}"></td>
             <td th:text="${component.useDescription}"></td>
             <td>
+        </tr>
+        </tbody>
+    </table>
+</form>
 
 </body>
 </html>
