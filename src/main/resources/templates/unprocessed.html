@@ -1,10 +1,18 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="da">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Unprocessed Orders</title>
 </head>
 <body>
+<h3>Unprocessed Orders</h3>
+
+<ul>
+    <li th:each="order : ${orders}">
+        Ordre #{order.orderId} -
+        <a th:href="@{/admin/orders/unprocessed/{orderId}(orderId=${order.orderId})}">Vis detaljer</a>
+    </li>
+</ul>
 
 </body>
 </html>
