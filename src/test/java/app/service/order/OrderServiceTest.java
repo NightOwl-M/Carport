@@ -14,7 +14,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 class OrderServiceTest {
-/*
+
     @Test
     void createOrder_returnsExpectedOrder() throws DatabaseException {
         // Arrange
@@ -46,5 +46,4 @@ class OrderServiceTest {
         }
     }
 
- */
 }
