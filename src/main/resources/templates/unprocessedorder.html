@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8">
+  <title>Ordre Detaljer</title>
+</head>
+<body>
+<h3>Ordre Detaljer</h3>
+
+<div>
+  <p>Ordre ID: <span th:text="${order.orderId}"></span></p>
+  <p>Kunde ID: <span th:text="${order.customerId}"></span></p>
+  <p>Bredde: <span th:text="${order.carportWidth}"></span> cm</p>
+  <p>Længde: <span th:text="${order.carportLength}"></span> cm</p>
+  <p>Tagtype: <span th:text="${order.roof}"></span></p>
+  <p>Kunde Kommentar: <span th:text="${order.customerText}"></span></p>
+</div>
+
+<!-- Tilbage-knap -->
+<a href="/admin/orders/unprocessed">Tilbage til Unprocessed Orders</a>
+
+</body>
+</html>
