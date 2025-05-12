@@ -1,9 +1,11 @@
 package app.controllers;
 
+import app.entities.Component;
 import app.entities.Order;
 import app.exceptions.DatabaseException;
 import app.persistence.ConnectionPool;
 import app.service.admin.AdminLoginService;
+import app.service.order.CarportCalculatorService;
 import app.service.order.OrderService;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
@@ -38,7 +40,7 @@ public class AdminController {
         //Når man trykker på "beregn pris"
         app.post("/offerpage/show-prices", ctx -> showPrices(ctx, connectionPool));
         //Når admin trykker på "se stykliste" //TODO bruges hvis vi vil have at styklisten indlæses på en ny html-side og ikke på offerpage.html
-        app.get("/offerpage/show-bom", ctx -> ctx.showBomPage(ctx, connectionPool);
+        app.get("/offerpage/show-bom", ctx -> showBomPage(ctx, connectionPool));
 
     }
 
@@ -261,7 +263,8 @@ public class AdminController {
 
             //TODO Vise currentOrders stykliste, dvs alle component-objekter
 
-            //List<Component> orderComponents = OrderService.calculateCarport(currentOrder, connectionPool)
+            CarportCalculatorService carportCalculatorService = new CarportCalculatorService(currentOrder.getCarportLength(), currentOrder.getCarportWidth(), connectionPool);
+            List<Component> orderComponents = carportCalculatorService.calculateCarportBOM(currentOrder);
 
             ctx.attribute("orderComponents", orderComponents);
             ctx.render("bompage.html");

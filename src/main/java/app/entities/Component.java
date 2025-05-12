@@ -26,6 +26,13 @@ public class Component {
         this.materialVariant = materialVariant;
     }
 
+    public Component(int orderId, int quantity, String useDescription, MaterialVariant materialVariant) {
+        this.orderId = orderId;
+        this.quantity = quantity;
+        this.useDescription = useDescription;
+        this.materialVariant = materialVariant;
+    }
+
     public int getComponentId() { return componentId; }
     public void setComponentId(int componentId) { this.componentId = componentId; }
 
@@ -40,4 +47,8 @@ public class Component {
 
     public String getUseDescription() { return useDescription; }
     public void setUseDescription(String useDescription) { this.useDescription = useDescription; }
+
+    public MaterialVariant getMaterialVariant() {
+        return materialVariant;
+    }
 }

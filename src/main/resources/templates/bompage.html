@@ -20,7 +20,7 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="component : ${components}">
+        <tr th:each="component : ${orderComponents}">
             <td th:text="${component.materialVariant.material.name}"></td>
             <td th:text="${component.materialVariant.length}"></td>
             <td th:text="${component.quantity}"></td>
