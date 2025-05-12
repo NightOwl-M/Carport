@@ -4,11 +4,18 @@ public class MaterialVariant {
     private int materialVariantId;
     private int materialId;
     private int length;
+    private Material material;
 
 
     public MaterialVariant(int materialVariantId, int materialId, int length) {
         this.materialVariantId = materialVariantId;
         this.materialId = materialId;
+        this.length = length;
+    }
+
+    public MaterialVariant(int materialVariantId, int length, Material material) {
+        this.materialVariantId = materialVariantId;
+        this.material = material;
         this.length = length;
     }
 
@@ -20,4 +27,8 @@ public class MaterialVariant {
 
     public int getLength() { return length; }
     public void setLength(int length) { this.length = length; }
+
+    public Material getMaterial() {
+        return material;
+    }
 }

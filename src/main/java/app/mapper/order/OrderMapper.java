@@ -1,7 +1,6 @@
 package app.mapper.order;
 
-import app.entities.Customer;
-import app.entities.Order;
+import app.entities.*;
 import app.exceptions.DatabaseException;
 import app.persistence.ConnectionPool;
 import java.sql.*;
@@ -178,5 +177,45 @@ public class OrderMapper {
             throw new RuntimeException(e);
         }
         return null;
+    }
+
+    public static List<Component> getAllComponentsByOrderId (int orderId, ConnectionPool connectionPool) throws DatabaseException {
+        List<Component> allComponents = new ArrayList<>();
+
+        String sql = "SELECT * FROM component\n" +
+                "JOIN material_variant USING (material_variant_id)\n" +
+                "JOIN material USING (material_id)\n" +
+                "WHERE order_id = '?'";
+
+        try (Connection connection = connectionPool.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, orderId);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                //Material
+                int materialId = rs.getInt("material_id");
+                String name = rs.getString("name");
+                String unit = rs.getString("unit");
+                double price = rs.getDouble("price");
+                Material material = new Material(materialId, name, unit, price);
+
+                //MaterialVariant
+                int materialVariantId = rs.getInt("material_variant_id");
+                int length = rs.getInt("length");
+                MaterialVariant materialVariant = new MaterialVariant(materialVariantId, length, material);
+
+                //Component
+                int component_id = rs.getInt("component_id");
+                int quantity = rs.getInt("quantity");
+                String use_description = rs.getString("use_description");
+                Component component = new Component(component_id, orderId, quantity, use_description, materialVariant);
+
+                allComponents.add(component);
+            }
+        } catch (SQLException e) {
+            throw new DatabaseException("Fejl ved hentning af components med ordreId: " + orderId, e);
+        }
+        return allComponents;
     }
 }

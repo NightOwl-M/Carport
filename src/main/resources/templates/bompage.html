@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<h1>Stykliste</h1>
+
+<form method="get">
+    <table class="order-table">
+        <thead>
+        <tr>
+            <th>Materiale</th>
+            <th>Længde</th>
+            <th>Antal</th>
+            <th>Enhed</th>
+            <th>Brugs-beskrivelse</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="component : ${components}">
+            <td th:text="${component.materialVariant.material.name}"></td>
+            <td th:text="${component.materialVariant.length}"></td>
+            <td th:text="${component.quantity}"></td>
+            <td th:text="${component.materialVariant.material.unit}"></td>
+            <td th:text="${component.useDescription}"></td>
+            <td>
+
+</body>
+</html>
