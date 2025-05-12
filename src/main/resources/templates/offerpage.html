@@ -2,9 +2,121 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link href="../public/css/offerpage.css" th:href="@{/css/offerpage.css}" rel="stylesheet"/>
     <title>Title</title>
 </head>
+
 <body>
 
+
+<div class="column-container">
+
+    <div class="columns">
+        <h3>Indtast mål på carport</h3>
+
+        <label for="width">Bredde (cm):</label>
+        <select id="width" name="width" required>
+            <option value=""></option>
+            <option value="240">240 cm</option>
+            <option value="270">270 cm</option>
+            <option value="300">300 cm</option>
+            <option value="330">330 cm</option>
+            <option value="360">360 cm</option>
+            <option value="390">390 cm</option>
+            <option value="420">420 cm</option>
+            <option value="450">450 cm</option>
+            <option value="480">480 cm</option>
+            <option value="510">510 cm</option>
+            <option value="540">540 cm</option>
+            <option value="570">570 cm</option>
+            <option value="600">600 cm</option>
+        </select><br>
+
+        <label for="length">Længde (cm):</label>
+        <select id="length" name="length" required>
+            <option value=""></option>
+            <option value="240">240 cm</option>
+            <option value="270">270 cm</option>
+            <option value="300">300 cm</option>
+            <option value="330">330 cm</option>
+            <option value="360">360 cm</option>
+            <option value="390">390 cm</option>
+            <option value="420">420 cm</option>
+            <option value="450">450 cm</option>
+            <option value="480">480 cm</option>
+            <option value="510">510 cm</option>
+            <option value="540">540 cm</option>
+            <option value="570">570 cm</option>
+            <option value="600">600 cm</option>
+            <option value="630">630 cm</option>
+            <option value="660">660 cm</option>
+            <option value="690">690 cm</option>
+            <option value="720">720 cm</option>
+            <option value="750">750 cm</option>
+            <option value="780">780 cm</option>
+        </select><br>
+
+        <label for="roof">Tag:</label>
+        <select id="roof" name="roof" required>
+            <option value=""></option>
+            <option value="none">Uden tagplader</option>
+            <option value="Plasttrapezplader">Plasttrapezplader</option>
+        </select><br>
+
+        <label for="admin-text">Besked til kunde:</label>
+        <input type="text" id="admin-text" name="admin-text"><br>
+
+
+
+        <form th:action="@{/offerpage/show-prices}" method="post">
+            <label for="coverage-rate">Dækningsgrad:</label>
+            <input type="number" id="coverage-rate" name="coverage-rate" placeholder="40" required><br>
+
+            <button class="custom-btn" type="submit">Beregn pris</button>
+        </form>
+
+        <form th:action="@{/offerpage/show-svg}" method="get">
+            <button class="custom-btn" type="submit">Se skitse</button>
+        </form>
+
+        <form th:action="@{/offerpage/show-bom}" method="get">
+            <button class="custom-btn" type="submit">Se stykliste</button>
+        </form>
+        <br>
+
+        <form th:action="@{/offerpage/send-offer}" method="post">
+            <button class="send-offer-button" type="submit">Send offer</button>
+        </form>
+
+    </div>
+
+
+    <div class="columns">
+        <h2>Her kommer der til at stå priser</h2>
+
+        <p>Indkøbspris: <span th:text="${materialCostPrice}"></span></p>
+        <p>Beregnet salgspris: <span th:text="${estimatedSalesPrice}"></span></p>
+
+    </div>
+
+
+    <div class="columns">
+        <h2>Kunde/ordre information</h2>
+
+        <p>Ordre nummer: <span th:text="${session.currentOrder.orderId}"></span></p>
+        <p>Oprettet: <span th:text="${session.currentOrder.createdAt}"></span></p>
+        <br>
+        <p>Bredde: <span th:text="${session.currentOrder.carportWidth}"></span></p>
+        <p>Længde: <span th:text="${session.currentOrder.carportLength}"></span></p>
+        <p>Tag: <span th:text="${session.currentOrder.roof}"></span></p>
+        <p>Særlige bemærkninger/ønsker: <span th:text="${session.currentOrder.customerText}"></span></p>
+        <br>
+        <p>Navn: <span th:text="${session.currentOrder.customer.customerName}"></span></p>
+        <p>Adresse: <span th:text="${session.currentOrder.customer.customerAddress}"></span></p>
+        <p>Postnummer: <span th:text="${session.currentOrder.customer.customerZipcode}"></span></p>
+        <p>Email: <span th:text="${session.currentOrder.customer.customerEmail}"></span></p>
+        <p>Telefon: <span th:text="${session.currentOrder.customer.customerPhone}"></span></p>
+    </div>
+</div>
 </body>
 </html>
