@@ -179,13 +179,14 @@ public class OrderMapper {
         return null;
     }
 
+
     public static List<Component> getAllComponentsByOrderId (int orderId, ConnectionPool connectionPool) throws DatabaseException {
         List<Component> allComponents = new ArrayList<>();
 
         String sql = "SELECT * FROM component\n" +
                 "JOIN material_variant USING (material_variant_id)\n" +
                 "JOIN material USING (material_id)\n" +
-                "WHERE order_id = '?'";
+                "WHERE order_id = ?";
 
         try (Connection connection = connectionPool.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql)) {

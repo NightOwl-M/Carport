@@ -38,7 +38,7 @@ public class AdminController {
         //Når man trykker på "beregn pris"
         app.post("/offerpage/show-prices", ctx -> showPrices(ctx, connectionPool));
         //Når admin trykker på "se stykliste" //TODO bruges hvis vi vil have at styklisten indlæses på en ny html-side og ikke på offerpage.html
-        app.get("/offerpage/show-bom", ctx -> ctx.render("bompage.html"));
+        app.get("/offerpage/show-bom", ctx -> ctx.showBomPage(ctx, connectionPool);
 
     }
 
@@ -255,4 +255,26 @@ public class AdminController {
         }
     }
 
+    private static void showBomPage(Context ctx, ConnectionPool connectionPool) {
+        try {
+            Order currentOrder = ctx.sessionAttribute("currentOrder");
+
+            //TODO Vise currentOrders stykliste, dvs alle component-objekter
+
+            //List<Component> orderComponents = OrderService.calculateCarport(currentOrder, connectionPool)
+
+            ctx.attribute("orderComponents", orderComponents);
+            ctx.render("bompage.html");
+
+            /*
+        } catch (DatabaseException e) {
+            ctx.sessionAttribute("errorMessage", "Databasefejl: " + e.getMessage());
+            ctx.redirect(""); //TODO
+             */
+        } catch (Exception e) {
+            e.printStackTrace();
+            ctx.sessionAttribute("errorMessage", "Ukendt fejl: " + e.getMessage());
+            ctx.redirect(""); //TODO
+        }
+    }
 }
