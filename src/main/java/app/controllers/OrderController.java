@@ -142,10 +142,11 @@ public class OrderController {
     }
 
 
+    //Kaldes når sælger trykker på "vælg" på en unprocessed order
     private static void showOfferPage(Context ctx, ConnectionPool connectionPool) {
         try {
-            int orderId = 1; //TODO orderId hardcoded, skal hentes fra session når admin vælger en ordre at skulle bearbejde
-            Order currentOrder = OrderService.getOrderAndCustomerInfoByOrderId(orderId, ctx, connectionPool);
+            int orderId = 1; //TODO orderId hardcoded, skal hentes fra session(?) når admin vælger en ordre at skulle bearbejde
+            Order currentOrder = OrderService.getOrderAndCustomerInfoByOrderId(orderId, connectionPool);
 
             ctx.sessionAttribute("currentOrder", currentOrder);
             ctx.render("offerpage.html");
