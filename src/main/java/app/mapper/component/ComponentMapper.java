@@ -15,7 +15,6 @@ public class ComponentMapper {
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             for (Component component : orderComponents) {
-                System.out.println("Component orderId: " + component.getOrderId());
                 ps.setInt(1, component.getOrderId());
                 ps.setInt(2, component.getMaterialVariant().getMaterialVariantId());
                 ps.setInt(3, component.getQuantity());

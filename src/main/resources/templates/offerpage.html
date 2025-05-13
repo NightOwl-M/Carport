@@ -17,8 +17,8 @@
 
             <label for="width">Bredde (cm):</label>
             <select id="width" name="width" required>
-                <option th:value="${session.currentOrder.carportWidth}"
-                        th:text="${session.currentOrder.carportWidth} + ' cm'"
+                <option th:value="${session.currentOrderSalesmanInput == null ? session.currentOrder.carportWidth : session.currentOrderSalesmanInput.carportWidth}"
+                        th:text="${(session.currentOrderSalesmanInput == null ? session.currentOrder.carportWidth : session.currentOrderSalesmanInput.carportWidth) + ' cm'}"
                         selected>
                 </option>
                 <option value="240">240 cm</option>
@@ -38,8 +38,8 @@
 
             <label for="length">Længde (cm):</label>
             <select id="length" name="length" required>
-                <option th:value="${session.currentOrder.carportLength}"
-                        th:text="${session.currentOrder.carportLength} + ' cm'"
+                <option th:value="${session.currentOrderSalesmanInput == null ? session.currentOrder.carportLength : session.currentOrderSalesmanInput.carportLength}"
+                        th:text="${(session.currentOrderSalesmanInput == null ? session.currentOrder.carportLength : session.currentOrderSalesmanInput.carportLength) + ' cm'}"
                         selected>
                 </option>
                 <option value="240">240 cm</option>
@@ -65,8 +65,8 @@
 
             <label for="roof">Tag:</label>
             <select id="roof" name="roof" required>
-                <option th:value="${session.currentOrder.roof}"
-                        th:text="${session.currentOrder.roof}"
+                <option th:value="${session.currentOrderSalesmanInput == null ? session.currentOrder.roof : session.currentOrderSalesmanInput.roof}"
+                        th:text="${(session.currentOrderSalesmanInput == null ? session.currentOrder.roof : session.currentOrderSalesmanInput.roof)}"
                         selected>
                 </option>
                 <option value="none">Uden tagplader</option>
