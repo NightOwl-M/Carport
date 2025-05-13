@@ -4,44 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tak for din bestilling - Johannes Fog</title>
+    <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
 <header>
-    <img src="../../public/images/logo" alt="Johannes Fog Logo" class="logo" th:src="@{/images/logo.png}">
+    <img src="/images/logo.png" alt="Johannes Fog Logo" class="logo">
 </header>
 
 <div class="container">
     <div class="thank-you-card">
         <h1>Tak for din bestilling!</h1>
         <p>Vi har modtaget din forespørgsel på en skræddersyet carport og behandler den nu.</p>
-        <p><b>Dit ordrenummer er: </b> <strong><span th:text="${order.orderId}"></span></strong></p>
-        <p>Vi sender dig en e-mail med yderligere detaljer og prisen inden for 1-2 arbejdsdage.</p>
+        <p>Du vil modtage en e-mail med et tilbud inden for <strong>24-48 timer</strong>.</p>
+        <p>Hvis du har spørgsmål eller ønsker at ændre ordren er du velkommen til at kontakte os.</p>
     </div>
 
-    <div class="order-details">
-        <h2>Din carport specifikation</h2>
-        <div class="order-info">
-            <div>
-                <div class="carport-specs">
-                    <h3>Dine valgte mål og detaljer</h3>
-                    <ul>
-                        <li><strong>Bredde:</strong> <span th:text="${order.carportWidth}"></span> cm</li>
-                        <li><strong>Længde:</strong> <span th:text="${order.carportLength}"></span> cm</li>
-                        <li><strong>Tagtype:</strong> <span th:text="${order.roof}"></span></li>
-                        <li><strong>Navn:</strong> <span th:text="${customer.name}"></span></li>
-                        <li><strong>E-mail:</strong> <span th:text="${customer.email}"></span></li>
-                        <li><strong>Telefon nr.:</strong> <span th:text="${customer.phoneNumber}"></span></li>
-                        <li><strong>Evt. bemærkninger:</strong> <span th:text="${customer.customerText}"></span></li>
-                    </ul>
-                </div>
-                <div class="next-steps">
-                    <h3>Hvad sker der nu?</h3>
-                    <p>Vores eksperter gennemgår dine specifikationer og udarbejder et detaljeret tilbud. Du vil modtage en e-mail inden for 1-2 arbejdsdage med prisdetaljer og evt. leveringsinformation.<br></p>
-                    <p><a href="https://www.johannesfog.dk/om-fog/kundeservice/ofte-stillede-spoergsmaal" target="_blank" rel="noopener noreferrer"><br>Har du spørgsmål?</a> Ring til os på <strong>+45 47 16 08 00</strong>.</p>
-                </div>
-            </div>
-        </div>
+    <div class="contact-info">
+        <h3>Kontakt os</h3>
+        <p>Telefon: +45 47 16 08 00</p>
+        <p>E-mail: <a href="mailto:Carportcarportnoreply@gmail.com">info@fogcarport.dk</a></p>
     </div>
 </div>
+
 </body>
 </html>

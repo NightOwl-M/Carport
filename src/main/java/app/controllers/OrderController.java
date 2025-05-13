@@ -22,6 +22,7 @@ public class OrderController {
         app.post("/carport/confirm", ctx -> handleConfirmation(ctx, connectionPool));
         app.get("/carport/confirm", ctx -> showConfirmationPage(ctx));
         app.post("/carport/confirm/save", ctx -> saveOrderToDatabase(ctx, connectionPool));
+        app.get("/thankyoupage", ctx -> ctx.render("thankyoupage.html"));
 
         // Ruter til betaling
         app.get("/pay/{orderId}", ctx -> showPaymentPage(ctx, connectionPool));
@@ -165,7 +166,7 @@ public class OrderController {
             // Ryd sessionen efter gemning
             ctx.req().getSession().invalidate();
 
-            ctx.render("thankyoupage.html");
+            ctx.redirect("/thankyoupage");
 
         } catch (DatabaseException e) {
             ctx.sessionAttribute("errorMessage", "Databasefejl: " + e.getMessage());
