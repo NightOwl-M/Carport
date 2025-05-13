@@ -263,7 +263,7 @@ public class AdminController {
         try {
             Order currentOrder = ctx.sessionAttribute("currentOrder");
 
-            CarportCalculatorService carportCalculatorService = new CarportCalculatorService(currentOrder.getCarportLength(), currentOrder.getCarportWidth(), connectionPool);
+            CarportCalculatorService carportCalculatorService = new CarportCalculatorService(currentOrder.getCarportLength(), currentOrder.getCarportWidth(), connectionPool); //TODO mangler tag
             List<Component> orderComponents = carportCalculatorService.calculateCarportBOM(currentOrder);
 
             ctx.sessionAttribute("orderComponents", orderComponents);

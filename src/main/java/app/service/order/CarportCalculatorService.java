@@ -41,7 +41,7 @@ public class CarportCalculatorService {
         MaterialVariant materialVariant = materialVariants.get(0);
 
         int quantity = calculatePostQuantity();
-        Component orderComponent = new Component(order.getOrderId(), quantity, "UseDescription skrives her", materialVariant);
+        Component orderComponent = new Component(order.getOrderId(), quantity, "Stolper nedgraves 90 cm i jord", materialVariant);
         orderComponents.add(orderComponent);
     }
 
