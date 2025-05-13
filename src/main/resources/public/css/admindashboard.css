@@ -1,0 +1,34 @@
+
+body{
+
+    text-align:center;
+    background-color: white;
+}
+.logo{
+    background-color: blue;
+}
+
+h1{
+    font-size:80px;
+    font-family:sans-serif;
+    font-weight:bold;
+}
+
+h2{
+    font-size:30px;
+    font-family:sans-serif;
+    font-weight:bold;
+
+}
+
+button{
+    background-color:blue;
+    color:white;
+    padding:10px;
+    font-size:30px;
+    font-weight:bold;
+    border-radius:20px;
+    margin-right:10px;
+
+}
+

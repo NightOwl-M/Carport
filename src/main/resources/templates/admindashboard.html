@@ -2,11 +2,17 @@
 <html lang="da">
 <head>
     <meta charset="UTF-8">
-    <title>Dashboard</title>
+    <title> Welcome to dashboard</title>
+    <link rel="stylesheet" href="/public/css/admindashboard.css">
 </head>
 <body>
+
+<div class="logo">
+    <img src="/public/images/logo.png" alt="Fog carport logo" width="400" height=300>
+</div>
+
 <h1>Dashboard</h1>
-<h2>Order Overview</h2>
+<h2>Vælg kategori</h2>
 <br>
 
 <a th:href="@{/admin/orders/unprocessed}">
@@ -20,6 +26,5 @@
 <a th:href="@{/admin/orders/processed}">
     <button type="button">Betalte ordrer</button>
 </a>
-
 </body>
 </html>
