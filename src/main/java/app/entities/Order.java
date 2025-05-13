@@ -93,6 +93,28 @@ public class Order {
         this.customer = customer;
     }
 
+    /**
+     * Constructor til ordreoversigter (kun orderId, email, created_at).
+     */
+    public Order(int orderId, String customerEmail, Timestamp createdAt) {
+        this.orderId = orderId;
+        this.customerText = customerEmail;
+        this.createdAt = createdAt;
+    }
+
+    /**
+     * Constructor til unprocessed ordrer (uden adminText og salesPrice).
+     */
+    public Order(int orderId, int carportWidth, int carportLength, String roof, String customerText, Timestamp createdAt, Customer customer) {
+        this.orderId = orderId;
+        this.carportWidth = carportWidth;
+        this.carportLength = carportLength;
+        this.roof = roof;
+        this.customerText = customerText;
+        this.createdAt = createdAt;
+        this.customer = customer;
+    }
+
     // --- Getters ---
     public int getOrderId() { return orderId; }
     public int getCustomerId() { return customerId; }

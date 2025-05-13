@@ -32,6 +32,14 @@ public class OrderService {
         return OrderMapper.getOrderById(orderId, connectionPool);
     }
 
+    public static List<Order> getOrderSummariesByStatus(int statusId, ConnectionPool connectionPool) throws DatabaseException {
+        return OrderMapper.getOrderSummariesByStatus(statusId, connectionPool);
+    }
+
+    public static Order getUnprocessedOrderById(int orderId, ConnectionPool connectionPool) throws DatabaseException {
+        return OrderMapper.getUnprocessedOrderById(orderId, connectionPool);
+    }
+
     public static void updateOrderAndSendOffer(int orderId, int width, int length, String roof, String customerText, String adminText, double salesPrice, int statusId, ConnectionPool connectionPool) throws DatabaseException, IOException {
 
         // Først tjekker vi, om ordren eksisterer
@@ -51,20 +59,6 @@ public class OrderService {
             // Send email via EmailService
             EmailService.sendOfferEmail(existingOrder, customerEmail);
         }
-    }
-
-
-    //Hent ordrer baseret på status
-    public static List<Order> getAllUnprocessedOrders(ConnectionPool connectionPool) throws DatabaseException {
-        return OrderMapper.getOrdersByStatus(1, connectionPool);  // Status ID 1 = Unprocessed
-    }
-
-    public static List<Order> getAllPendingOrders(ConnectionPool connectionPool) throws DatabaseException {
-        return OrderMapper.getOrdersByStatus(2, connectionPool);  // Status ID 2 = Pending
-    }
-
-    public static List<Order> getAllProcessedOrders(ConnectionPool connectionPool) throws DatabaseException {
-        return OrderMapper.getOrdersByStatus(3, connectionPool);  // Status ID 3 = Processed
     }
 
     public static Order getOrderAndCustomerInfoByOrderId(int orderId, ConnectionPool connectionPool) throws DatabaseException {
