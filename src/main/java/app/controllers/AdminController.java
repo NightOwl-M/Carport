@@ -252,20 +252,6 @@ public class AdminController {
         }
     }
 
-    private static void showProcessedOrder(Context ctx, ConnectionPool connectionPool) {
-        int orderId = Integer.parseInt(ctx.pathParam("orderId"));
-
-        try {
-            Order order = OrderService.getOrderById(orderId, connectionPool);
-            ctx.attribute("order", order);
-            ctx.render("processedorder.html");
-
-        } catch (DatabaseException e) {
-            ctx.sessionAttribute("errorMessage", "Fejl ved hentning af ordre.");
-            ctx.redirect("/admin/orders/processed");
-        }
-    }
-
     private static void showBomPage(Context ctx, ConnectionPool connectionPool) {
         try {
             Order currentOrder = ctx.sessionAttribute("currentOrder");
