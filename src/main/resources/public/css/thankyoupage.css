@@ -1,0 +1,39 @@
+.thank-you-card {
+    text-align: center;
+}
+
+body{
+    background-color: white;
+}
+
+.next-steps{
+    text-align: center;
+}
+
+.order-details{
+    text-align: center;
+    color: #003e5b;
+}
+
+.carport-specs{
+    text-align: left;
+    list-style-type: none;
+    border: 1px solid #003e5b;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    background-color: #f7f7f7;
+    padding: 20px;
+    padding-left: 5%;
+    padding-top: 2%;
+    padding-bottom: 4%;
+    width: 30%;
+    margin: 0 auto;
+}
+
+.carport-specs li{
+    margin-bottom: 16px;
+}
+
+.carport-specs h3{
+    text-align: center;
+}
