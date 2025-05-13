@@ -132,4 +132,32 @@ public class Order {
     public void setOrderId(int orderId) {
         this.orderId = orderId;
     }
+
+    public void setCustomerId(int customerId) {
+        this.customerId = customerId;
+    }
+
+    public void setCarportWidth(int carportWidth) {
+        this.carportWidth = carportWidth;
+    }
+
+    public void setCarportLength(int carportLength) {
+        this.carportLength = carportLength;
+    }
+
+    public void setRoof(String roof) {
+        this.roof = roof;
+    }
+
+    public void setCustomerText(String customerText) {
+        this.customerText = customerText;
+    }
+
+    public void setAdminText(String adminText) {
+        this.adminText = adminText;
+    }
+
+    public void setSalesPrice(double salesPrice) {
+        this.salesPrice = salesPrice;
+    }
 }

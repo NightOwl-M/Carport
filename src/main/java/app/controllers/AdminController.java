@@ -5,6 +5,7 @@ import app.entities.Order;
 import app.exceptions.DatabaseException;
 import app.persistence.ConnectionPool;
 import app.service.admin.AdminLoginService;
+import app.service.component.ComponentService;
 import app.service.order.CarportCalculatorService;
 import app.service.order.OrderService;
 import io.javalin.Javalin;
@@ -215,7 +216,6 @@ public class AdminController {
 
             ctx.sessionAttribute("currentOrder", currentOrder);
             ctx.render("offerpage.html");
-
         } catch (DatabaseException e) {
             ctx.sessionAttribute("errorMessage", "Databasefejl: " + e.getMessage());
             ctx.redirect(""); //TODO
@@ -230,6 +230,25 @@ public class AdminController {
     //Kaldes når der trykkes på "beregn pris"
     private static void showPrices(Context ctx, ConnectionPool connectionPool) {
         try {
+            Order currentOrder = ctx.sessionAttribute("currentOrder");
+
+            // Nye mål på carport sat af sælger hentes
+            int carportLength = Integer.parseInt(ctx.formParam("length"));
+            int carportWidth = Integer.parseInt(ctx.formParam("width"));
+            String roof = ctx.formParam("roof");
+            String adminText = ctx.formParam("admin-text");
+
+
+
+            Order currentOrderSalesmanInput = new Order(carportLength, carportWidth, roof, adminText);
+            currentOrderSalesmanInput.setOrderId(currentOrder.getOrderId());
+            System.out.println(currentOrderSalesmanInput.getOrderId());
+
+
+
+            ctx.sessionAttribute("currentOrderSalesmanInput", currentOrderSalesmanInput);
+
+            //Beregning af pris
             double coverageRate = Double.parseDouble(ctx.formParam("coverage-rate"));
 
             //TODO Mangler metode der beregner carportens samlede materialepris
@@ -237,8 +256,8 @@ public class AdminController {
             double estimatedSalesPrice = OrderService.calculateEstimatedSalesPrice(coverageRate, materialCostPrice);
 
 
-            ctx.attribute("materialCostPrice", materialCostPrice);
-            ctx.attribute("estimatedSalesPrice", estimatedSalesPrice);
+            ctx.sessionAttribute("materialCostPrice", materialCostPrice);
+            ctx.sessionAttribute("estimatedSalesPrice", estimatedSalesPrice);
             ctx.render("offerpage.html");
             /*
         } catch (DatabaseException e) {
@@ -254,19 +273,18 @@ public class AdminController {
 
     private static void showBomPage(Context ctx, ConnectionPool connectionPool) {
         try {
-            Order currentOrder = ctx.sessionAttribute("currentOrder");
+            Order currentOrderSalesmanInput = ctx.sessionAttribute("currentOrderSalesmanInput");
 
-            CarportCalculatorService carportCalculatorService = new CarportCalculatorService(currentOrder.getCarportLength(), currentOrder.getCarportWidth(), connectionPool); //TODO mangler tag
-            List<Component> orderComponents = carportCalculatorService.calculateCarportBOM(currentOrder);
+            CarportCalculatorService carportCalculatorService = new CarportCalculatorService
+                    (currentOrderSalesmanInput.getCarportLength(), currentOrderSalesmanInput.getCarportWidth(), connectionPool); //TODO mangler tag
+
+            List<Component> orderComponents = carportCalculatorService.calculateCarportBOM(currentOrderSalesmanInput);
 
             ctx.sessionAttribute("orderComponents", orderComponents);
             ctx.render("bompage.html");
-
-            /*
         } catch (DatabaseException e) {
             ctx.sessionAttribute("errorMessage", "Databasefejl: " + e.getMessage());
             ctx.redirect(""); //TODO
-             */
         } catch (Exception e) {
             e.printStackTrace();
             ctx.sessionAttribute("errorMessage", "Ukendt fejl: " + e.getMessage());
@@ -276,22 +294,33 @@ public class AdminController {
 
     private static void sendOffer(Context ctx, ConnectionPool connectionPool) {
         try {
+            Double estimatedSalesPrice = ctx.sessionAttribute("estimatedSalesPrice");
             Order currentOrder = ctx.sessionAttribute("currentOrder");
+            Order currentOrderSalesmanInput = ctx.sessionAttribute("currentOrderSalesmanInput");
             List<Component> orderComponents = ctx.sessionAttribute("orderComponents");
+            System.out.println(currentOrder.getOrderId());
 
-            //TODO kald metode der ændrer på ordrestatus og ændre orderStatus i DB
 
-            //TODO kald på metode der indsætter components i DB
-           //Orderservice.insertOrderComponentsIntoDB(orderComponents, currentOrder.getOrderId(), connectionPool);
+            int statusId = 2; //TODO Hvor og hvordan vil vi sætte statusId = 2?
 
-            //TODO nulstil sessionAttributes
+            OrderService.updateOrderAndSendOffer
+                    (currentOrder.getOrderId(), currentOrderSalesmanInput.getCarportWidth(),
+                            currentOrderSalesmanInput.getCarportLength(), currentOrderSalesmanInput.getRoof(),
+                            currentOrderSalesmanInput.getCustomerText(), currentOrderSalesmanInput.getAdminText(),
+                            estimatedSalesPrice, statusId, connectionPool);
 
-            ctx.render("admindashboard.html"); //TODO hvor skal sælger hen efter sendt tilbud?
-            /*
+
+           ComponentService.saveOrderComponentsToDB(orderComponents, connectionPool);
+
+            ctx.sessionAttribute("currentOrder", null);
+            ctx.sessionAttribute("currentOrderSalesmanInput", null);
+            ctx.sessionAttribute("orderComponents", null);
+            ctx.sessionAttribute("estimatedSalesPrice", null);
+
+            ctx.render("admindashboard.html");
         } catch (DatabaseException e) {
             ctx.sessionAttribute("errorMessage", "Databasefejl: " + e.getMessage());
             ctx.redirect(""); //TODO
-             */
         } catch (Exception e) {
             e.printStackTrace();
             ctx.sessionAttribute("errorMessage", "Ukendt fejl: " + e.getMessage());
