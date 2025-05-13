@@ -1,9 +1,11 @@
 package app.controllers;
 
+import app.entities.Component;
 import app.entities.Order;
 import app.exceptions.DatabaseException;
 import app.persistence.ConnectionPool;
 import app.service.admin.AdminLoginService;
+import app.service.order.CarportCalculatorService;
 import app.service.order.OrderService;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
@@ -38,7 +40,9 @@ public class AdminController {
         //Når man trykker på "beregn pris"
         app.post("/offerpage/show-prices", ctx -> showPrices(ctx, connectionPool));
         //Når admin trykker på "se stykliste" //TODO bruges hvis vi vil have at styklisten indlæses på en ny html-side og ikke på offerpage.html
-        app.get("/offerpage/show-bom", ctx -> ctx.render("bompage.html"));
+        app.get("/offerpage/show-bom", ctx -> showBomPage(ctx, connectionPool));
+        //Når admin trykker på "send tilbud
+        app.post("/offerpage/send-offer", ctx -> sendOffer(ctx, connectionPool));
 
     }
 
@@ -248,4 +252,64 @@ public class AdminController {
         }
     }
 
+    private static void showProcessedOrder(Context ctx, ConnectionPool connectionPool) {
+        int orderId = Integer.parseInt(ctx.pathParam("orderId"));
+
+        try {
+            Order order = OrderService.getOrderById(orderId, connectionPool);
+            ctx.attribute("order", order);
+            ctx.render("processedorder.html");
+
+        } catch (DatabaseException e) {
+            ctx.sessionAttribute("errorMessage", "Fejl ved hentning af ordre.");
+            ctx.redirect("/admin/orders/processed");
+        }
+    }
+
+    private static void showBomPage(Context ctx, ConnectionPool connectionPool) {
+        try {
+            Order currentOrder = ctx.sessionAttribute("currentOrder");
+
+            CarportCalculatorService carportCalculatorService = new CarportCalculatorService(currentOrder.getCarportLength(), currentOrder.getCarportWidth(), connectionPool); //TODO mangler tag
+            List<Component> orderComponents = carportCalculatorService.calculateCarportBOM(currentOrder);
+
+            ctx.sessionAttribute("orderComponents", orderComponents);
+            ctx.render("bompage.html");
+
+            /*
+        } catch (DatabaseException e) {
+            ctx.sessionAttribute("errorMessage", "Databasefejl: " + e.getMessage());
+            ctx.redirect(""); //TODO
+             */
+        } catch (Exception e) {
+            e.printStackTrace();
+            ctx.sessionAttribute("errorMessage", "Ukendt fejl: " + e.getMessage());
+            ctx.redirect(""); //TODO
+        }
+    }
+
+    private static void sendOffer(Context ctx, ConnectionPool connectionPool) {
+        try {
+            Order currentOrder = ctx.sessionAttribute("currentOrder");
+            List<Component> orderComponents = ctx.sessionAttribute("orderComponents");
+
+            //TODO kald metode der ændrer på ordrestatus og ændre orderStatus i DB
+
+            //TODO kald på metode der indsætter components i DB
+           //Orderservice.insertOrderComponentsIntoDB(orderComponents, currentOrder.getOrderId(), connectionPool);
+
+            //TODO nulstil sessionAttributes
+
+            ctx.render("admindashboard.html"); //TODO hvor skal sælger hen efter sendt tilbud?
+            /*
+        } catch (DatabaseException e) {
+            ctx.sessionAttribute("errorMessage", "Databasefejl: " + e.getMessage());
+            ctx.redirect(""); //TODO
+             */
+        } catch (Exception e) {
+            e.printStackTrace();
+            ctx.sessionAttribute("errorMessage", "Ukendt fejl: " + e.getMessage());
+            ctx.redirect(""); //TODO
+        }
+    }
 }
