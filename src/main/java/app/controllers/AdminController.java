@@ -106,14 +106,11 @@ public class AdminController {
          }
      }
 
-
-    //Opdaterer status for en ordre.
     private static void updateOrderStatus(Context ctx, ConnectionPool connectionPool) {
         try {
             int orderId = Integer.parseInt(ctx.formParam("orderId"));
             int statusId = Integer.parseInt(ctx.formParam("statusId"));
 
-            // Kald til Service-laget
             OrderService.updateOrderStatus(orderId, statusId, connectionPool);
             ctx.redirect("/admin/orders");
 
@@ -132,10 +129,9 @@ public class AdminController {
         }
     }
 
-    // Viser alle unprocessed ordrer
     private static void showUnprocessedOrders(Context ctx, ConnectionPool connectionPool) {
         try {
-            List<Order> orders = OrderService.getAllUnprocessedOrders(connectionPool);
+            List<Order> orders = OrderService.getOrderSummariesByStatus(1, connectionPool);
             ctx.attribute("orders", orders);
             ctx.render("unprocessed.html");
 
@@ -149,20 +145,19 @@ public class AdminController {
         int orderId = Integer.parseInt(ctx.pathParam("orderId"));
 
         try {
-            Order order = OrderService.getOrderById(orderId, connectionPool);
+            Order order = OrderService.getUnprocessedOrderById(orderId, connectionPool);
             ctx.attribute("order", order);
             ctx.render("unprocessedorder.html");
 
         } catch (DatabaseException e) {
-            ctx.sessionAttribute("errorMessage", "Fejl ved hentning af ordre.");
+            ctx.sessionAttribute("errorMessage", "Fejl ved hentning af unprocessed ordre.");
             ctx.redirect("/admin/orders/unprocessed");
         }
     }
 
-    // Viser alle pending ordrer
     private static void showPendingOrders(Context ctx, ConnectionPool connectionPool) {
         try {
-            List<Order> orders = OrderService.getAllPendingOrders(connectionPool);
+            List<Order> orders = OrderService.getOrderSummariesByStatus(2, connectionPool);
             ctx.attribute("orders", orders);
             ctx.render("pending.html");
 
@@ -176,7 +171,7 @@ public class AdminController {
         int orderId = Integer.parseInt(ctx.pathParam("orderId"));
 
         try {
-            Order order = OrderService.getOrderById(orderId, connectionPool);
+            Order order = OrderService.getOrderAndCustomerInfoByOrderId(orderId, connectionPool);
             ctx.attribute("order", order);
             ctx.render("pendingorder.html");
 
@@ -186,10 +181,9 @@ public class AdminController {
         }
     }
 
-    // Viser alle processed ordrer
     private static void showProcessedOrders(Context ctx, ConnectionPool connectionPool) {
         try {
-            List<Order> orders = OrderService.getAllProcessedOrders(connectionPool);
+            List<Order> orders = OrderService.getOrderSummariesByStatus(3, connectionPool);
             ctx.attribute("orders", orders);
             ctx.render("processed.html");
 
@@ -199,6 +193,19 @@ public class AdminController {
         }
     }
 
+    private static void showProcessedOrder(Context ctx, ConnectionPool connectionPool) {
+        int orderId = Integer.parseInt(ctx.pathParam("orderId"));
+
+        try {
+            Order order = OrderService.getOrderAndCustomerInfoByOrderId(orderId, connectionPool);
+            ctx.attribute("order", order);
+            ctx.render("processedorder.html");
+
+        } catch (DatabaseException e) {
+            ctx.sessionAttribute("errorMessage", "Fejl ved hentning af ordre.");
+            ctx.redirect("/admin/orders/processed");
+        }
+    }
 
     //Kaldes når sælger trykker på "vælg" på en unprocessed order
     private static void showOfferPage(Context ctx, ConnectionPool connectionPool) {

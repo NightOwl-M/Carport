@@ -107,8 +107,54 @@ public class OrderMapper {
         return null;
     }
 
-    public static List<Order> getOrdersByStatus(int statusId, ConnectionPool connectionPool) throws DatabaseException {
-        String sql = "SELECT * FROM orders WHERE status_id = ?";
+    public static Order getUnprocessedOrderById(int orderId, ConnectionPool connectionPool) throws DatabaseException {
+        String sql = "SELECT o.order_id, o.customer_id, o.carport_width, o.carport_length, o.roof, o.customer_text, o.created_at, " +
+                "c.customer_name, c.customer_email, c.customer_address, c.customer_zipcode, c.customer_phone " +
+                "FROM orders o " +
+                "JOIN customer c ON o.customer_id = c.customer_id " +
+                "WHERE o.order_id = ?";
+
+        try (Connection conn = connectionPool.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, orderId);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    int orderIdResult = rs.getInt("order_id");
+                    int customerId = rs.getInt("customer_id");
+                    int carportWidth = rs.getInt("carport_width");
+                    int carportLength = rs.getInt("carport_length");
+                    String roof = rs.getString("roof");
+                    String customerText = rs.getString("customer_text");
+                    Timestamp createdAt = rs.getTimestamp("created_at");
+
+                    // Kundeoplysninger
+                    String customerName = rs.getString("customer_name");
+                    String customerEmail = rs.getString("customer_email");
+                    String customerAddress = rs.getString("customer_address");
+                    int customerZipcode = rs.getInt("customer_zipcode");
+                    String customerPhone = rs.getString("customer_phone");
+
+                    // Opret Customer objekt
+                    Customer customer = new Customer(customerId, customerName, customerEmail, customerAddress, customerZipcode, customerPhone);
+
+                    // Opret Order objekt uden adminText og salesPrice
+                    return new Order(orderIdResult, carportWidth, carportLength, roof, customerText, createdAt, customer);
+                }
+            }
+        } catch (SQLException e) {
+            throw new DatabaseException("Fejl ved hentning af unprocessed ordre: " + e.getMessage(), e);
+        }
+        return null;
+    }
+
+    public static List<Order> getOrderSummariesByStatus(int statusId, ConnectionPool connectionPool) throws DatabaseException {
+        String sql = "SELECT o.order_id, c.customer_email, o.created_at " +
+                "FROM orders o " +
+                "JOIN customer c ON o.customer_id = c.customer_id " +
+                "WHERE o.status_id = ?";
+
         List<Order> orders = new ArrayList<>();
 
         try (Connection conn = connectionPool.getConnection();
@@ -120,14 +166,7 @@ public class OrderMapper {
             while (rs.next()) {
                 orders.add(new Order(
                         rs.getInt("order_id"),
-                        rs.getInt("customer_id"),
-                        rs.getInt("carport_width"),
-                        rs.getInt("carport_length"),
-                        rs.getString("roof"),
-                        rs.getString("customer_text"),
-                        rs.getString("admin_text"),
-                        rs.getInt("status_id"),
-                        rs.getDouble("sales_price"),
+                        rs.getString("customer_email"),
                         rs.getTimestamp("created_at")
                 ));
             }
@@ -135,9 +174,10 @@ public class OrderMapper {
             return orders;
 
         } catch (SQLException e) {
-            throw new DatabaseException("Fejl ved hentning af ordrer med status ID: " + statusId, e);
+            throw new DatabaseException("Fejl ved hentning af ordreoversigter med status ID: " + statusId, e);
         }
     }
+
 
     public static Order getOrderAndCustomerInfoByOrderId(int orderId, ConnectionPool connectionPool) throws DatabaseException {
         String sql = "SELECT * FROM orders \n" +
