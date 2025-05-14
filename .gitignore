@@ -42,3 +42,4 @@ build/
 
 # Enviroment file
 .env
+.idea/misc.xml
