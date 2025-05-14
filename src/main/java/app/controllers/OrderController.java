@@ -26,7 +26,8 @@ public class OrderController {
 
         // Ruter til betaling
         app.get("/pay/{orderId}", ctx -> showPaymentPage(ctx, connectionPool));
-        app.post("/pay/confirm", ctx -> confirmPayment(ctx, connectionPool));
+        app.post("/pay/{orderId}/confirm", ctx -> confirmPayment(ctx, connectionPool));
+        app.get("/payed.html", ctx -> ctx.render("payed.html"));
 
     }
 
@@ -180,17 +181,10 @@ public class OrderController {
     }
 
     private static void showPaymentPage(Context ctx, ConnectionPool connectionPool) {
-        String orderIdParam = ctx.queryParam("orderId");
-
-        if (orderIdParam == null) {
-            ctx.sessionAttribute("errorMessage", "Ordre-ID mangler.");
-            ctx.redirect("/");
-            return;
-        }
+        String orderIdParam = ctx.pathParam("orderId");
 
         try {
-            int orderId = Integer.parseInt(orderIdParam);
-            Order order = OrderService.getOrderById(orderId, connectionPool);
+            Order order = OrderService.validateAndFetchOrder(orderIdParam, connectionPool);
 
             if (order == null) {
                 ctx.sessionAttribute("errorMessage", "Ordre ikke fundet.");
@@ -201,34 +195,38 @@ public class OrderController {
             ctx.attribute("currentOrder", order);
             ctx.render("pay.html");
 
-        } catch (NumberFormatException e) {
-            ctx.sessionAttribute("errorMessage", "Ugyldigt ordre-ID.");
-            ctx.redirect("/");
-
         } catch (DatabaseException e) {
-            ctx.sessionAttribute("errorMessage", "Databasefejl: " + e.getMessage());
+            ctx.sessionAttribute("errorMessage", e.getMessage());
             ctx.redirect("/");
         }
     }
 
+
+
+
     private static void confirmPayment(Context ctx, ConnectionPool connectionPool) {
+        String orderIdParam = ctx.pathParam("orderId");
+
         try {
-            int orderId = Integer.parseInt(ctx.formParam("orderId"));
+            int orderId = Integer.parseInt(orderIdParam);
 
             // Opdaterer ordrestatus til "Processed" (statusId = 3)
             OrderService.updateOrderStatus(orderId, 3, connectionPool);
 
-            ctx.redirect("/thankyoupage.html");
+            ctx.redirect("/payed.html");
 
         } catch (NumberFormatException e) {
             ctx.sessionAttribute("errorMessage", "Ugyldigt ordre-ID.");
-            ctx.redirect("/pay");
+            ctx.redirect("/pay/" + orderIdParam);
 
         } catch (DatabaseException e) {
             ctx.sessionAttribute("errorMessage", "Fejl ved opdatering af ordrestatus.");
-            ctx.redirect("/pay");
+            ctx.redirect("/pay/" + orderIdParam);
         }
     }
+
+
+
 
 
 }
