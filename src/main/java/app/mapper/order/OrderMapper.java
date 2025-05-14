@@ -78,6 +78,10 @@ public class OrderMapper {
             throw new DatabaseException("Fejl under opdatering af ordrestatus: " + e.getMessage(), e);
         }
     }
+
+
+
+
     public static Order getOrderById(int orderId, ConnectionPool connectionPool) throws DatabaseException {
         String sql = "SELECT * FROM orders WHERE order_id = ?";
 

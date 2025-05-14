@@ -42,13 +42,18 @@ public class EmailService {
 
     // Bygger emailens indhold baseret på ordredetaljer
     private static String buildOfferContent(Order order) {
+        String orderId = String.valueOf(order.getOrderId());
+        String paymentLink = "http://localhost:7070/pay/" + orderId;
+
         return "Hej,\n\nVi har opdateret dit tilbud.\n\n" +
                 "Bredde: " + order.getCarportWidth() + " cm\n" +
                 "Længde: " + order.getCarportLength() + " cm\n" +
                 "Tagtype: " + order.getRoof() + "\n" +
                 "Admin kommentar: " + order.getAdminText() + "\n" +
                 "Pris: " + order.getSalesPrice() + " DKK\n\n" +
-                "Klik her for at betale: http://localhost:7070/pay?orderId=" + order.getOrderId() + "\n\n" +
+                "Klik her for at betale: " + paymentLink + "\n\n" +
                 "Venlig hilsen,\nCarport Teamet";
     }
+
+
 }

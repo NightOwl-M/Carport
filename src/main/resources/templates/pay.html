@@ -8,52 +8,10 @@
 
 <h2>Betal din ordre</h2>
 
-<!-- Viser ordredetaljer -->
-<h3>Ordredetaljer</h3>
-<ul>
-    <li>Order ID: <span id="orderId">[Ordre ID]</span></li>
-    <li>Bredde: <span id="width">[Bredde]</span> cm</li>
-    <li>Længde: <span id="length">[Længde]</span> cm</li>
-    <li>Tagtype: <span id="roof">[Tagtype]</span></li>
-    <li>Kommentar fra kunde: <span id="customerText">[Kommentar]</span></li>
-    <li>Kommentar fra admin: <span id="adminText">[Admin kommentar]</span></li>
-    <li>Pris: <span id="salesPrice">[Pris]</span> DKK</li>
-</ul>
-
-<!-- Betalingsformular -->
-<form method="post" action="/pay/confirm">
-    <input type="hidden" name="orderId" id="orderIdInput">
+<form method="post" th:action="@{/pay/{orderId}/confirm(orderId=${currentOrder.orderId})}">
+    <input type="hidden" name="orderId" th:value="${currentOrder.orderId}" />
     <button type="submit">Betal</button>
 </form>
-
-<script>
-    // Henter orderId fra URL'en
-    const urlParams = new URLSearchParams(window.location.search);
-    const orderId = urlParams.get('orderId');
-
-    if (orderId) {
-        document.getElementById("orderIdInput").value = orderId;
-
-        // Kalder serveren for at hente ordredata
-        fetch(`/pay/${orderId}`)
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById("orderId").textContent = data.orderId;
-                document.getElementById("width").textContent = data.carportWidth;
-                document.getElementById("length").textContent = data.carportLength;
-                document.getElementById("roof").textContent = data.roof;
-                document.getElementById("customerText").textContent = data.customerText;
-                document.getElementById("adminText").textContent = data.adminText;
-                document.getElementById("salesPrice").textContent = data.salesPrice;
-            })
-            .catch(err => {
-                console.error("Fejl ved hentning af ordre:", err);
-                alert("Kunne ikke hente ordredetaljer.");
-            });
-    } else {
-        alert("Ingen ordre fundet.");
-    }
-</script>
 
 </body>
 </html>

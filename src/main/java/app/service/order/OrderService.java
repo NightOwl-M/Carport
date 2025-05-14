@@ -69,4 +69,14 @@ public class OrderService {
     public static double calculateEstimatedSalesPrice(double coverageRate, double carportTotalPrice) {
         return carportTotalPrice * (1 + (coverageRate/100));
     }
+
+    public static Order validateAndFetchOrder(String orderIdParam, ConnectionPool connectionPool) throws DatabaseException {
+        try {
+            int orderId = Integer.parseInt(orderIdParam);
+            return getOrderById(orderId, connectionPool);
+        } catch (NumberFormatException e) {
+            throw new DatabaseException("Ugyldigt ordre-ID.", e);
+        }
+    }
+
 }
