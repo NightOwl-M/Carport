@@ -189,7 +189,7 @@ public class OrderController {
 
         try {
             int orderId = Integer.parseInt(orderIdParam);
-            Order order = OrderService.getOrderById(orderId, connectionPool);
+            Order order = OrderService.validateAndFetchOrder(orderIdParam, connectionPool);
 
             if (order == null) {
                 ctx.sessionAttribute("errorMessage", "Ordre ikke fundet.");
@@ -211,23 +211,23 @@ public class OrderController {
     }
 
     private static void confirmPayment(Context ctx, ConnectionPool connectionPool) {
+        String orderIdParam = ctx.pathParam("orderId");
+
         try {
-            int orderId = Integer.parseInt(ctx.formParam("orderId"));
+            int orderId = Integer.parseInt(orderIdParam);
 
             // Opdaterer ordrestatus til "Processed" (statusId = 3)
             OrderService.updateOrderStatus(orderId, 3, connectionPool);
 
-            ctx.redirect("/thankyoupage.html");
+            ctx.redirect("/payed.html");
 
         } catch (NumberFormatException e) {
             ctx.sessionAttribute("errorMessage", "Ugyldigt ordre-ID.");
-            ctx.redirect("/pay");
+            ctx.redirect("/pay/" + orderIdParam);
 
         } catch (DatabaseException e) {
             ctx.sessionAttribute("errorMessage", "Fejl ved opdatering af ordrestatus.");
-            ctx.redirect("/pay");
+            ctx.redirect("/pay/" + orderIdParam);
         }
     }
-
-
 }
