@@ -68,8 +68,8 @@ public class AdminController {
             }
         });
 
-        //Når man trykker på "beregn pris"
-        app.post("/offerpage/show-prices", ctx -> showPrices(ctx, connectionPool));
+        //Når man trykker på "videre"
+        app.post("/offerpage/generate-offer", ctx -> showOfferPageConfirmation(ctx, connectionPool));
         //Når admin trykker på "se stykliste" //TODO bruges hvis vi vil have at styklisten indlæses på en ny html-side og ikke på offerpage.html
         app.get("/offerpage/show-bom", ctx -> showBomPage(ctx, connectionPool));
         //Når admin trykker på "send tilbud
@@ -258,19 +258,31 @@ public class AdminController {
         }
     }
 
-    //Kaldes når der trykkes på "beregn pris"
-    private static void showPrices(Context ctx, ConnectionPool connectionPool) {
+    //Kaldes når der trykkes på "videre"
+    private static void showOfferPageConfirmation(Context ctx, ConnectionPool connectionPool) {
         try {
-            double coverageRate = Double.parseDouble(ctx.formParam("coverage-rate"));
+            Order currentOrder = ctx.sessionAttribute("currentOrder");
 
-            //TODO Mangler metode der beregner carportens samlede materialepris
-            double materialCostPrice = 20000; //TODO hardcoded indtil ovenstående metode er lavet
+            //Nye mål på carport sat af sælger hentes og laves til ny order-objekt
+            int carportLength = Integer.parseInt(ctx.formParam("length"));
+            int carportWidth = Integer.parseInt(ctx.formParam("width"));
+            String roof = ctx.formParam("roof");
+            String adminText = ctx.formParam("admin-text");
+
+            Order currentOrderSalesmanInput = new Order(carportWidth, carportLength, roof, adminText); //TODO Der findes ikke en konstruktør med adminText til sidst
+            currentOrderSalesmanInput.setOrderId(currentOrder.getOrderId());
+
+            //Beregning af pris
+            double coverageRate = Double.parseDouble(ctx.formParam("coverage-rate"));
+            double materialCostPrice = 20000; //TODO hardcoded indtil videre //TODO Mangler metode der beregner carportens samlede materialepris
             double estimatedSalesPrice = OrderService.calculateEstimatedSalesPrice(coverageRate, materialCostPrice);
 
+            ctx.sessionAttribute("coverageRate", coverageRate);
+            ctx.sessionAttribute("materialCostPrice", materialCostPrice);
+            ctx.sessionAttribute("estimatedSalesPrice", estimatedSalesPrice);
+            ctx.sessionAttribute("currentOrderSalesmanInput", currentOrderSalesmanInput);
 
-            ctx.attribute("materialCostPrice", materialCostPrice);
-            ctx.attribute("estimatedSalesPrice", estimatedSalesPrice);
-            ctx.render("offerpage.html");
+            ctx.render("offerpageconfirmation.html");
             /*
         } catch (DatabaseException e) {
             ctx.sessionAttribute("errorMessage", "Databasefejl: " + e.getMessage());
