@@ -292,7 +292,7 @@ public class AdminController {
             List<Component> orderComponents = ctx.sessionAttribute("orderComponents");
 
 
-            if (currentOrderSalesmanInput.getCarportLength() == 0) {
+            if (currentOrderSalesmanInput == null || currentOrderSalesmanInput.getCarportLength() == 0) {
                 showPrices(ctx, connectionPool);
             }
 
