@@ -291,6 +291,19 @@ public class AdminController {
             Order currentOrderSalesmanInput = ctx.sessionAttribute("currentOrderSalesmanInput");
             List<Component> orderComponents = ctx.sessionAttribute("orderComponents");
 
+
+            if (currentOrderSalesmanInput.getCarportLength() == 0) {
+                showPrices(ctx, connectionPool);
+            }
+
+            //Hvis ikke ordercomponents er genereret, så laves den nu
+            if (orderComponents == null) {
+                CarportCalculatorService carportCalculatorService = new CarportCalculatorService
+                        (currentOrderSalesmanInput.getCarportLength(), currentOrderSalesmanInput.getCarportWidth(), connectionPool); //TODO mangler tag
+
+                orderComponents = carportCalculatorService.calculateCarportBOM(currentOrderSalesmanInput);
+            }
+
             int statusId = 2; //TODO Hvor og hvordan vil vi sætte statusId = 2?
             //Ordre opdateres med eventuelle ændringer, orderStatus ændres og email sendes
             OrderService.updateOrderAndSendOffer
