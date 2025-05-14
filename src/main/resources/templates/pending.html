@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <title>Afventer Kunde Svar</title>
+</head>
+<body>
+<h3>Afventer Kunde Svar</h3>
+
+<table>
+    <thead>
+    <tr>
+        <th>Order ID</th>
+        <th>Email</th>
+        <th>Oprettet</th>
+        <th>Se Ordre</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="order : ${orders}">
+        <td th:text="${order.orderId}"></td>
+        <td th:text="${order.customerText}"></td>
+        <td th:text="${#dates.format(order.createdAt, 'dd-MM-yyyy HH:mm')}"></td>
+        <td>
+            <a th:href="@{/admin/orders/pending/{orderId}(orderId=${order.orderId})}">Se hele ordren</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+</body>
+</html>

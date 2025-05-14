@@ -1,0 +1,42 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+left to right direction
+title Carport Bestillingsflow (Kunde)
+
+start
+@startuml
+:Form1 - Indtast mål;
+:GET /carport;
+:OrderController.get("/carport") => form1.html;
+
+:Bruger indtaster width og length;
+:AJAX GET /api/carport-svg;
+:OrderController.getCarportSvg();
+:Generér og returner SVG;
+
+:Submitter formular;
+:POST /carport/info;
+:OrderController.handleCarportInfo();
+:Husk width + length i session;
+:Redirect til /carport/info;
+
+:Form2 - Personoplysninger;
+:GET /carport/info;
+:OrderController.get("/carport/info") => form2.html;
+
+:Bruger indtaster navn, email, adresse;
+:POST /carport/confirm;
+:OrderController.handleConfirmation();
+:Husk persondata i session;
+:Redirect til /carport/confirm;
+
+:Form3 - Bekræft ordre;
+:GET /carport/confirm;
+:OrderController.showConfirmationPage();
+:Regenerér SVG;
+:Render form3.html med SVG og session-data;
+:Gemmer i databasen;
+
+stop
+@enduml

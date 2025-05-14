@@ -1,138 +1,137 @@
--- Slet gamle tabeller hvis de findes
-DROP TABLE IF EXISTS bill_of_materials, material_variant, material, sug, "order", users, zipcode, role, status CASCADE;
-
--- Roller
-CREATE TABLE role (
-                      role_id SERIAL PRIMARY KEY,
-                      role VARCHAR NOT NULL
-);
-
--- Statusser
-CREATE TABLE status (
-                        status_id SERIAL PRIMARY KEY,
-                        status VARCHAR NOT NULL
-);
-
--- Postnumre
-CREATE TABLE zipcode (
+-- Opret Zipcode tabel
+CREATE TABLE Zipcode (
                          zipcode INTEGER PRIMARY KEY,
-                         city VARCHAR NOT NULL
+                         city VARCHAR
 );
 
--- Brugere (inkl. Admin)
-CREATE TABLE users (
-                       user_id SERIAL PRIMARY KEY,
-                       name VARCHAR NOT NULL,
-                       address VARCHAR,
-                       zipcode INTEGER REFERENCES zipcode(zipcode),
-                       email VARCHAR NOT NULL UNIQUE,
-                       password VARCHAR NOT NULL,
-                       phone_number VARCHAR,
-                       role INTEGER REFERENCES role(role_id)
+-- Opret Admin tabel
+CREATE TABLE admin (
+                       admin_id SERIAL PRIMARY KEY,
+                       username VARCHAR NOT NULL,
+                       password VARCHAR NOT NULL
 );
 
--- Ordrer fra kunder
-CREATE TABLE "order" (
-                         order_id SERIAL PRIMARY KEY,
-                         name VARCHAR NOT NULL,
-                         email VARCHAR NOT NULL,
-                         address VARCHAR,
-                         phone_number VARCHAR,
-                         suggestion TEXT,
-                         carport_width INTEGER,
-                         carport_length INTEGER,
-                         roof VARCHAR,
-                         user_text TEXT,
-                         salesman_text TEXT,
-                         status INTEGER REFERENCES status(status_id),
-                         sales_price DOUBLE PRECISION,
-                         created_at TIMESTAMP DEFAULT now()
+-- Opret Customer tabel
+CREATE TABLE customer (
+                          customer_id SERIAL PRIMARY KEY,
+                          customer_name VARCHAR NOT NULL,
+                          customer_email TEXT NOT NULL,
+                          customer_address VARCHAR NOT NULL,
+                          customer_zipcode INTEGER REFERENCES Zipcode(zipcode),
+                          customer_phone VARCHAR NOT NULL
 );
 
--- Forslag på ordrer (sug)
-CREATE TABLE sug (
-                     sug_id SERIAL PRIMARY KEY,
-                     order_id INTEGER REFERENCES "order"(order_id) ON DELETE CASCADE,
-                     sug_data TEXT,
-                     created_at TIMESTAMP DEFAULT now()
+-- Opret order_status tabel
+CREATE TABLE order_status (
+                              status_id INTEGER PRIMARY KEY,
+                              status VARCHAR NOT NULL
 );
 
--- Materialer (produkter)
+-- Opret Orders tabel
+CREATE TABLE orders (
+                        order_id SERIAL PRIMARY KEY,
+                        customer_id INTEGER REFERENCES customer(customer_id),
+                        carport_width INTEGER NOT NULL,
+                        carport_length INTEGER NOT NULL,
+                        roof VARCHAR NOT NULL,
+                        customer_text VARCHAR,
+                        admin_text VARCHAR,
+                        status_id INTEGER REFERENCES order_status(status_id),
+                        sales_price DOUBLE PRECISION DEFAULT 0.0,
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Opret Material tabel
 CREATE TABLE material (
                           material_id SERIAL PRIMARY KEY,
-                          description VARCHAR NOT NULL,
+                          name VARCHAR NOT NULL,
                           unit VARCHAR NOT NULL,
-                          price DOUBLE PRECISION
+                          price DOUBLE PRECISION NOT NULL
 );
 
--- Materialevarianter (længder, mængder)
+-- Opret Material Variant tabel
 CREATE TABLE material_variant (
                                   material_variant_id SERIAL PRIMARY KEY,
-                                  material_id INTEGER REFERENCES material(material_id) ON DELETE CASCADE,
-                                  length INTEGER,
-                                  quantity INTEGER,
-                                  use_description VARCHAR
+                                  material_id INTEGER REFERENCES material(material_id),
+                                  length INTEGER NOT NULL
 );
 
--- Sammenkobling af ordrer og materialer
-CREATE TABLE bill_of_materials (
-                                   bom_id SERIAL PRIMARY KEY,
-                                   order_id INTEGER REFERENCES "order"(order_id) ON DELETE CASCADE,
-                                   material_variant_id INTEGER REFERENCES material_variant(material_variant_id) ON DELETE CASCADE
+-- Opret Component tabel
+CREATE TABLE component (
+                           component_id SERIAL PRIMARY KEY,
+                           order_id INTEGER REFERENCES orders(order_id),
+                           material_variant_id INTEGER REFERENCES material_variant(material_variant_id),
+                           quantity INTEGER NOT NULL,
+                           use_description VARCHAR
 );
 
---------------------------------------------------
--- Eksempel data
---------------------------------------------------
+-- Opret SVG tabel
+CREATE TABLE svg (
+                     svg_id SERIAL PRIMARY KEY,
+                     order_id INTEGER REFERENCES orders(order_id),
+                     svg_data TEXT NOT NULL,
+                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
--- Roller
-INSERT INTO role (role) VALUES ('admin'), ('customer');
+-- Indsæt postnumre
+INSERT INTO zipcode (zipcode, city) VALUES
+                                        (8000, 'Aarhus'),
+                                        (9000, 'Aalborg'),
+                                        (2100, 'København Ø'),
+                                        (5000, 'Odense'),
+                                        (6000, 'Kolding'),
+                                        (7000, 'Fredericia');
 
--- Statusser
-INSERT INTO status (status) VALUES ('Afventer'), ('Tilbud sendt'), ('Accepteret');
+-- Indsæt admins
+INSERT INTO admin (username, password) VALUES
+                                           ('admin1', 'adminpass123'),
+                                           ('admin2', 'adminpass456');
 
--- Postnumre
-INSERT INTO zipcode (zipcode, city) VALUES (2800, 'Kongens Lyngby'), (2100, 'København Ø');
+-- Indsæt customers
+INSERT INTO customer (customer_name, customer_email, customer_address, customer_zipcode, customer_phone) VALUES
+                                                                                                             ('Mikkel Dam Binau', 'mikkel@fug.dk', 'Carportvej 12', 8000, '12345678'),
+                                                                                                             ('Test Kunde', 'test@kunde.dk', 'Testvej 23', 9000, '87654321');
 
--- Brugere
-INSERT INTO users (name, address, zipcode, email, password, phone_number, role) VALUES
-    ('Admin', 'Fog Hovedkontor', 2800, 'admin@fog.dk', 'admin123', '12345678', 1);
+-- Indsæt data i order_status
+INSERT INTO order_status (status_id, status) VALUES
+                                                 (1, 'unprocessed'),
+                                                 (2, 'pending'),
+                                                 (3, 'processed');
 
--- Materialer
-INSERT INTO material (description, unit, price) VALUES
-                                                    ('25x200 mm. trykimp. Brædt', 'Stk', 180.60),
-                                                    ('25x125 mm. trykimp. Brædt', 'Stk', 124.95),
-                                                    ('38x73 mm. Lægte ubh.', 'Stk', 58.59),
-                                                    ('45x95 mm. Reglar ub.', 'Stk', 51.30),
-                                                    ('45x195 mm. spærtræ ubh.', 'Stk', 189.95),
-                                                    ('97x97 mm. trykimp. Stolpe', 'Stk', 112.50),
-                                                    ('19x100 mm. trykimp. Brædt', 'Stk', 84.95),
-                                                    ('Plastmo Ecolite blåtonet', 'Stk', 119.00),
-                                                    ('plastmo bundskruer 200 stk.', 'Pakke', 139.95),
-                                                    ('hulbånd 1x20 mm. 10 mtr.', 'Rulle', 69.95),
-                                                    ('universal 190 mm højre', 'Stk', 29.95),
-                                                    ('universal 190 mm venstre', 'Stk', 29.95),
-                                                    ('4,5 x 60 mm. skruer 200 stk.', 'Pakke', 160.00),
-                                                    ('4,0 x 50 mm. beslagsskruer 250 stk.', 'Pakke', 250.00),
-                                                    ('bræddebolt 10 x 120 mm.', 'Stk', 4.00),
-                                                    ('firkantskiver 40x40x11mm', 'Stk', 2.00),
-                                                    ('4,5 x 70 mm. Skruer 400 stk.', 'Pakke', 480.00),
-                                                    ('4,5 x 50 mm. Skruer 300 stk.', 'Pakke', 300.00),
-                                                    ('stalddørsgreb 50x75', 'Sæt', 199.00),
-                                                    ('t hængsel 390 mm', 'Stk', 39.95),
-                                                    ('vinkelbeslag 35', 'Stk', 5.00);
+-- Indsæt materialer
+INSERT INTO material (name, unit, price) VALUES
+                                             ('25x200 mm. trykimp. Bræt', 'stk', 25.0),
+                                             ('25x125 mm. trykimp. Bræt', 'stk', 20.0),
+                                             ('38x73 mm. Lægte ubh.', 'stk', 18.0),
+                                             ('45x95 mm. Reglar ub.', 'stk', 15.0),
+                                             ('97x97 mm. trykimp. Stolpe', 'stk', 75.0),
+                                             ('19x100 mm. trykimp. Bræt', 'stk', 16.0),
+                                             ('Plastmo Ecolite blåtonet', 'stk', 50.0),
+                                             ('Plastmo bundskruer 200 stk.', 'pakke', 25.0),
+                                             ('Hulbånd 1x20 mm. 10 mtr.', 'rulle', 18.0),
+                                             ('Universal 190 mm højre', 'stk', 10.0);
 
--- Materialevarianter (eksempler)
-INSERT INTO material_variant (material_id, length, quantity, use_description) VALUES
-                                                                                  (1, 360, 4, 'understernbrædder for og bagende'),
-                                                                                  (1, 540, 4, 'understernbrædder siderne'),
-                                                                                  (2, 360, 2, 'oversternbrædder forenden'),
-                                                                                  (2, 540, 4, 'oversternbrædder siderne'),
-                                                                                  (5, 600, 15, 'spær monteres på rem'),
-                                                                                  (6, 300, 11, 'stolper nedgraves i jord'),
-                                                                                  (8, 600, 6, 'tagplader monteres på spær'),
-                                                                                  (8, 360, 6, 'tagplader monteres på spær');
+-- Indsæt material_variants
+INSERT INTO material_variant (material_id, length) VALUES
+                                                       (1, 360), (1, 420), (2, 360), (3, 420),
+                                                       (4, 270), (5, 300), (6, 600), (7, 0),
+                                                       (8, 0), (9, 0), (10, 0);
 
---------------------------------------------------
--- Klar til brug!
---------------------------------------------------
+-- Indsæt testordre
+INSERT INTO orders (
+    customer_id, carport_width, carport_length, roof, customer_text, admin_text, status_id, sales_price
+) VALUES
+      (1, 300, 600, 'plastmo', 'Ønsker overdækning i høj kvalitet', NULL, 1, 0.0),
+      (2, 350, 700, 'træ', 'Standard carport med trætag', NULL, 2, 5000.0);
+
+-- Indsæt komponenter
+INSERT INTO component (order_id, material_variant_id, quantity, use_description) VALUES
+                                                                                     (1, 1, 5, 'Bundplader'),
+                                                                                     (1, 2, 10, 'Vægelementer'),
+                                                                                     (2, 3, 8, 'Lægter'),
+                                                                                     (2, 4, 12, 'Reglar');
+
+-- Indsæt SVG data
+INSERT INTO svg (order_id, svg_data) VALUES
+                                         (1, 'SVG data for ordre 1'),
+                                         (2, 'SVG data for ordre 2');

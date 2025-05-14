@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <title>Betal din ordre</title>
+</head>
+<body>
+
+<h2>Betal din ordre</h2>
+
+<form method="post" th:action="@{/pay/{orderId}/confirm(orderId=${currentOrder.orderId})}">
+    <input type="hidden" name="orderId" th:value="${currentOrder.orderId}" />
+    <button type="submit">Betal</button>
+</form>
+
+</body>
+</html>

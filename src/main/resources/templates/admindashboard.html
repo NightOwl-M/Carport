@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+</head>
+<body>
+<h1>Dashboard</h1>
+<h2>Order Overview</h2>
+<br>
+
+<a th:href="@{/admin/orders/unprocessed}">
+    <button type="button">Nye forespørgsler</button>
+</a>
+
+<a th:href="@{/admin/orders/pending}">
+    <button type="button">Afventer svar fra kunde</button>
+</a>
+
+<a th:href="@{/admin/orders/processed}">
+    <button type="button">Betalte ordrer</button>
+</a>
+
+</body>
+</html>

@@ -1,0 +1,46 @@
+@startuml
+
+!pragma layout smetana
+
+object User{
+role
+}
+
+object CarportOrder{
+orderStatus
+}
+
+object Component {
+quantity
+useDescription
+}
+
+object MaterialVariant{
+length
+}
+
+object Material {
+}
+
+object Sketch
+
+object BillOfMaterials
+
+
+User *-- CarportOrder
+
+CarportOrder *-- Sketch
+CarportOrder  *-- BillOfMaterials
+
+BillOfMaterials  *-- Component
+
+Component o-- MaterialVariant
+MaterialVariant o-- Material
+
+@enduml
+
+implements ..|>
+extends <|-- (is-a)
+composition *-- (must-have)
+Aggregation o-- (can-have)
+Associering <--

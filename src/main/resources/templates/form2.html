@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Personoplysninger</title>
+</head>
+<body>
+
+<h2>Trin 2: Indtast dine oplysninger</h2>
+
+<form method="post" action="/carport/confirm">
+  <label for="name">Navn:</label>
+  <input type="text" id="name" name="name" required><br>
+
+  <label for="address">Adresse:</label>
+  <input type="text" id="address" name="address" placeholder="Vejnavn + husnummer" required><br>
+
+  <label for="zip-code">Postnummer:</label>
+  <input type="text" id="zip-code" name="zip-code" required><br>
+
+  <label for="email">Email:</label>
+  <input type="email" id="email" name="email" required><br>
+
+  <label for="phone">Telefon nummer:</label>
+  <input type="tel" id="phone" name="phone" required><br>
+
+
+
+  <button type="submit">Bekræft</button>
+</form>
+
+</body>
+</html>

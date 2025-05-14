@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8">
+  <title>Ordre Detaljer - Unprocessed</title>
+</head>
+<body>
+<h3>Ordre Detaljer - Unprocessed</h3>
+
+<div>
+  <p>Ordre ID: <span th:text="${order.orderId}"></span></p>
+  <p>Kunde Navn: <span th:text="${order.customer.customerName}"></span></p>
+  <p>Email: <span th:text="${order.customer.customerEmail}"></span></p>
+  <p>Adresse: <span th:text="${order.customer.customerAddress}"></span></p>
+  <p>Postnummer: <span th:text="${order.customer.customerZipcode}"></span></p>
+  <p>Telefon: <span th:text="${order.customer.customerPhone}"></span></p>
+  <p>Bredde: <span th:text="${order.carportWidth}"></span> cm</p>
+  <p>Længde: <span th:text="${order.carportLength}"></span> cm</p>
+  <p>Tagtype: <span th:text="${order.roof}"></span></p>
+  <p>Kunde Kommentar: <span th:text="${order.customerText}"></span></p>
+</div>
+
+<!-- Tilbage-knap -->
+<a href="/admin/orders/unprocessed">Tilbage til Unprocessed Orders</a>
+
+<!-- Knap til at gå til offerPage.html -->
+<form th:action="@{/offerpage}" method="get">
+  <input type="hidden" name="orderId" th:value="${order.orderId}" />
+  <button type="submit">Gå til tilbudsside</button>
+</form>
+
+
+</body>
+</html>
