@@ -17,17 +17,22 @@
         <p>Længde: <span th:text="${session.currentOrderSalesmanInput.carportLength}"></span> cm</p>
         <p>Tag: <span th:text="${session.currentOrderSalesmanInput.roof}"></span></p>
         <p>Kommentar til kunde: <span th:text="${session.currentOrderSalesmanInput.adminText}"></span></p>
-    </div>
-
-    <div class="columns">
-        <h3>Prisoversigt</h3>
+        <br>
         <p>Indkøbspris: <span th:text="${session.materialCostPrice}"></span> kr.</p>
         <p>Salgspris: <span th:text="${session.estimatedSalesPrice}"></span> kr.</p>
         <p>Dækningsgrad: <span th:text="${session.coverageRate}"></span> %</p>
+        <br>
+        <form th:action="@{/offerpage/show-svg}" method="get">
+            <button class="custom-btn" type="submit">Se skitse</button>
+        </form>
+
+        <form th:action="@{/offerpage/show-bom}" method="get">
+            <button class="custom-btn" type="submit">Se stykliste</button>
+        </form>
     </div>
 
     <div class="columns">
-        <h2>Kunde/ordre information</h2><br>
+        <h3>Kunde/ordre information</h3><br>
 
         <p>Ordre nummer: <span th:text="${session.currentOrder.orderId}"></span></p>
         <p>Oprettet: <span th:text="${session.currentOrder.createdAt}"></span></p>
