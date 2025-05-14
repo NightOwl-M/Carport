@@ -1,0 +1,37 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+left to right direction
+title Carport Admin Flow
+
+start
+@startuml
+
+:admin-login.html;
+:Admin indtaster email + kodeord;
+:POST /admin/login;
+:AdminController.handleLogin();
+:UserMapper.findByEmailAndPassword();
+
+if (Login success?) then (yes)
+  :Redirect to /admin/dashboard;
+  :AdminController.showDashboard();
+  :OrderMapper.getAllOrders();
+
+  :Admin vælger specifik ordre;
+  :GET /admin/order/:id;
+  :AdminController.showOrderDetails();
+  :OrderMapper.getOrderById();
+
+  :Admin skriver tilbud + kommentar;
+  :POST /admin/order/:id/send;
+  :AdminController.handleSendOffer();
+  :OrderMapper.updateOrder();
+  :EmailService.sendOfferEmail();
+  :Tilbud sendt til kunde;
+else (no)
+  :Vis login-fejl;
+endif
+
+stop
+@enduml
