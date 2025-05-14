@@ -12,6 +12,7 @@ import io.javalin.Javalin;
 import io.javalin.http.Context;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class AdminController {
@@ -214,6 +215,7 @@ public class AdminController {
             int orderId = 1; //TODO orderId hardcoded, skal hentes fra sessionen, når admin vælger en ordre at skulle bearbejde
             Order currentOrder = OrderService.getOrderAndCustomerInfoByOrderId(orderId, connectionPool);
 
+
             ctx.sessionAttribute("currentOrder", currentOrder);
             ctx.render("offerpage.html");
         } catch (DatabaseException e) {
@@ -266,12 +268,17 @@ public class AdminController {
 
     private static void showBomPage(Context ctx, ConnectionPool connectionPool) {
         try {
+            /*
             Order currentOrderSalesmanInput = ctx.sessionAttribute("currentOrderSalesmanInput");
 
             CarportCalculatorService carportCalculatorService = new CarportCalculatorService
-                    (currentOrderSalesmanInput.getCarportLength(), currentOrderSalesmanInput.getCarportWidth(), connectionPool); //TODO mangler tag
+                    (currentOrderSalesmanInput.getCarportLength(),
+                     currentOrderSalesmanInput.getCarportWidth(),
+                     connectionPool); //TODO mangler tag
 
             List<Component> orderComponents = carportCalculatorService.calculateCarportBOM(currentOrderSalesmanInput);
+             */
+            List<Component> orderComponents = calculateBom(ctx, connectionPool);
 
             ctx.sessionAttribute("orderComponents", orderComponents);
             ctx.render("bompage.html");
@@ -288,40 +295,40 @@ public class AdminController {
     private static void sendOffer(Context ctx, ConnectionPool connectionPool) {
         try {
             Double estimatedSalesPrice = ctx.sessionAttribute("estimatedSalesPrice");
+            Order currentOrder = ctx.sessionAttribute("currentOrder");
             Order currentOrderSalesmanInput = ctx.sessionAttribute("currentOrderSalesmanInput");
             List<Component> orderComponents = ctx.sessionAttribute("orderComponents");
 
 
             if (currentOrderSalesmanInput == null || currentOrderSalesmanInput.getCarportLength() == 0) {
-                showPrices(ctx, connectionPool);
+                currentOrderSalesmanInput = buildSalesmanOrderInput(ctx, currentOrder);
+                ctx.sessionAttribute("currentOrderSalesmanInput", currentOrderSalesmanInput);
             }
 
-            //Hvis ikke ordercomponents er genereret, så laves den nu
+            //Hvis ikke orderComponents er genereret, så laves den nu
             if (orderComponents == null) {
-                CarportCalculatorService carportCalculatorService = new CarportCalculatorService
-                        (currentOrderSalesmanInput.getCarportLength(), currentOrderSalesmanInput.getCarportWidth(), connectionPool); //TODO mangler tag
-
-                orderComponents = carportCalculatorService.calculateCarportBOM(currentOrderSalesmanInput);
+               orderComponents = calculateBom(ctx, connectionPool);
             }
 
             int statusId = 2; //TODO Hvor og hvordan vil vi sætte statusId = 2?
             //Ordre opdateres med eventuelle ændringer, orderStatus ændres og email sendes
             OrderService.updateOrderAndSendOffer
-                    (currentOrderSalesmanInput.getOrderId(), currentOrderSalesmanInput.getCarportWidth(),
-                            currentOrderSalesmanInput.getCarportLength(), currentOrderSalesmanInput.getRoof(),
-                            currentOrderSalesmanInput.getCustomerText(), currentOrderSalesmanInput.getAdminText(),
-                            estimatedSalesPrice, statusId, connectionPool);
+                    (currentOrderSalesmanInput.getOrderId(),
+                            currentOrderSalesmanInput.getCarportWidth(),
+                            currentOrderSalesmanInput.getCarportLength(),
+                            currentOrderSalesmanInput.getRoof(),
+                            currentOrderSalesmanInput.getCustomerText(),
+                            currentOrderSalesmanInput.getAdminText(),
+                            estimatedSalesPrice,
+                            statusId,
+                            connectionPool);
 
 
             //Components gemmes i DB
            ComponentService.saveOrderComponentsToDB(orderComponents, connectionPool);
 
            //sessionAttributes nulstilles
-            ctx.sessionAttribute("currentOrder", null);
-            ctx.sessionAttribute("currentOrderSalesmanInput", null);
-            ctx.sessionAttribute("orderComponents", null);
-            ctx.sessionAttribute("estimatedSalesPrice", null);
-            ctx.sessionAttribute("materialCostPrice", null);
+            clearOfferSessionAttributes(ctx);
 
             ctx.render("admindashboard.html");
         } catch (DatabaseException e) {
@@ -332,5 +339,36 @@ public class AdminController {
             ctx.sessionAttribute("errorMessage", "Ukendt fejl: " + e.getMessage());
             ctx.redirect(""); //TODO
         }
+    }
+
+    private static List<Component> calculateBom(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
+        Order currentOrderSalesmanInput = ctx.sessionAttribute("currentOrderSalesmanInput");
+        List<Component> orderComponents = new ArrayList<>();
+
+        CarportCalculatorService carportCalculatorService = new CarportCalculatorService
+                (currentOrderSalesmanInput.getCarportLength(),
+                        currentOrderSalesmanInput.getCarportWidth(),
+                        connectionPool); //TODO mangler tag
+
+        return orderComponents = carportCalculatorService.calculateCarportBOM(currentOrderSalesmanInput);
+    }
+
+    private static void clearOfferSessionAttributes(Context ctx) {
+        ctx.sessionAttribute("currentOrder", null);
+        ctx.sessionAttribute("currentOrderSalesmanInput", null);
+        ctx.sessionAttribute("orderComponents", null);
+        ctx.sessionAttribute("estimatedSalesPrice", null);
+        ctx.sessionAttribute("materialCostPrice", null);
+    }
+
+    private static Order buildSalesmanOrderInput(Context ctx, Order currentOrder) {
+        int carportLength = Integer.parseInt(ctx.formParam("length"));
+        int carportWidth = Integer.parseInt(ctx.formParam("width"));
+        String roof = ctx.formParam("roof");
+        String adminText = ctx.formParam("admin-text");
+
+        Order order = new Order(carportWidth, carportLength, roof, adminText);
+        order.setOrderId(currentOrder.getOrderId());
+        return order;
     }
 }
