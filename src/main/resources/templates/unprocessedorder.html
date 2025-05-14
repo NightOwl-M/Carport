@@ -23,5 +23,12 @@
 <!-- Tilbage-knap -->
 <a href="/admin/orders/unprocessed">Tilbage til Unprocessed Orders</a>
 
+<!-- Knap til at gå til offerPage.html -->
+<form th:action="@{/offerpage}" method="get">
+  <input type="hidden" name="orderId" th:value="${order.orderId}" />
+  <button type="submit">Gå til tilbudsside</button>
+</form>
+
+
 </body>
 </html>

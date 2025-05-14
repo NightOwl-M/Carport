@@ -36,7 +36,38 @@ public class AdminController {
 
 
         //Viser offerpage med ordredata
-        app.get("/offerpage", ctx -> showOfferPage(ctx, connectionPool));
+        app.get("/offerpage", ctx -> {
+            String orderIdParam = ctx.queryParam("orderId");
+
+            if (orderIdParam == null) {
+                ctx.sessionAttribute("errorMessage", "Ordre ID mangler.");
+                ctx.redirect("/admin/orders/unprocessed");
+                return;
+            }
+
+            try {
+                int orderId = Integer.parseInt(orderIdParam);
+                Order order = OrderService.getOrderAndCustomerInfoByOrderId(orderId, connectionPool);
+
+                if (order == null) {
+                    ctx.sessionAttribute("errorMessage", "Ordren eksisterer ikke.");
+                    ctx.redirect("/admin/orders/unprocessed");
+                    return;
+                }
+
+                // Gem ordren i sessionen
+                ctx.sessionAttribute("currentOrder", order);
+                ctx.render("offerPage.html");
+
+            } catch (NumberFormatException e) {
+                ctx.sessionAttribute("errorMessage", "Ugyldigt ordre ID.");
+                ctx.redirect("/admin/orders/unprocessed");
+            } catch (DatabaseException e) {
+                ctx.sessionAttribute("errorMessage", "Databasefejl: " + e.getMessage());
+                ctx.redirect("/admin/orders/unprocessed");
+            }
+        });
+
         //Når man trykker på "beregn pris"
         app.post("/offerpage/show-prices", ctx -> showPrices(ctx, connectionPool));
         //Når admin trykker på "se stykliste" //TODO bruges hvis vi vil have at styklisten indlæses på en ny html-side og ikke på offerpage.html
