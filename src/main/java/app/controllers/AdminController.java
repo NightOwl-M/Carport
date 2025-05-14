@@ -250,10 +250,12 @@ public class AdminController {
             double estimatedSalesPrice = OrderService.calculateEstimatedSalesPrice(coverageRate, materialCostPrice);
 
 
+            ctx.sessionAttribute("coverageRate", coverageRate);
             ctx.sessionAttribute("materialCostPrice", materialCostPrice);
             ctx.sessionAttribute("estimatedSalesPrice", estimatedSalesPrice);
             ctx.sessionAttribute("currentOrderSalesmanInput", currentOrderSalesmanInput);
-            ctx.render("offerpage.html");
+            //ctx.render("offerpage.html");
+            ctx.render("offerpageconfirmation.html");
             /*
         } catch (DatabaseException e) {
             ctx.sessionAttribute("errorMessage", "Databasefejl: " + e.getMessage());
@@ -295,15 +297,8 @@ public class AdminController {
     private static void sendOffer(Context ctx, ConnectionPool connectionPool) {
         try {
             Double estimatedSalesPrice = ctx.sessionAttribute("estimatedSalesPrice");
-            Order currentOrder = ctx.sessionAttribute("currentOrder");
             Order currentOrderSalesmanInput = ctx.sessionAttribute("currentOrderSalesmanInput");
             List<Component> orderComponents = ctx.sessionAttribute("orderComponents");
-
-
-            if (currentOrderSalesmanInput == null || currentOrderSalesmanInput.getCarportLength() == 0) {
-                currentOrderSalesmanInput = buildSalesmanOrderInput(ctx, currentOrder);
-                ctx.sessionAttribute("currentOrderSalesmanInput", currentOrderSalesmanInput);
-            }
 
             //Hvis ikke orderComponents er genereret, så laves den nu
             if (orderComponents == null) {
@@ -323,12 +318,11 @@ public class AdminController {
                             statusId,
                             connectionPool);
 
-
             //Components gemmes i DB
            ComponentService.saveOrderComponentsToDB(orderComponents, connectionPool);
 
            //sessionAttributes nulstilles
-            clearOfferSessionAttributes(ctx);
+            clearSessionAttributes(ctx);
 
             ctx.render("admindashboard.html");
         } catch (DatabaseException e) {
@@ -353,22 +347,11 @@ public class AdminController {
         return orderComponents = carportCalculatorService.calculateCarportBOM(currentOrderSalesmanInput);
     }
 
-    private static void clearOfferSessionAttributes(Context ctx) {
+    private static void clearSessionAttributes(Context ctx) {
         ctx.sessionAttribute("currentOrder", null);
         ctx.sessionAttribute("currentOrderSalesmanInput", null);
         ctx.sessionAttribute("orderComponents", null);
         ctx.sessionAttribute("estimatedSalesPrice", null);
         ctx.sessionAttribute("materialCostPrice", null);
-    }
-
-    private static Order buildSalesmanOrderInput(Context ctx, Order currentOrder) {
-        int carportLength = Integer.parseInt(ctx.formParam("length"));
-        int carportWidth = Integer.parseInt(ctx.formParam("width"));
-        String roof = ctx.formParam("roof");
-        String adminText = ctx.formParam("admin-text");
-
-        Order order = new Order(carportWidth, carportLength, roof, adminText);
-        order.setOrderId(currentOrder.getOrderId());
-        return order;
     }
 }
