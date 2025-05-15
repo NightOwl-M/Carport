@@ -70,6 +70,11 @@ public class AdminController {
 
         //Når man trykker på "videre"
         app.post("/offerpage/generate-offer", ctx -> showOfferPageConfirmation(ctx, connectionPool));
+
+        app.get("/offerpage", ctx -> showOfferPage(ctx, connectionPool));
+        //Når man trykker på "beregn pris"
+        app.post("/offerpage/show-prices", ctx -> showPrices(ctx, connectionPool));
+
         //Når admin trykker på "se stykliste" //TODO bruges hvis vi vil have at styklisten indlæses på en ny html-side og ikke på offerpage.html
         app.get("/offerpage/show-bom", ctx -> showBomPage(ctx, connectionPool));
         //Når admin trykker på "send tilbud
@@ -241,12 +246,11 @@ public class AdminController {
     //Kaldes når sælger trykker på "vælg" på en unprocessed order
     private static void showOfferPage(Context ctx, ConnectionPool connectionPool) {
         try {
-            int orderId = 1; //TODO orderId hardcoded, skal hentes fra sessionen, når admin vælger en ordre at skulle bearbejde
+            int orderId = 2; //TODO orderId hardcoded, skal hentes fra sessionen, når admin vælger en ordre at skulle bearbejde
             Order currentOrder = OrderService.getOrderAndCustomerInfoByOrderId(orderId, connectionPool);
 
             ctx.sessionAttribute("currentOrder", currentOrder);
             ctx.render("offerpage.html");
-
         } catch (DatabaseException e) {
             ctx.sessionAttribute("errorMessage", "Databasefejl: " + e.getMessage());
             ctx.redirect(""); //TODO
