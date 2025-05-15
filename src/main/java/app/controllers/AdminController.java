@@ -147,7 +147,7 @@ public class AdminController {
 
         try {
             Order order = OrderService.getUnprocessedOrderById(orderId, connectionPool);
-            ctx.attribute("order", order);
+            ctx.sessionAttribute("order", order);
             ctx.render("unprocessedorder.html");
 
         } catch (DatabaseException e) {
@@ -211,7 +211,8 @@ public class AdminController {
     //Kaldes når sælger trykker på "vælg" på en unprocessed order
     private static void showOfferPage(Context ctx, ConnectionPool connectionPool) {
         try {
-            int orderId = 2; //TODO orderId hardcoded, skal hentes fra sessionen, når admin vælger en ordre at skulle bearbejde
+            Order order = ctx.sessionAttribute("order");
+            int orderId = order.getOrderId();
             Order currentOrder = OrderService.getOrderAndCustomerInfoByOrderId(orderId, connectionPool);
 
             ctx.sessionAttribute("currentOrder", currentOrder);
