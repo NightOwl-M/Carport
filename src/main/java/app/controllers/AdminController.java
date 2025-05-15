@@ -6,7 +6,6 @@ import app.exceptions.DatabaseException;
 import app.persistence.ConnectionPool;
 import app.service.admin.AdminLoginService;
 import app.service.component.ComponentService;
-import app.service.order.CarportCalculatorService;
 import app.service.order.OrderService;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
@@ -29,7 +28,6 @@ public class AdminController {
 
         app.get("/admin/orders/processed", ctx -> showProcessedOrders(ctx, connectionPool));
         app.get("/admin/orders/processed/{orderId}", ctx -> showProcessedOrder(ctx, connectionPool));
-
 
         app.post("/admin/login", ctx -> adminLogin(ctx, connectionPool));
         app.get("/adminlogin", ctx -> ctx.render("adminlogin.html"));
@@ -91,6 +89,7 @@ public class AdminController {
 
              // Status 2 = Pending (efter tilbud er sendt)
              int statusId = 2;
+             System.out.println("AdminController - Status ID sat til: " + statusId);
 
              // **Opdater ordre og send tilbud via email**
              OrderService.updateOrderAndSendOffer(orderId, width, length, roof, customerText, adminText, salesPrice, statusId, connectionPool);

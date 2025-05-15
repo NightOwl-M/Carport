@@ -56,6 +56,7 @@ public class Order {
         this.adminText = adminText;
         this.salesPrice = salesPrice;
         this.statusId = statusId;
+        System.out.println("Order Constructor - Status ID sat til: " + this.statusId);
     }
 
     /**

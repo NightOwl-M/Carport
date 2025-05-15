@@ -54,6 +54,7 @@ public class OrderMapper {
             ps.setDouble(6, order.getSalesPrice());
             ps.setInt(7, order.getStatusId());
             ps.setInt(8, order.getOrderId());
+            System.out.println("OrderMapper - Status ID i SQL update " + order.getStatusId());
 
             ps.executeUpdate();
 
@@ -78,9 +79,6 @@ public class OrderMapper {
             throw new DatabaseException("Fejl under opdatering af ordrestatus: " + e.getMessage(), e);
         }
     }
-
-
-
 
     public static Order getOrderById(int orderId, ConnectionPool connectionPool) throws DatabaseException {
         String sql = "SELECT * FROM orders WHERE order_id = ?";
@@ -182,7 +180,6 @@ public class OrderMapper {
         }
     }
 
-
     public static Order getOrderAndCustomerInfoByOrderId(int orderId, ConnectionPool connectionPool) throws DatabaseException {
         String sql = "SELECT * FROM orders \n" +
                 "JOIN customer USING(customer_id)  \n" +
@@ -222,7 +219,6 @@ public class OrderMapper {
         }
         return null;
     }
-
 
     public static List<Component> getAllComponentsByOrderId (int orderId, ConnectionPool connectionPool) throws DatabaseException {
         List<Component> allComponents = new ArrayList<>();

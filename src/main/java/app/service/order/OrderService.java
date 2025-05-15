@@ -7,7 +7,6 @@ import app.persistence.ConnectionPool;
 import app.service.email.EmailService;
 import app.service.customer.CustomerService;
 
-
 import java.io.IOException;
 import java.util.List;
 
@@ -42,6 +41,7 @@ public class OrderService {
 
     public static void updateOrderAndSendOffer(int orderId, int width, int length, String roof, String customerText, String adminText, double salesPrice, int statusId, ConnectionPool connectionPool) throws DatabaseException, IOException {
 
+        System.out.println("OrderService - Status ID før opdatering: " + statusId);
         // Først tjekker vi, om ordren eksisterer
         Order existingOrder = getOrderById(orderId, connectionPool);
 
