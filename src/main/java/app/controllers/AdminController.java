@@ -44,7 +44,7 @@ public class AdminController {
         app.post("/offerpage/send-offer", ctx -> sendOffer(ctx, connectionPool));
 
     }
-
+    // Login
     private static void adminLogin(Context ctx, ConnectionPool connectionPool) {
         String username = ctx.formParam("username");
         String password = ctx.formParam("password");
@@ -65,7 +65,7 @@ public class AdminController {
             ctx.redirect("/adminlogin.html");
         }
     }
-
+    // hvis man skulle modvige programmet senere hen.
     private static void checkAdminLogin(Context ctx) {
         Boolean isAdmin = ctx.sessionAttribute("isAdmin");
 
@@ -105,7 +105,7 @@ public class AdminController {
              ctx.redirect("/admin/order/update");
          }
      }
-
+    // Opdaterer status
     private static void updateOrderStatus(Context ctx, ConnectionPool connectionPool) {
         try {
             int orderId = Integer.parseInt(ctx.formParam("orderId"));
