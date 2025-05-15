@@ -1,11 +1,16 @@
+Til
 <!DOCTYPE html>
 <html lang="da">
 <head>
     <meta charset="UTF-8">
-    <title>Betalte Ordrer</title>
+    <link href="../public/css/processed.css" th:href="@{/css/processed.css}" rel="stylesheet"/>
+    <title>Betalte ordrer</title>
 </head>
 <body>
-<h3>Betalte Ordrer</h3>
+<div class="logo">
+    <img src="/public/images/logo.png" alt="Fog carport logo" width="400" height=300>
+</div>
+<h3>Betalte ordrer</h3>
 
 <table>
     <thead>
@@ -13,7 +18,7 @@
         <th>Order ID</th>
         <th>Email</th>
         <th>Oprettet</th>
-        <th>Se Ordre</th>
+        <th></th>
     </tr>
     </thead>
     <tbody>
@@ -27,6 +32,6 @@
     </tr>
     </tbody>
 </table>
-
 </body>
 </html>
+
