@@ -5,6 +5,7 @@ import app.entities.Order;
 import app.exceptions.DatabaseException;
 import app.persistence.ConnectionPool;
 import app.service.admin.AdminLoginService;
+import app.service.component.ComponentService;
 import app.service.order.CarportCalculatorService;
 import app.service.order.OrderService;
 import io.javalin.Javalin;
@@ -301,19 +302,14 @@ public class AdminController {
 
     private static void showBomPage(Context ctx, ConnectionPool connectionPool) {
         try {
-            Order currentOrder = ctx.sessionAttribute("currentOrder");
-
-            CarportCalculatorService carportCalculatorService = new CarportCalculatorService(currentOrder.getCarportLength(), currentOrder.getCarportWidth(), connectionPool); //TODO mangler tag
-            List<Component> orderComponents = carportCalculatorService.calculateCarportBOM(currentOrder);
+            Order currentOrderSalesmanInput = ctx.sessionAttribute("currentOrderSalesmanInput");
+            List<Component> orderComponents = ComponentService.calculateBom(currentOrderSalesmanInput, connectionPool);
 
             ctx.sessionAttribute("orderComponents", orderComponents);
             ctx.render("bompage.html");
-
-            /*
         } catch (DatabaseException e) {
             ctx.sessionAttribute("errorMessage", "Databasefejl: " + e.getMessage());
             ctx.redirect(""); //TODO
-             */
         } catch (Exception e) {
             e.printStackTrace();
             ctx.sessionAttribute("errorMessage", "Ukendt fejl: " + e.getMessage());
