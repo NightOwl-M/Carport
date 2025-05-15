@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="../public/css/offerpage.css" th:href="@{/css/offerpage.css}" rel="stylesheet"/>
+    <title>Title</title>
+</head>
+<body>
+
+<h2>Bekræft tilbud inden afsendelse</h2>
+<div class="column-container">
+
+    <div class="columns">
+        <h3>Ordredetaljer</h3>
+        <p>Ordre ID: <span th:text="${session.currentOrder.orderId}"></span></p>
+        <p>Bredde: <span th:text="${session.currentOrderSalesmanInput.carportWidth}"></span> cm</p>
+        <p>Længde: <span th:text="${session.currentOrderSalesmanInput.carportLength}"></span> cm</p>
+        <p>Tag: <span th:text="${session.currentOrderSalesmanInput.roof}"></span></p>
+        <p>Kommentar til kunde: <span th:text="${session.currentOrderSalesmanInput.adminText}"></span></p>
+        <br>
+        <p>Indkøbspris: <span th:text="${session.materialCostPrice}"></span> kr.</p>
+        <p>Salgspris: <span th:text="${session.estimatedSalesPrice}"></span> kr.</p>
+        <p>Dækningsgrad: <span th:text="${session.coverageRate}"></span> %</p>
+        <br>
+        <form th:action="@{/offerpage/show-svg}" method="get">
+            <button class="custom-btn" type="submit">Se skitse</button>
+        </form>
+
+        <form th:action="@{/offerpage/show-bom}" method="get">
+            <button class="custom-btn" type="submit">Se stykliste</button>
+        </form>
+    </div>
+
+    <div class="columns">
+        <h3>Kunde/ordre information</h3><br>
+
+        <p>Ordre nummer: <span th:text="${session.currentOrder.orderId}"></span></p>
+        <p>Oprettet: <span th:text="${session.currentOrder.createdAt}"></span></p>
+        <br>
+        <p>Bredde: <span th:text="${session.currentOrder.carportWidth}"></span></p>
+        <p>Længde: <span th:text="${session.currentOrder.carportLength}"></span></p>
+        <p>Tag: <span th:text="${session.currentOrder.roof}"></span></p>
+        <p>Særlige bemærkninger/ønsker: <span th:text="${session.currentOrder.customerText}"></span></p>
+        <br>
+        <p>Navn: <span th:text="${session.currentOrder.customer.customerName}"></span></p>
+        <p>Adresse: <span th:text="${session.currentOrder.customer.customerAddress}"></span></p>
+        <p>Postnummer: <span th:text="${session.currentOrder.customer.customerZipcode}"></span></p>
+        <p>Email: <span th:text="${session.currentOrder.customer.customerEmail}"></span></p>
+        <p>Telefon: <span th:text="${session.currentOrder.customer.customerPhone}"></span></p>
+    </div>
+</div>
+
+<form th:action="@{/offerpage/send-offer}" method="post">
+    <button class="custom-btn" type="submit">Send tilbud</button>
+</form>
+
+<form th:action="@{/offerpage}" method="get">
+    <button class="custom-btn" type="submit">Tilbage og rediger</button>
+</form>
+
+</body>
+</html>
