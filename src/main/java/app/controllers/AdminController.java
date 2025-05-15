@@ -244,6 +244,30 @@ public class AdminController {
         }
     }
 
+    private static void showPrices(Context ctx, ConnectionPool connectionPool) {
+        try {
+            double coverageRate = Double.parseDouble(ctx.formParam("coverage-rate"));
+
+            //TODO Mangler metode der beregner carportens samlede materialepris
+            double materialCostPrice = 20000; //TODO hardcoded indtil ovenstående metode er lavet
+            double estimatedSalesPrice = OrderService.calculateEstimatedSalesPrice(coverageRate, materialCostPrice);
+
+
+            ctx.attribute("materialCostPrice", materialCostPrice);
+            ctx.attribute("estimatedSalesPrice", estimatedSalesPrice);
+            ctx.render("offerpage.html");
+            /*
+        } catch (DatabaseException e) {
+            ctx.sessionAttribute("errorMessage", "Databasefejl: " + e.getMessage());
+            ctx.redirect(""); //TODO
+             */
+        } catch (Exception e) {
+            e.printStackTrace();
+            ctx.sessionAttribute("errorMessage", "Ukendt fejl: " + e.getMessage());
+            ctx.redirect(""); //TODO
+        }
+    }
+
     //Kaldes når sælger trykker på "vælg" på en unprocessed order
     private static void showOfferPage(Context ctx, ConnectionPool connectionPool) {
         try {
