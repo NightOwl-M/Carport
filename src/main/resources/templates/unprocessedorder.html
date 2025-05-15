@@ -3,11 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <title>Ordre Detaljer - Unprocessed</title>
+  <link href="../public/css/unprocessedorder.css" th:href="@{/css/unprocessedorder.css}" rel="stylesheet"/>
 </head>
 <body>
-<h3>Ordre Detaljer - Unprocessed</h3>
+<h3 class="title">Ordre Detaljer - Unprocessed</h3>
 
-<div>
+<div class="order-details">
   <p>Ordre ID: <span th:text="${session.order.orderId}"></span></p>
   <p>Kunde Navn: <span th:text="${session.order.customer.customerName}"></span></p>
   <p>Email: <span th:text="${session.order.customer.customerEmail}"></span></p>
@@ -21,12 +22,12 @@
 </div>
 
 <!-- Tilbage-knap -->
-<a href="/admin/orders/unprocessed">Tilbage til Unprocessed Orders</a>
+<a href="/admin/orders/unprocessed" class="return-button">Tilbage til Unprocessed Orders</a>
 
 <!-- Knap til at gå til offerPage.html -->
 <form th:action="@{/offerpage}" method="get">
   <input type="hidden" name="orderId" th:value="${session.order.orderId}" />
-  <button type="submit">Gå til tilbudsside</button>
+  <button type="submit" class="return-button">Gå til tilbudsside</button>
 </form>
 
 
