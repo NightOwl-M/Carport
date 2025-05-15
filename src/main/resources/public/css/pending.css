@@ -1,3 +1,39 @@
 body{
     background-color:white;
 }
+
+h3{
+    text-align:center;
+    font-size:30px;
+    font-family:sans-serif;
+}
+
+table{
+    margin-left:auto;
+    margin-right:auto;
+}
+
+td, th{
+    background-color:blue;
+    color:white;
+    text-align:center;
+    font-size:20px;
+    font-family:sans-serif;
+    padding: 12px 24px;
+
+}
+
+div{
+    text-align:center;
+    background-color:blue;
+}
+
+a{
+    background-color:green;
+    color:white;
+    padding:10px 20px;
+    text-align:center;
+    font-size:16px;
+    font-weight: bold;
+    border-radius:25px;
+}
