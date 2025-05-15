@@ -319,26 +319,50 @@ public class AdminController {
 
     private static void sendOffer(Context ctx, ConnectionPool connectionPool) {
         try {
-            Order currentOrder = ctx.sessionAttribute("currentOrder");
+            Double estimatedSalesPrice = ctx.sessionAttribute("estimatedSalesPrice");
+            Order currentOrderSalesmanInput = ctx.sessionAttribute("currentOrderSalesmanInput");
             List<Component> orderComponents = ctx.sessionAttribute("orderComponents");
 
-            //TODO kald metode der ændrer på ordrestatus og ændre orderStatus i DB
+            //Hvis ikke orderComponents er genereret, så laves den nu
+            if (orderComponents == null) {
+                orderComponents = ComponentService.calculateBom(currentOrderSalesmanInput, connectionPool);
+            }
 
-            //TODO kald på metode der indsætter components i DB
-           //Orderservice.insertOrderComponentsIntoDB(orderComponents, currentOrder.getOrderId(), connectionPool);
+            int statusId = 2; //TODO Hvor og hvordan vil vi sætte statusId = 2?
+            //Ordre opdateres med eventuelle ændringer, orderStatus ændres og email sendes
+            OrderService.updateOrderAndSendOffer
+                    (currentOrderSalesmanInput.getOrderId(),
+                            currentOrderSalesmanInput.getCarportWidth(),
+                            currentOrderSalesmanInput.getCarportLength(),
+                            currentOrderSalesmanInput.getRoof(),
+                            currentOrderSalesmanInput.getCustomerText(),
+                            currentOrderSalesmanInput.getAdminText(),
+                            estimatedSalesPrice,
+                            statusId,
+                            connectionPool);
 
-            //TODO nulstil sessionAttributes
+            //Components gemmes i DB
+            ComponentService.saveOrderComponentsToDB(orderComponents, connectionPool);
 
-            ctx.render("admindashboard.html"); //TODO hvor skal sælger hen efter sendt tilbud?
-            /*
+            //sessionAttributes nulstilles
+            clearSessionAttributes(ctx);
+
+            ctx.render("admindashboard.html");
         } catch (DatabaseException e) {
             ctx.sessionAttribute("errorMessage", "Databasefejl: " + e.getMessage());
             ctx.redirect(""); //TODO
-             */
         } catch (Exception e) {
             e.printStackTrace();
             ctx.sessionAttribute("errorMessage", "Ukendt fejl: " + e.getMessage());
             ctx.redirect(""); //TODO
         }
+    }
+
+    private static void clearSessionAttributes(Context ctx) {
+        ctx.sessionAttribute("currentOrder", null);
+        ctx.sessionAttribute("currentOrderSalesmanInput", null);
+        ctx.sessionAttribute("orderComponents", null);
+        ctx.sessionAttribute("estimatedSalesPrice", null);
+        ctx.sessionAttribute("materialCostPrice", null);
     }
 }
