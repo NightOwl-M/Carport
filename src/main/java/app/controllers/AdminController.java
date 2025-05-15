@@ -37,46 +37,10 @@ public class AdminController {
 
 
         //Viser offerpage med ordredata
-        app.get("/offerpage", ctx -> {
-            String orderIdParam = ctx.queryParam("orderId");
-
-            if (orderIdParam == null) {
-                ctx.sessionAttribute("errorMessage", "Ordre ID mangler.");
-                ctx.redirect("/admin/orders/unprocessed");
-                return;
-            }
-
-            try {
-                int orderId = Integer.parseInt(orderIdParam);
-                Order order = OrderService.getOrderAndCustomerInfoByOrderId(orderId, connectionPool);
-
-                if (order == null) {
-                    ctx.sessionAttribute("errorMessage", "Ordren eksisterer ikke.");
-                    ctx.redirect("/admin/orders/unprocessed");
-                    return;
-                }
-
-                // Gem ordren i sessionen
-                ctx.sessionAttribute("currentOrder", order);
-                ctx.render("offerPage.html");
-
-            } catch (NumberFormatException e) {
-                ctx.sessionAttribute("errorMessage", "Ugyldigt ordre ID.");
-                ctx.redirect("/admin/orders/unprocessed");
-            } catch (DatabaseException e) {
-                ctx.sessionAttribute("errorMessage", "Databasefejl: " + e.getMessage());
-                ctx.redirect("/admin/orders/unprocessed");
-            }
-        });
-
+        app.get("/offerpage", ctx -> showOfferPage(ctx, connectionPool));
         //Når man trykker på "videre"
         app.post("/offerpage/generate-offer", ctx -> showOfferPageConfirmation(ctx, connectionPool));
-
-        app.get("/offerpage", ctx -> showOfferPage(ctx, connectionPool));
-        //Når man trykker på "beregn pris"
-        app.post("/offerpage/show-prices", ctx -> showPrices(ctx, connectionPool));
-
-        //Når admin trykker på "se stykliste" //TODO bruges hvis vi vil have at styklisten indlæses på en ny html-side og ikke på offerpage.html
+        //Når admin trykker på "se stykliste"
         app.get("/offerpage/show-bom", ctx -> showBomPage(ctx, connectionPool));
         //Når admin trykker på "send tilbud
         app.post("/offerpage/send-offer", ctx -> sendOffer(ctx, connectionPool));
@@ -241,30 +205,6 @@ public class AdminController {
         } catch (DatabaseException e) {
             ctx.sessionAttribute("errorMessage", "Fejl ved hentning af ordre.");
             ctx.redirect("/admin/orders/processed");
-        }
-    }
-
-    private static void showPrices(Context ctx, ConnectionPool connectionPool) {
-        try {
-            double coverageRate = Double.parseDouble(ctx.formParam("coverage-rate"));
-
-            //TODO Mangler metode der beregner carportens samlede materialepris
-            double materialCostPrice = 20000; //TODO hardcoded indtil ovenstående metode er lavet
-            double estimatedSalesPrice = OrderService.calculateEstimatedSalesPrice(coverageRate, materialCostPrice);
-
-
-            ctx.attribute("materialCostPrice", materialCostPrice);
-            ctx.attribute("estimatedSalesPrice", estimatedSalesPrice);
-            ctx.render("offerpage.html");
-            /*
-        } catch (DatabaseException e) {
-            ctx.sessionAttribute("errorMessage", "Databasefejl: " + e.getMessage());
-            ctx.redirect(""); //TODO
-             */
-        } catch (Exception e) {
-            e.printStackTrace();
-            ctx.sessionAttribute("errorMessage", "Ukendt fejl: " + e.getMessage());
-            ctx.redirect(""); //TODO
         }
     }
 
