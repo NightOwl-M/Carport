@@ -15,31 +15,33 @@
 
   <div class="order-container">
 
-    <div class="order-details">
-      <h3>Carport</h3>
-      <ul>
-        <li>Bredde: <span th:text="${currentOrder.carportWidth}">[bredde]</span> cm</li>
-        <li>Længde: <span th:text="${currentOrder.carportLength}">[længde]</span> cm</li>
-        <li>Tagtype: <span th:text="${currentOrder.roof}">[tag]</span></li>
-        <li>Kommentar: <span th:text="${currentOrder.customerText}">[kommentar]</span></li>
-      </ul>
+    <div class="details-column">
+      <div class="order-details">
+        <h3>Carport</h3>
+        <ul>
+          <li>Bredde: <span th:text="${currentOrder.carportWidth}">[bredde]</span> cm</li>
+          <li>Længde: <span th:text="${currentOrder.carportLength}">[længde]</span> cm</li>
+          <li>Tagtype: <span th:text="${currentOrder.roof}">[tag]</span></li>
+          <li>Kommentar: <span th:text="${currentOrder.customerText}">[kommentar]</span></li>
+        </ul>
+      </div>
+
+      <div class="customer-details">
+        <h3>Kundeoplysninger</h3>
+        <ul>
+          <li>Navn: <span th:text="${currentCustomer.customerName}">[navn]</span></li>
+          <li>Adresse: <span th:text="${currentCustomer.customerAddress}">[adresse]</span></li>
+          <li>Postnummer: <span th:text="${currentCustomer.customerZipcode}">[postnummer]</span></li>
+          <li>Email: <span th:text="${currentCustomer.customerEmail}">[email]</span></li>
+          <li>Telefon: <span th:text="${currentCustomer.customerPhone}">[telefon]</span></li>
+        </ul>
+      </div>
     </div>
 
-    <div class="customer-details">
-      <h3>Kundeoplysninger</h3>
-      <ul>
-        <li>Navn: <span th:text="${currentCustomer.customerName}">[navn]</span></li>
-        <li>Adresse: <span th:text="${currentCustomer.customerAddress}">[adresse]</span></li>
-        <li>Postnummer: <span th:text="${currentCustomer.customerZipcode}">[postnummer]</span></li>
-        <li>Email: <span th:text="${currentCustomer.customerEmail}">[email]</span></li>
-        <li>Telefon: <span th:text="${currentCustomer.customerPhone}">[telefon]</span></li>
-      </ul>
+    <div class="svg-container">
+      <div th:utext="${svg}">[SVG vises her]</div>
     </div>
 
-  </div>
-
-  <div class="svg-container">
-    <div th:utext="${svg}">[SVG vises her]</div>
   </div>
 
   <form method="post" action="/carport/confirm/save">
@@ -47,6 +49,7 @@
   </form>
 
 </div>
+
 
 </body>
 </html>
