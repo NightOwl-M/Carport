@@ -201,9 +201,6 @@ public class OrderController {
         }
     }
 
-
-
-
     private static void confirmPayment(Context ctx, ConnectionPool connectionPool) {
         String orderIdParam = ctx.pathParam("orderId");
 
@@ -224,9 +221,4 @@ public class OrderController {
             ctx.redirect("/pay/" + orderIdParam);
         }
     }
-
-
-
-
-
 }
