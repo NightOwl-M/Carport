@@ -28,31 +28,37 @@ body {
 
 .order-container {
     display: flex;
-    justify-content: center;
-    gap: 50px;
+    justify-content: space-between;
+    gap: 20px;
     width: 100%;
+}
+
+.details-column {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 45%;
 }
 
 .order-details,
 .customer-details {
-    width: 45%;
-}
-
-.order-details ul,
-.customer-details ul {
-    padding-left: 20px;
+    margin-bottom: 10px;
 }
 
 .svg-container {
     background-color: #e9ecef;
     border: 1px solid #ccc;
-    width: 100%;
+    width: 50%;
     height: 300px;
     overflow: auto;
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-bottom: 20px;
+}
+
+form {
+    width: 100%;
+    margin-top: 20px;
 }
 
 form button {
@@ -67,5 +73,5 @@ form button {
 }
 
 form button:hover {
-    background-color: midnightblue;
+    background-color: #002b5c;
 }
