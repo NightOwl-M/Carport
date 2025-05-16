@@ -6,8 +6,10 @@
     <title>Title</title>
 </head>
 <body>
+<header>
+    <h2>Bekræft tilbud inden afsendelse</h2>
+</header>
 
-<h2>Bekræft tilbud inden afsendelse</h2>
 <div class="column-container">
 
     <div class="columns">
@@ -50,13 +52,15 @@
     </div>
 </div>
 
-<form th:action="@{/offerpage/send-offer}" method="post">
-    <button class="custom-btn" type="submit">Send tilbud</button>
-</form>
+<div class="button-container">
+    <form th:action="@{/offerpage}" method="get">
+        <button class="btn-edit" type="submit">Tilbage og rediger</button>
+    </form>
 
-<form th:action="@{/offerpage}" method="get">
-    <button class="custom-btn" type="submit">Tilbage og rediger</button>
-</form>
+    <form th:action="@{/offerpage/send-offer}" method="post">
+        <button class="btn-send-offer" type="submit">Send tilbud</button>
+    </form>
+</div>
 
 </body>
 </html>
