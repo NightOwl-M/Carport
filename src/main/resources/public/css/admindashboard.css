@@ -4,7 +4,7 @@ body{
     background-color: white;
 }
 .logo{
-    background-color: blue;
+    background-color: midnightblue;
 }
 
 h1{
@@ -21,7 +21,7 @@ h2{
 }
 
 button{
-    background-color:blue;
+    background-color:midnightblue;
     color:white;
     padding:10px;
     font-size:30px;
