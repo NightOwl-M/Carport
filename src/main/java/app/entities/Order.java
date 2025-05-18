@@ -1,6 +1,7 @@
 package app.entities;
 
 import java.sql.Timestamp;
+import java.util.Objects;
 
 public class Order {
     private int orderId;
@@ -132,5 +133,13 @@ public class Order {
     // --- Setters ---
     public void setOrderId(int orderId) {
         this.orderId = orderId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Order order = (Order) o;
+        return orderId == order.orderId && customerId == order.customerId && carportWidth == order.carportWidth && carportLength == order.carportLength && statusId == order.statusId && Double.compare(salesPrice, order.salesPrice) == 0 && Objects.equals(roof, order.roof) && Objects.equals(customerText, order.customerText) && Objects.equals(adminText, order.adminText) && Objects.equals(createdAt, order.createdAt) && Objects.equals(customer, order.customer);
     }
 }

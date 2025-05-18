@@ -1,6 +1,8 @@
 package app.mapper.order;
 
 
+import app.entities.Order;
+import app.exceptions.DatabaseException;
 import app.persistence.ConnectionPool;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -89,10 +92,40 @@ class OrderMapperTest {
 
     @Test
     void updateOrderStatus() {
+        try {
+            //Arrange
+            int expectedOrderStatus = 2;
+
+            //Act
+            OrderMapper.updateOrderStatus(1,2, connectionPool);
+            Order order = OrderMapper.getOrderById(1, connectionPool);
+            int actualOrderStatus = order.getStatusId();
+
+
+            //Assert
+            assertEquals(expectedOrderStatus, actualOrderStatus);
+
+        } catch (DatabaseException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Test
     void getOrderById() {
+        try {
+        //Arrange
+        Order expectedOrder = new Order (3, 3, 600, 780, "Plasttrapezplader",
+                "Ønsker det i sort", "Tak for snakken", 3, 25000, Timestamp.valueOf("2025-05-08 12:30:15"));
+
+        //Act
+            Order actualOrder = OrderMapper.getOrderById(3, connectionPool);
+
+        //Assert
+        assertEquals(expectedOrder, actualOrder);
+
+        } catch (DatabaseException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Test
