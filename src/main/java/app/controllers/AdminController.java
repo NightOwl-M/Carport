@@ -65,7 +65,7 @@ public class AdminController {
             ctx.redirect("/adminlogin.html");
         }
     }
-    // hvis man skulle modvige programmet senere hen.
+    // hvis man skulle udvide programmet senere hen.
     private static void checkAdminLogin(Context ctx) {
         Boolean isAdmin = ctx.sessionAttribute("isAdmin");
 
