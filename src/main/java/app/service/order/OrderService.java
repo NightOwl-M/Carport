@@ -1,5 +1,6 @@
 package app.service.order;
 
+import app.entities.Customer;
 import app.entities.Order;
 import app.exceptions.DatabaseException;
 import app.mapper.order.OrderMapper;
@@ -13,10 +14,34 @@ import java.util.List;
 
 public class OrderService {
 
+    public static void createOrderAndCustomer(
+            String name, String email, String address, Integer zipCode, String phone,
+            Integer width, Integer length, String roof, String customerText,
+            ConnectionPool connectionPool) throws DatabaseException {
+
+        // Validering
+        if (name == null || email == null || address == null || zipCode == null || phone == null ||
+                width == null || length == null || roof == null || customerText == null) {
+            throw new DatabaseException("En eller flere ordreoplysninger mangler. Prøv igen.");
+        }
+
+        try {
+            // Opret kunden først
+            Customer customer = CustomerService.saveSessionCustomer(name, email, address, zipCode, phone, connectionPool);
+
+            // Opret ordre
+            saveSessionOrder(customer.getCustomerId(), width, length, roof, customerText, connectionPool);
+
+        } catch (Exception e) {
+            throw new DatabaseException("Fejl under ordreoprettelse: " + e.getMessage(), e);
+        }
+    }
+
     public static Order saveSessionOrder(int customerId, int width, int length, String roof, String userText, ConnectionPool connectionPool) throws DatabaseException {
         Order order = new Order(customerId, width, length, roof, userText);
         return OrderMapper.saveSessionOrder(order, connectionPool);
     }
+
 
     public static void updateOrderForSeller(int orderId, int width, int length, String roof, String customerText, String adminText, double salesPrice, int statusId, ConnectionPool connectionPool) throws DatabaseException {
         Order order = new Order(orderId, width, length, roof, customerText, adminText, salesPrice, statusId);
