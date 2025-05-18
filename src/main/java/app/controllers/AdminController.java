@@ -50,21 +50,14 @@ public class AdminController {
         String password = ctx.formParam("password");
 
         try {
-            boolean isAdmin = AdminLoginService.checkAdminLogin(username, password, connectionPool);
-
-            if (isAdmin) {
-                ctx.sessionAttribute("isAdmin", true);
-                ctx.redirect("/admindashboard");
-            } else {
-                ctx.sessionAttribute("errorMessage", "Forkert admin-brugernavn eller password.");
-                ctx.redirect("/adminlogin.html");
-            }
-
+            String redirectUrl = AdminLoginService.handleAdminLogin(username, password, ctx, connectionPool);
+            ctx.redirect(redirectUrl);
         } catch (DatabaseException e) {
             ctx.sessionAttribute("errorMessage", "Databasefejl: " + e.getMessage());
             ctx.redirect("/adminlogin.html");
         }
     }
+
     // hvis man skulle udvide programmet senere hen.
     private static void checkAdminLogin(Context ctx) {
         Boolean isAdmin = ctx.sessionAttribute("isAdmin");
