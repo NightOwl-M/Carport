@@ -17,9 +17,7 @@ public class CarportSvg {
     }
 
     public void addBeams() {
-
-
-        svgDrawing.addRectangle(0,0 + distanceToRafterEnd, length, rafterWidth, "stroke:black; fill:none; stroke-width:2;");
+        svgDrawing.addRectangle(0, 0 + distanceToRafterEnd, length, rafterWidth, "stroke:black; fill:none; stroke-width:2;");
         svgDrawing.addRectangle(0, width - rafterWidth - distanceToRafterEnd, length, rafterWidth, "stroke:black; fill:none; stroke-width:2;");
     }
 
@@ -37,65 +35,28 @@ public class CarportSvg {
     }
 
     public void addPost() {
-       /*
-        double postWidth = 10;
-
-        svgDrawing.addRectangle(100, rafterWidth/2 + postWidth/2, postWidth, postWidth,"stroke:gray; stroke-width:1;" );
-        svgDrawing.addRectangle(410, rafterWidth/2 + postWidth/2, postWidth, postWidth,"stroke:gray; stroke-width:1;" );
-
-
-  double postWidth = 10;
-    double overhangStart = 100;
-    double overhangEnd = 30;
-    double usableLength = length - overhangStart - overhangEnd;
-    int maxDistanceBetweenPoles = 310;
-
-    // Antal sektioner/stolpe-positioner langs længden (én i hver ende + midtersektioner)
-    int numberOfSections = (int) Math.ceil(usableLength / maxDistanceBetweenPoles);
-    double sectionSpacing = usableLength / numberOfSections;
-
-    // Y-positioner for stolper (under hver rem)
-    double leftY = rafterWidth / 2 - postWidth / 2 + distanceToRafterEnd;
-    double rightY = width - rafterWidth / 2 - postWidth / 2 - distanceToRafterEnd;
-
-    // Tegn stolper ved hver sektion på begge sider
-    for (int i = 0; i <= numberOfSections; i++) {
-        double x = overhangStart + i * sectionSpacing;
-
-        svgDrawing.addRectangle(x - postWidth / 2, leftY, postWidth, postWidth, "stroke:gray; stroke-width:1;");
-        svgDrawing.addRectangle(x - postWidth / 2, rightY, postWidth, postWidth, "stroke:gray; stroke-width:1;");
-    }
-}
-        */
+        //svgDrawing.addRectangle(100, rafterWidth / 2 + postWidth / 2, postWidth, postWidth, "stroke:gray; stroke-width:1;");
+        //svgDrawing.addRectangle(410, rafterWidth / 2 + postWidth / 2, postWidth, postWidth, "stroke:gray; stroke-width:1;");
 
 
         double postWidth = 10;
-        int totalOverHang = 100 + 30;
+        int overHangFront = 100;
+        int overHangRear = 30;
+        int remainingLength = length - overHangFront - overHangRear;
         int maxDistanceBetweenPoles = 310;
 
-        int numberOfPolesEachSide = 2 + (length - totalOverHang) / maxDistanceBetweenPoles;
-        int totalPoles = numberOfPolesEachSide * 2;
+        int modules = (int) Math.ceil((double) remainingLength / maxDistanceBetweenPoles); //fx. 650 / 310 = 2.1 ~ 3
+        int moduleLength = (int)  Math.ceil((double) remainingLength / modules); //fx. 650 / 3 = 217
 
-        double spacing = (length - totalOverHang) / (numberOfPolesEachSide - 1);
-        double startX = 100;
-
-        double leftY = rafterWidth / 2.0 - postWidth / 2.0; // Centrer under øverste rem
-        double rightY = width - rafterWidth / 2.0 - postWidth / 2.0; // Centrer under nederste rem
-
-        for (int i = 0; i < numberOfPolesEachSide; i++) {
-            double x = startX + i * spacing;
-
-            // Venstre side
-            svgDrawing.addRectangle(x, leftY, postWidth, postWidth, "stroke:black; fill:gray;");
-
-            // Højre side
-            svgDrawing.addRectangle(x, rightY, postWidth, postWidth, "stroke:black; fill:gray;");
+        for (double x = 100; x <= length; x += moduleLength) {
+            svgDrawing.addRectangle(x - postWidth / 2, rafterWidth / 2 + postWidth / 2, postWidth, postWidth, "stroke:gray; stroke-width:1;"); //Øverste stolper
+            svgDrawing.addRectangle(x - postWidth / 2, width - rafterWidth / 2 - postWidth / 2 - distanceToRafterEnd, postWidth, postWidth, "stroke:gray; stroke-width:1;"); //Nederste stolper
         }
     }
 
     public void addText() {
-       // int fontSize = Math.max(12, width / 20);
-      //  svgDrawing.addText(width / 2 - 30, height / 2, 0, "Carport", fontSize);
+        // int fontSize = Math.max(12, width / 20);
+        //  svgDrawing.addText(width / 2 - 30, height / 2, 0, "Carport", fontSize);
     }
 
     @Override
