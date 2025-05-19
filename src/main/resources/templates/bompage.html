@@ -2,35 +2,38 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link href="../public/css/bompage.css" th:href="@{/css/bompage.css}" rel="stylesheet"/>
     <title>Title</title>
 </head>
+
 <body>
 
-<h1>Stykliste</h1>
 
-<form method="get">
-    <table class="order-table">
-        <thead>
-        <tr>
-            <th>Materiale</th>
-            <th>Længde</th>
-            <th>Antal</th>
-            <th>Enhed</th>
-            <th>Brugs-beskrivelse</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="component : ${session.orderComponents}">
-            <td th:text="${component.materialVariant.material.name}"></td>
-            <td th:text="${component.materialVariant.length}"></td>
-            <td th:text="${component.quantity}"></td>
-            <td th:text="${component.materialVariant.material.unit}"></td>
-            <td th:text="${component.useDescription}"></td>
-            <td>
-        </tr>
-        </tbody>
-    </table>
-</form>
+<div class="table-div">
+    <form method="get">
+        <table class="order-table">
+            <thead class="table-head">
+            <tr>
+                <th>Materiale beskrivelse</th>
+                <th>Længde</th>
+                <th>Antal</th>
+                <th>Enhed</th>
+                <th>Brugs-beskrivelse</th>
+            </tr>
+            </thead>
+            <tbody class="table-body">
+            <tr th:each="component : ${session.orderComponents}">
+                <td th:text="${component.materialVariant.material.name}"></td>
+                <td th:text="${component.materialVariant.length}"></td>
+                <td th:text="${component.quantity}"></td>
+                <td th:text="${component.materialVariant.material.unit}"></td>
+                <td th:text="${component.useDescription}"></td>
+            <tr>
+            </tbody>
+
+        </table>
+    </form>
+</div>
 
 </body>
 </html>

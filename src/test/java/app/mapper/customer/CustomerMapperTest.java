@@ -1,5 +1,4 @@
-package app.mapper.order;
-
+package app.mapper.customer;
 
 import app.entities.Order;
 import app.exceptions.DatabaseException;
@@ -13,10 +12,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 
-
 import static org.junit.jupiter.api.Assertions.*;
 
-class OrderMapperTest {
+class CustomerMapperTest {
 
     private static final String USER = "postgres";
     private static final String PASSWORD = "postgres";
@@ -78,106 +76,21 @@ class OrderMapperTest {
     }
 
     @Test
-    void testConnection() throws SQLException {
-        assertNotNull(connectionPool.getConnection()); //Vi tester at når vi kalder vores connect() så returneres der ikke null
-    }
+    void getCustomerEmailById(){
+        try{
+            // Arrange
+            int customerId = 1;
+            String expectedEmail = "David.800@email.dk";
 
-    @Test
-    void saveSessionOrder() {
-    }
+            // Act
+            String actualEmail = CustomerMapper.getCustomerEmailById(customerId, connectionPool);
 
-    @Test
-    void updateOrderForSeller() {
-    }
+            // Assert
+            assertEquals(expectedEmail, actualEmail);
 
-    @Test
-    void updateOrderStatus() {
-        try {
-            //Arrange
-            int expectedOrderStatus = 2;
-
-            //Act
-            OrderMapper.updateOrderStatus(1,2, connectionPool);
-            Order order = OrderMapper.getOrderById(1, connectionPool);
-            int actualOrderStatus = order.getStatusId();
-
-
-            //Assert
-            assertEquals(expectedOrderStatus, actualOrderStatus);
-
-        } catch (DatabaseException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Test
-    void getOrderById() {
-        try {
-        //Arrange
-        Order expectedOrder = new Order (3, 3, 600, 780, "Plasttrapezplader",
-                "Ønsker det i sort", "Tak for snakken", 3, 25000, Timestamp.valueOf("2025-05-08 12:30:15"));
-
-        //Act
-            Order actualOrder = OrderMapper.getOrderById(3, connectionPool);
-
-        //Assert
-        assertEquals(expectedOrder, actualOrder);
-
-        } catch (DatabaseException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Test
-    void getOrdersByStatus() {
-    }
-
-    /* //TODO slet, Jons tests, lader dem stå lidt til inspiration
-    @Test
-    void getAllOrders()
-    {
-        try
-        {
-            List<Order> orders = OrderMapper.getAllOrders(connectionPool);
-            assertEquals(3, orders.size());
-        }
-        catch (DatabaseException e)
-        {
+        }catch(DatabaseException e){
             fail("Database fejl: " + e.getMessage());
         }
     }
 
-    @Test
-    void getOrderById()
-    {
-        try
-        {
-            User user = new User(1, "jon", "1234", "customer");
-            Order expected = new Order(1, 1, 600, 780, 20000, user);
-            Order dbOrder = OrderMapper.getOrderById(1, connectionPool);
-            assertEquals(expected, dbOrder);
-        }
-        catch (DatabaseException e)
-        {
-            fail("Database fejl: " + e.getMessage());
-        }
-    }
-
-    @Test
-    void insertOrder()
-    {
-        try
-        {
-            User user = new User(1, "jon", "1234", "customer");
-            Order newOrder = new Order(2, 550, 750, 20000, user);
-            newOrder = OrderMapper.insertOrder(newOrder, connectionPool);
-            Order dbOrder = OrderMapper.getOrderById(newOrder.getOrderId(), connectionPool);
-            assertEquals(newOrder, dbOrder);
-        }
-        catch (DatabaseException e)
-        {
-            fail("Database fejl: " + e.getMessage());
-        }
-    }
-     */
 }
