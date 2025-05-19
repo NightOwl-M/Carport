@@ -180,4 +180,23 @@ class OrderMapperTest {
         }
     }
      */
+
+    @Test
+    void getUnprocessedOrderById() {
+        try {
+            //Arrange
+            Order expectedOrder = new Order (1, 1, 600, 780, "Plasttrapezplader",
+                    "Skal være god kvalitet", "Bemærkning fra sælger", 1, 20000, Timestamp.valueOf("2025-05-06 10:10:49.630419"));
+
+            //Act
+            Order actualOrder = OrderMapper.getUnprocessedOrderById(1, connectionPool);
+
+            //Assert
+            assertEquals(expectedOrder, actualOrder);
+
+        } catch (DatabaseException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }
