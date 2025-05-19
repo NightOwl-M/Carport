@@ -1,6 +1,7 @@
 package app.entities;
 
 import java.sql.Timestamp;
+import java.util.Objects;
 
 public class Order {
     private int orderId;
@@ -18,12 +19,12 @@ public class Order {
     /**
      * Constructor til midlertidig lagring i sessionen (uden customerId).
      */
-    public Order(int carportWidth, int carportLength, String roof, String customerText) {
+    public Order(int carportWidth, int carportLength, String roof, String customerText, String adminText) {
         this.carportWidth = carportWidth;
         this.carportLength = carportLength;
         this.roof = roof;
         this.customerText = customerText;
-        this.adminText = null;
+        this.adminText = adminText;
         this.statusId = 1;
         this.salesPrice = 0.0;
     }
@@ -56,6 +57,7 @@ public class Order {
         this.adminText = adminText;
         this.salesPrice = salesPrice;
         this.statusId = statusId;
+        System.out.println("Order Constructor - Status ID sat til: " + this.statusId);
     }
 
     /**
@@ -131,5 +133,13 @@ public class Order {
     // --- Setters ---
     public void setOrderId(int orderId) {
         this.orderId = orderId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Order order = (Order) o;
+        return orderId == order.orderId && customerId == order.customerId && carportWidth == order.carportWidth && carportLength == order.carportLength && statusId == order.statusId && Double.compare(salesPrice, order.salesPrice) == 0 && Objects.equals(roof, order.roof) && Objects.equals(customerText, order.customerText) && Objects.equals(adminText, order.adminText) && Objects.equals(createdAt, order.createdAt) && Objects.equals(customer, order.customer);
     }
 }

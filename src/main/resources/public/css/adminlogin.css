@@ -1,0 +1,57 @@
+body{
+    background-color: white;
+}
+
+.container{
+    text-align: center;
+    border: 1px solid #003e5b;
+    border-radius: 4px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    background-color: #f7f7f7;
+    width: 30%;
+    margin: 5% auto;
+    padding: 2% 2% 2% 2%;
+}
+
+.container h3{
+    color: #003e5b;
+    margin-bottom: 20px;
+}
+
+.form-group{
+    text-align: left;
+    margin-bottom: 16px;
+}
+
+.form-group label{
+    display: block;
+    margin-bottom: 6px;
+    font-weight: bold;
+    color: #003e5b;
+}
+
+.form-group input{
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.login-button{
+    margin-top: 26px;
+}
+
+.login-button button{
+    background-color: #003e5b;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.login-button button:hover{
+    background-color: #00537f;
+}

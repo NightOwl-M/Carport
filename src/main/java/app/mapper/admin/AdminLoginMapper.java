@@ -10,9 +10,6 @@ import java.sql.SQLException;
 
 public class AdminLoginMapper {
 
-    /**
-     * Tjekker admin login credentials i databasen.
-     */
     public static boolean checkAdminLoginCredentials(String username, String password, ConnectionPool connectionPool) throws DatabaseException {
         String sql = "SELECT COUNT(*) FROM admin WHERE username = ? AND password = ?";
 
@@ -23,15 +20,11 @@ public class AdminLoginMapper {
             ps.setString(2, password);
 
             try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next() && rs.getInt(1) > 0) {
-                    return true;
-                }
+                return rs.next() && rs.getInt(1) > 0;
             }
 
         } catch (SQLException e) {
             throw new DatabaseException("Fejl ved validering af admin login: " + e.getMessage(), e);
         }
-
-        return false;
     }
 }
