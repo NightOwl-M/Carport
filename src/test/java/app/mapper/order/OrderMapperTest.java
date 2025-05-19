@@ -12,6 +12,8 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -180,4 +182,27 @@ class OrderMapperTest {
         }
     }
      */
+
+    @Test
+    void getOrderSummariesByStatus(){
+
+        try {
+
+            //Arrange
+            int statusId = 3;
+
+            //Act
+            List<Order> expectedOrders = OrderMapper.getOrderSummariesByStatus(statusId, connectionPool);
+
+            //Assert
+            assertEquals(1, expectedOrders.size());
+            assertEquals(3, expectedOrders.get(0).getOrderId());
+
+        } catch (DatabaseException e) {
+
+            throw new RuntimeException(e);
+
+        }
+    }
+
 }
