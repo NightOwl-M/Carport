@@ -1,5 +1,7 @@
 package app.service.order;
 
+import java.util.Locale;
+
 public class Svg {
     private StringBuilder svg;
 
@@ -10,9 +12,11 @@ public class Svg {
         addMarker();
     }
 
-    public void addRectangle(int x, int y, double width, double height, String style) {
-        svg.append(String.format("<rect x='%d' y='%d' width='%f' height='%f' style='%s' />", x, y, width, height, style));
+    public void addRectangle(double x, double y, double width, double height, String style) {
+        svg.append(String.format(Locale.US, "<rect x='%f' y='%f' width='%f' height='%f' style='%s' />", x, y, width, height, style));
     }
+
+
 
     public void addLine(int x1, int y1, int x2, int y2, String style) {
         svg.append(String.format("<line x1='%d' y1='%d' x2='%d' y2='%d' style='%s' />", x1, y1, x2, y2, style));
