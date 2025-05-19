@@ -19,12 +19,12 @@ public class Order {
     /**
      * Constructor til midlertidig lagring i sessionen (uden customerId).
      */
-    public Order(int carportWidth, int carportLength, String roof, String customerText) {
+    public Order(int carportWidth, int carportLength, String roof, String customerText, String adminText) {
         this.carportWidth = carportWidth;
         this.carportLength = carportLength;
         this.roof = roof;
         this.customerText = customerText;
-        this.adminText = null;
+        this.adminText = adminText;
         this.statusId = 1;
         this.salesPrice = 0.0;
     }

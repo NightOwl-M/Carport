@@ -231,7 +231,7 @@ public class AdminController {
             String roof = ctx.formParam("roof");
             String adminText = ctx.formParam("admin-text");
 
-            Order currentOrderSalesmanInput = new Order(carportWidth, carportLength, roof, adminText); //TODO Der findes ikke en konstruktør med adminText til sidst
+            Order currentOrderSalesmanInput = new Order(carportWidth, carportLength, roof, currentOrder.getCustomerText(), adminText);
             currentOrderSalesmanInput.setOrderId(currentOrder.getOrderId());
 
             //Beregning af pris
