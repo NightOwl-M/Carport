@@ -2,41 +2,52 @@
 skinparam monochrome true
 skinparam shadowing false
 left to right direction
-title Carport Bestillingsflow (Kunde)
+title Kunde-flow – Carport Bestilling (OrderController)
+@startuml
 
 start
-@startuml
-:Form1 - Indtast mål;
+
+:Startside /carport;
 :GET /carport;
-:OrderController.get("/carport") => form1.html;
+:Render form1.html;
 
-:Bruger indtaster width og length;
-:AJAX GET /api/carport-svg;
-:OrderController.getCarportSvg();
-:Generér og returner SVG;
-
-:Submitter formular;
+:Bruger indtaster bredde, længde, tagtype, kommentar;
+:Submitter form1;
 :POST /carport/info;
 :OrderController.handleCarportInfo();
-:Husk width + length i session;
+:Set session width, length, roof, customerText;
 :Redirect til /carport/info;
 
 :Form2 - Personoplysninger;
 :GET /carport/info;
-:OrderController.get("/carport/info") => form2.html;
+:Render form2.html;
 
-:Bruger indtaster navn, email, adresse;
+:Bruger indtaster navn, adresse, postnr, mail, tlf;
+:Submitter form2;
 :POST /carport/confirm;
 :OrderController.handleConfirmation();
-:Husk persondata i session;
+:Validerer felter og sætter dem i session;
 :Redirect til /carport/confirm;
 
-:Form3 - Bekræft ordre;
+:Form3 - Bekræft side;
 :GET /carport/confirm;
 :OrderController.showConfirmationPage();
-:Regenerér SVG;
-:Render form3.html med SVG og session-data;
-:Gemmer i databasen;
+:Validerer at alle session-attributter findes;
+:Opretter midlertidig Order og Customer;
+:Genererer SVG igen;
+:Render form3.html med attributter;
+
+:Bruger bekræfter og trykker "Godkend";
+:POST /carport/confirm/save;
+:OrderController.saveOrderToDatabase();
+:Kalder OrderService.createOrderAndCustomer(...);
+:Indsætter kunde og ordre i database;
+:Rydder session;
+:Redirect til /thankyoupage;
+
+:Tak for din bestilling;
+:GET /thankyoupage;
+:Render thankyoupage.html;
 
 stop
 @enduml
