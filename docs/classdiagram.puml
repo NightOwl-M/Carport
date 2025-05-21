@@ -17,170 +17,200 @@ package "config"{
 }
 
 package "controllers"{
-
-class CustomerController {
-+ {static} addRoutes()
-+ {static} getUserById()
-+ {static} updateUser()
-+ {static} createUser()
-+ {static} deleteUser()
-}
-
+'Done'
 class AdminController {
 + {static} addRoutes()
-+ {static} createUser()
-+ {static} updateUser()
-+ {static} deleteUser()
++ {static} adminLogin()
++ {static} checkAdminLogin()
++ {static} updateOrder()
++ {static} updateOrderStatus()
++ {static} showUnprocessedOrders()
++ {static} showUnprocessedOrder()
++ {static} showPendingOrders()
++ {static} showPendingOrder()
++ {static} showProcessedOrders()
++ {static} showProcessedOrder()
++ {static} showOfferPage()
++ {static} showOfferPageConfirmation()
++ {static} showBomPage()
++ {static} sendOffer()
 }
-
-class LoginController {
-+ {static} addRoutes()
-+ {static} login ()
-+ {static} logout ()
-}
-
-class ComponentController {
-+ {static} addRoutes()
-+ {static} getAllComponentsByOrderId()
-+ {static} addComponentsByOrderId()
-}
-
-class MaterialVariantController {
-+ {static} addRoutes()
-+ {static} getAllMaterialVariants()
-}
-
-class MaterialController {
-+ {static} addRoutes()
-+ {static} getAllMaterials()
-}
-
+'Done'
 class OrderController {
 + {static} addRoutes()
-+ {static} getAllOrdersAndCustomerInfo()
-+ {static} getAllOrders()
-+ {static} getOrderByOrderId()
-+ {static} deleteOrder()
-+ {static} getOrdersByEmail()
-+ {static} setOrderStatus()
-+ {static} setOrderSalesPrice()
++ {static} getCarportSvg()
++ {static} handleCarportInfo()
++ {static} handleConfirmation()
++ {static} showConfirmationPage()
++ {static} saveOrderToDatabase()
++ {static} showPaymentPage()
++ {static} confirmPayment()
 }
 }
 
 package "entities"{
+
+class Admin{
+- int adminId
+- String username
+- String password
+
++ getters and setters()
+
+}
+
+'Done'
 class Component {
 - int componentId
-- Order order
-- MaterialVariant materialVariant
+- int orderId
+- int materialVariantId
 - int quantity
 - String useDescription
+- MaterialVariant materialVariant
+
++ getters and setters()
+}
+'Done'
+class Customer {
+- int customerId
+- String customerName
+- String customerEmail
+- String customerAddress
+- int customerZipcode
+- String customerPhone
 
 + getters and setters()
 }
 
+'Done'
 class Material {
 - int materialId
-- String description
+- String name
 - String unit
 - double price
 
 + getters and setters()
 }
-
+'Done'
 class MaterialVariant {
-- Material material
+- int materialVariantId;
 - int materialId
 - int length
+- Material material
 
 + getters and setters()
 }
-
+'Done'
 class Order {
 - int orderId
-- String orderStatus
-- int carport_width
-- int carport_length
-- String roofType
+- int customerId
+- int carportWidth
+- int carportLength
+- String roof
+- String customerText
+- String adminText
+- int statusId
 - double salesPrice
-- String customerComment
-- String adminComment
-- LocalDate createdAt
-- List<Component> components
-- User user
+- Timestamp createdAt
+- Customer customer
 
 + getters and setters()
 }
 
-class User {
-- int userId
-- String fullName
-- String address
+'Done'
+class OrderStatus{
+- int statusId
+- String status
+
++ getters and setters()
+
+}
+'Done'
+class Svg{
+- int svgId
+- int orderId
+- String svgData
+- Timestamp createdAt
+
++getters and setters()
+}
+
+'Done'
+
+class Zipcode{
 - int zipcode
-- String email
-- String password ***hashed
-- String phoneNumber
-- String role
+- String city
 
-+ getters and setters()
-}
-
-
++getters and setters()
 }
 
 package "exceptions"{
      class DatabaseException {
+     + DatabaseException ()
+     + DatabaseException ()
      + DatabaseException ()
       }
 }
 
 
 package "mapper"{
+'Done'
+package "admin" {
+class AdminLoginMapper {
++ {static} boolean checkAdminLoginCredentials()
 
-package "user" {
-class userMapper {
-+ {static} login()
-+ {static} logout()
-+ {static} createUser()
-+ {static} updateUser()
-+ {static} deleteUser()
-+ {static} getUserById()
 }
-}
+'Skal evt. slettes helt?'
+class AdminMapper{
 
-package "order" {
-class OrderMapper {
- + {static} getAllOrdersAndCustomerInfo()
- + {static} getAllOrders()
- + {static} getOrderByOrderId()
- + {static} deleteOrder()
- + {static} getOrdersByEmail()
- + {static} setOrderStatus()
- + {static} setOrderSalesPrice()
-}
 }
 
-package "material" {
-class MaterialMapper {
-+ {static} getAllMaterials()
+package "component"{
+
+class ComponentMapper{
++ {static} saveOrderComponentsToDB()
 }
 
-class MaterialVariantMapper {
-+ {static} getAllMaterialVariants()
-}
+package "customer"{
+
+class CustomerMapper{
++ {static} Customer saveSessionCustomer()
++ {static} String getCustomerEmailById()
 }
 
-package "component" {
-class ComponentMapper {
-+ {static} getAllComponentsByOrderId()
-+ {static} addComponentsByOrderId()
-}
-}
+package "material"{
+'Skal evt. slettes helt?'
+class MaterialMapper{
 }
 
+class MaterialVariantMapper{
++ {static} List<MaterialVariant> getMaterialVariantsByIdAndMinLength
+}
 
+package "order"{
 
+class OrderMapper{
++ {static} Order saveSessionOrder()
++ {static} updateOrderForSeller()
++ {static} updateOrderStatus()
++ {static} Order getOrderById()
++ {static} Order getUnprocessedOrderById()
++ {static} List<Order> getOrderSummariesByStatus()
++ {static} List<Component> getAllComponentsByOrderId()
+
+}
+'Skal evt. slettes helt?'
+class OrderStatusMapper{
+
+}
+
+package "svg"{
+'Skal evt. slettes helt?'
+class SvgMapper{
+}
 
 package "persistence"{
+
  class ConnectionPool {
 - {static} volatile ConnectionPool instance
 - {static} HikariDataSource ds
@@ -196,17 +226,29 @@ package "persistence"{
 }
 
 
-
-
-
 package "service"{
+
+package "admin"{
+
+class AdminLoginService{
++ {static} String handleAdminLogin()
+}
+'Skal evt. slettes helt?'
+class AdminService{
+}
+
 
 package "component" {
 class ComponentService {
++ {static} saveOrderComponentsToDB()
++ {static} List<Component> calculateBom()
+
+}
+}
 }
 
 }
-
+'Skal evt. slettes helt'?
 package "material" {
 class MaterialVariantService {
 }
@@ -217,9 +259,24 @@ class MaterialService {
 }
 
 package "order" {
+class CarportCalculatorService{
+}
+class CarportSvg{
+
+}
+
+
 class OrderService {
 
 }
+
+class OrderStatusService{
+
+
+}
+
+class Svg{
+
 }
 
 package "svg" {
