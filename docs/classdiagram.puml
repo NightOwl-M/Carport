@@ -19,32 +19,32 @@ package "config"{
 package "controllers"{
 'Done'
 class AdminController {
-+ {static} addRoutes()
-+ {static} adminLogin()
-+ {static} checkAdminLogin()
-+ {static} updateOrder()
-+ {static} updateOrderStatus()
-+ {static} showUnprocessedOrders()
-+ {static} showUnprocessedOrder()
-+ {static} showPendingOrders()
-+ {static} showPendingOrder()
-+ {static} showProcessedOrders()
-+ {static} showProcessedOrder()
-+ {static} showOfferPage()
-+ {static} showOfferPageConfirmation()
-+ {static} showBomPage()
-+ {static} sendOffer()
++ {static} addRoutes(Javalin app, ConnectionPool connectionPool)
++ {static} adminLogin(Context ctx, ConnectionPool connectionPool)
++ {static} checkAdminLogin(Context ctx)
++ {static} updateOrder(Context ctx, ConnectionPool connectionPool)
++ {static} updateOrderStatus(Context ctx, ConnectionPool connectionPool)
++ {static} showUnprocessedOrders(Context ctx, ConnectionPool connectionPool)
++ {static} showUnprocessedOrder(Context ctx, ConnectionPool connectionPool)
++ {static} showPendingOrders(Context ctx, ConnectionPool connectionPool)
++ {static} showPendingOrder(Context ctx, ConnectionPool connectionPool)
++ {static} showProcessedOrders(Context ctx, ConnectionPool connectionPool)
++ {static} showProcessedOrder(Context ctx, ConnectionPool connectionPool)
++ {static} showOfferPage(Context ctx, ConnectionPool connectionPool)
++ {static} showOfferPageConfirmation(Context ctx, ConnectionPool connectionPool)
++ {static} showBomPage(Context ctx, ConnectionPool connectionPool)
++ {static} sendOffer(Context ctx, ConnectionPool connectionPool)
 }
 'Done'
 class OrderController {
-+ {static} addRoutes()
-+ {static} getCarportSvg()
-+ {static} handleCarportInfo()
-+ {static} handleConfirmation()
-+ {static} showConfirmationPage()
-+ {static} saveOrderToDatabase()
-+ {static} showPaymentPage()
-+ {static} confirmPayment()
++ {static} addRoutes(Javalin app, ConnectionPool connectionPool)
++ {static} getCarportSvg(Context ctx)
++ {static} handleCarportInfo(Context ctx)
++ {static} handleConfirmation(Context ctx, ConnectionPool connectionPool)
++ {static} showConfirmationPage(Context ctx)
++ {static} saveOrderToDatabase(Context ctx, ConnectionPool connectionPool)
++ {static} showPaymentPage(Context ctx, ConnectionPool connectionPool)
++ {static} confirmPayment(Context ctx, ConnectionPool connectionPool)
 }
 }
 
@@ -146,9 +146,9 @@ class Zipcode{
 
 package "exceptions"{
      class DatabaseException {
-     + DatabaseException ()
-     + DatabaseException ()
-     + DatabaseException ()
+     + DatabaseException (String userMessage)
+     + DatabaseException (String userMessage, String systemMessage)
+     + DatabaseException (String userMessage, Throwable cause)
       }
 }
 
@@ -157,7 +157,7 @@ package "mapper"{
 'Done'
 package "admin" {
 class AdminLoginMapper {
-+ {static} boolean checkAdminLoginCredentials()
++ {static} boolean checkAdminLoginCredentials(String username, String password, ConnectionPool connectionPool)
 
 }
 'Skal evt. slettes helt?'
@@ -168,14 +168,14 @@ class AdminMapper{
 package "component"{
 
 class ComponentMapper{
-+ {static} saveOrderComponentsToDB()
++ {static} saveOrderComponentsToDB(List<Component> orderComponents, ConnectionPool connectionPool)
 }
 
 package "customer"{
 
 class CustomerMapper{
-+ {static} Customer saveSessionCustomer()
-+ {static} String getCustomerEmailById()
++ {static} Customer saveSessionCustomer(Customer customer, ConnectionPool connectionPool)
++ {static} String getCustomerEmailById(int customerId, ConnectionPool connectionPool)
 }
 
 package "material"{
@@ -184,19 +184,20 @@ class MaterialMapper{
 }
 
 class MaterialVariantMapper{
-+ {static} List<MaterialVariant> getMaterialVariantsByIdAndMinLength
++ {static} List<MaterialVariant> getMaterialVariantsByIdAndMinLength(int materialId, int minLength, ConnectionPool connectionPool)
 }
 
 package "order"{
 
 class OrderMapper{
-+ {static} Order saveSessionOrder()
-+ {static} updateOrderForSeller()
-+ {static} updateOrderStatus()
-+ {static} Order getOrderById()
-+ {static} Order getUnprocessedOrderById()
-+ {static} List<Order> getOrderSummariesByStatus()
-+ {static} List<Component> getAllComponentsByOrderId()
++ {static} Order saveSessionOrder(Order order, ConnectionPool connectionPool)
++ {static} updateOrderForSeller(Order order, ConnectionPool connectionPool)
++ {static} updateOrderStatus(int orderId, int statusId, ConnectionPool connectionPool)
++ {static} Order getOrderById(int orderId, ConnectionPool connectionPool)
++ {static} Order getUnprocessedOrderById(int orderId, ConnectionPool connectionPool)
++ {static} List<Order> getOrderSummariesByStatus(int statusId, ConnectionPool connectionPool)
++ {static} Order getOrderAndCustomerInfoByOrderId(int orderId, ConnectionPool connectionPool)
++ {static} List<Component> getAllComponentsByOrderId(int orderId, ConnectionPool connectionPool)
 
 }
 'Skal evt. slettes helt?'
@@ -218,10 +219,10 @@ package "persistence"{
 
 - ConnectionPool()
 
-+ {static} getInstance()
++ {static} getInstance(String user, String password, String url, String db)
 + getConnection()
 + close()
-+ {static} createHikariConnectionPool()
++ {static} createHikariConnectionPool(String user, String password, String url, String db)
 }
 }
 
@@ -231,7 +232,7 @@ package "service"{
 package "admin"{
 
 class AdminLoginService{
-+ {static} String handleAdminLogin()
++ {static} String handleAdminLogin(String username, String password, Context ctx, ConnectionPool connectionPool)
 }
 'Skal evt. slettes helt?'
 class AdminService{
@@ -240,24 +241,24 @@ class AdminService{
 
 package "component" {
 class ComponentService {
-+ {static} saveOrderComponentsToDB()
-+ {static} List<Component> calculateBom()
++ {static} saveOrderComponentsToDB(List<Component> orderComponents, ConnectionPool connectionPool)
++ {static} List<Component> calculateBom(Order order, ConnectionPool connectionPool)
 
 }
 package "customer" {
 
 class CustomerService{
 
-+ {static} Customer saveSessionCustomer()
-+ {static} getCustomerEmailById()
++ {static} Customer saveSessionCustomer(String name, String email, String address, int zipCode, String phone, ConnectionPool connectionPool)
++ {static} getCustomerEmailById(int customerId, ConnectionPool connectionPool)
 }
 }
 package "email"{
 
 class EmailService{
 
-+ {static} sendOfferEmail()
-+ {static} String buildOfferContent()
++ {static} sendOfferEmail(Order order, String customerEmail)
++ {static} String buildOfferContent(Order order)
 }
 }
 
@@ -280,14 +281,14 @@ class CarportCalculatorService{
 -int length
 -ConnectionPool connectionPool
 
-+ List<Component> calculateCarportBOM()
-+ double calculateCarportMaterialCost()
-+ calculatePosts()
++ List<Component> calculateCarportBOM(Order order)
++ double calculateCarportMaterialCost(List<Component> orderComponents)
++ calculatePosts(Order order)
 + int calculatePostQuantity()
-+ calculateBeams()
++ calculateBeams(Order order)
 + int calculateBeamsJoiningPoint()
-+ calculateRafters()
-+ int calculateRaftersQuantity
++ calculateRafters(Order order)
++ int calculateRaftersQuantity(int length)
 
 }
 class CarportSvg{
@@ -306,17 +307,18 @@ class CarportSvg{
 
 class OrderService {
 
-+ {static} createOrderAndCustomer()
-+ {static} Order saveSessionOrder()
-+ {static} updateOrderForSeller()
-+ {static} updateOrderStatus()
-+ {static} Order getOrderById()
-+ {static} List<Order> getOrderSummariesByStatus()
-+ {static} Order getUnprocessedOrderById()
-+ {static} updateOrderAndSendOffer()
-+ {static} getOrderAndCustomerInfoByOrderId()
-+ {static} double calculateEstimatedSalesPrice()
-+ {static} Order validateAndFetchOrder()
++ {static} createOrderAndCustomer(String name, String email, String address, int zipCode, String phone,
+   int width, int length, String roof, String customerText, ConnectionPool connectionPool)
++ {static} Order saveSessionOrder(int customerId, int width, int length, String roof, String userText, ConnectionPool connectionPool)
++ {static} updateOrderForSeller(int orderId, int width, int length, String roof, String customerText, String adminText, double salesPrice, int statusId, ConnectionPool connectionPool)
++ {static} updateOrderStatus(int orderId, int statusId, ConnectionPool connectionPool)
++ {static} Order getOrderById(int orderId, ConnectionPool connectionPool)
++ {static} List<Order> getOrderSummariesByStatus(int statusId, ConnectionPool connectionPool)
++ {static} Order getUnprocessedOrderById(int orderId, ConnectionPool connectionPool)
++ {static} updateOrderAndSendOffer(int orderId, int width, int length, String roof, String customerText, String adminText, double salesPrice, int statusId, ConnectionPool connectionPool)
++ {static} getOrderAndCustomerInfoByOrderId(int orderId, ConnectionPool connectionPool)
++ {static} double calculateEstimatedSalesPrice(double coverageRate, double carportTotalPrice)
++ {static} Order validateAndFetchOrder(String orderIdParam, ConnectionPool connectionPool)
 
 
 }
@@ -328,9 +330,9 @@ class OrderStatusService{
 class Svg{
 - StringBuilder svg
 
-+ addRectangle()
-+ addLine()
-+ addText()
++ addRectangle(double x, double y, double width, double height, String style)
++ addLine(int x1, int y1, int x2, int y2, String style)
++ addText(int x, int y, int rotation, String text, int fontSize)
 + addMarker()
 + String toString()
 
@@ -344,7 +346,7 @@ Main -- "config"
 "mapper" -- "entities": Laver Entities objekter
 
 
-'Entitet relationer
+'Entitetsrelationer'
 
 
 
