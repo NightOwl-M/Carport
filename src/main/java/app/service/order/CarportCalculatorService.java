@@ -153,6 +153,13 @@ public class CarportCalculatorService {
         int quantity = modules + 1;
         return quantity;
     }
+
+    public List<Component> getCarportBOM(Order order) throws DatabaseException {
+        if (orderComponents.isEmpty()) {
+            calculateCarportBOM(order);
+        }
+        return orderComponents;
+    }
 }
 
 
