@@ -2,21 +2,18 @@ package app.mapper.customer;
 
 import app.entities.Customer;
 import app.persistence.ConnectionPool;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.sql.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class CustomerMapperTest {
+class CustomerMapper_SaveSessionCustomerTest {
 
     private static final String USER = "postgres";
     private static final String PASSWORD = "postgres";
     private static final String URL = "jdbc:postgresql://localhost:5432/%s?currentSchema=test";
     private static final String DB = "carport";
-
     private static final ConnectionPool connectionPool = ConnectionPool.getInstance(USER, PASSWORD, URL, DB);
 
     @BeforeAll
@@ -36,7 +33,7 @@ class CustomerMapperTest {
     }
 
     @BeforeEach
-    void clearTable() {
+    void clearCustomerTable() {
         try (Connection conn = connectionPool.getConnection();
              Statement stmt = conn.createStatement()) {
             stmt.execute("DELETE FROM test.customer");
@@ -51,24 +48,28 @@ class CustomerMapperTest {
         Customer testCustomer = new Customer("Mikkel Tester", "mikkel@test.dk", "Testervej 42", 4000, "12345678");
 
         // Act
+        Customer savedCustomer = null;
         try {
-            Customer saved = CustomerMapper.saveSessionCustomer(testCustomer, connectionPool);
-
-            // Assert
-            assertNotNull(saved);
-            assertTrue(saved.getCustomerId() > 0);
-            assertEquals("Mikkel Tester", saved.getCustomerName());
-
-            try (Connection conn = connectionPool.getConnection();
-                 PreparedStatement ps = conn.prepareStatement("SELECT * FROM test.customer WHERE customer_id = ?")) {
-                ps.setInt(1, saved.getCustomerId());
-                ResultSet rs = ps.executeQuery();
-                assertTrue(rs.next());
-                assertEquals("mikkel@test.dk", rs.getString("customer_email"));
-            }
-
+            savedCustomer = CustomerMapper.saveSessionCustomer(testCustomer, connectionPool);
         } catch (Exception e) {
-            fail("Fejl under oprettelse af kunde: " + e.getMessage());
+            fail("Fejl under indsættelse: " + e.getMessage());
+        }
+
+        // Assert
+        assertNotNull(savedCustomer);
+        assertTrue(savedCustomer.getCustomerId() > 0);
+        assertEquals(testCustomer.getCustomerName(), savedCustomer.getCustomerName());
+
+        // Ekstra validering mod databasen
+        try (Connection conn = connectionPool.getConnection();
+             PreparedStatement ps = conn.prepareStatement("SELECT * FROM test.customer WHERE customer_id = ?")) {
+            ps.setInt(1, savedCustomer.getCustomerId());
+            ResultSet rs = ps.executeQuery();
+
+            assertTrue(rs.next());
+            assertEquals("mikkel@test.dk", rs.getString("customer_email"));
+        } catch (SQLException e) {
+            fail("Fejl ved validering i databasen: " + e.getMessage());
         }
     }
 }
