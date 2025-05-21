@@ -1,6 +1,7 @@
 package app.mapper.order;
 
 
+import app.entities.Customer;
 import app.entities.Order;
 import app.exceptions.DatabaseException;
 import app.persistence.ConnectionPool;
@@ -81,7 +82,25 @@ class OrderMapperTest {
     void testConnection() throws SQLException {
         assertNotNull(connectionPool.getConnection()); //Vi tester at når vi kalder vores connect() så returneres der ikke null
     }
+    @Test
+    void getOrderAndCustomerInfoByOrderId() {
+        //Arrange
+        Order expectedOrder = new Order (2, 2, 600, 780, "Plasttrapezplader",
+                "Skal passe til huset", "Afventer bekræftelse", 2, 15000, Timestamp.valueOf("2025-05-07 09:00:00"));
 
+        Customer expectedCustomer = new Customer(2, "Jeppe", "jeppe@email.dk", "Havnevej 12", 2800, "87654321");
+
+        //Act
+
+
+
+        //Assert
+        assertEquals(expectedOrder.getCustomerId(), expectedCustomer.getCustomerId());
+
+
+    }
+
+    /*
     @Test
     void saveSessionOrder() {
     }
@@ -132,7 +151,8 @@ class OrderMapperTest {
     void getOrdersByStatus() {
     }
 
-    /* //TODO slet, Jons tests, lader dem stå lidt til inspiration
+
+     //TODO slet, Jons tests, lader dem stå lidt til inspiration
     @Test
     void getAllOrders()
     {

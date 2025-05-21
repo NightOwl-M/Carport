@@ -4,6 +4,8 @@ import java.sql.Timestamp;
 import java.util.Objects;
 
 public class Order {
+
+
     private int orderId;
     private int customerId;
     private int carportWidth;
@@ -116,6 +118,26 @@ public class Order {
         this.createdAt = createdAt;
         this.customer = customer;
     }
+
+    /**
+     * Constructor med alle felter der bliver brugt til test af metoder i OrderMapperTest.
+     */
+
+
+    public Order(int orderId, int customerId, int carportWidth, int carportLength, String roof, String customerText, String adminText, int statusId, double salesPrice, Timestamp createdAt, Customer customer) {
+        this.orderId = orderId;
+        this.customerId = customerId;
+        this.carportWidth = carportWidth;
+        this.carportLength = carportLength;
+        this.roof = roof;
+        this.customerText = customerText;
+        this.adminText = adminText;
+        this.statusId = statusId;
+        this.salesPrice = salesPrice;
+        this.createdAt = createdAt;
+        this.customer = customer;
+    }
+
 
     // --- Getters ---
     public int getOrderId() { return orderId; }
