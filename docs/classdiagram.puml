@@ -244,6 +244,20 @@ class ComponentService {
 + {static} List<Component> calculateBom()
 
 }
+package "customer" {
+
+class CustomerService{
+
++ {static} Customer saveSessionCustomer()
++ {static} getCustomerEmailById()
+}
+}
+package "email"{
+
+class EmailService{
+
++ {static} sendOfferEmail()
++ {static} String buildOfferContent()
 }
 }
 
@@ -260,36 +274,66 @@ class MaterialService {
 
 package "order" {
 class CarportCalculatorService{
+
+-ArrayList<Component> orderComponents
+-int width
+-int length
+-ConnectionPool connectionPool
+
++ List<Component> calculateCarportBOM()
++ double calculateCarportMaterialCost()
++ calculatePosts()
++ int calculatePostQuantity()
++ calculateBeams()
++ int calculateBeamsJoiningPoint()
++ calculateRafters()
++ int calculateRaftersQuantity
+
 }
 class CarportSvg{
+- Svg svgDrawing
+- int width
+- int length
+'Mangler resten af attributterne her'
 
++ addBeams()
++ addRafters()
++ addPost()
++ addText()
++ String toString()
 }
 
 
 class OrderService {
 
++ {static} createOrderAndCustomer()
++ {static} Order saveSessionOrder()
++ {static} updateOrderForSeller()
++ {static} updateOrderStatus()
++ {static} Order getOrderById()
++ {static} List<Order> getOrderSummariesByStatus()
++ {static} Order getUnprocessedOrderById()
++ {static} updateOrderAndSendOffer()
++ {static} getOrderAndCustomerInfoByOrderId()
++ {static} double calculateEstimatedSalesPrice()
++ {static} Order validateAndFetchOrder()
+
+
 }
-
+'Skal evt. slettes helt?'
 class OrderStatusService{
-
 
 }
 
 class Svg{
+- StringBuilder svg
 
-}
++ addRectangle()
++ addLine()
++ addText()
++ addMarker()
++ String toString()
 
-package "svg" {
-class CarportSvg {
-}
-
-class Svg {
-}
-}
-
-package "user" {
-class UserService {
-}
 }
 
 }
