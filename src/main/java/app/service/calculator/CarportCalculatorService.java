@@ -1,4 +1,4 @@
-package app.service.order;
+package app.service.calculator;
 
 import app.entities.Component;
 import app.entities.MaterialVariant;

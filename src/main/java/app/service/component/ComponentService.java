@@ -5,9 +5,8 @@ import app.entities.Order;
 import app.exceptions.DatabaseException;
 import app.mapper.component.ComponentMapper;
 import app.persistence.ConnectionPool;
-import app.service.order.CarportCalculatorService;
+import app.service.calculator.CarportCalculatorService;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ComponentService {
