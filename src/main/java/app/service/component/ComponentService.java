@@ -26,4 +26,12 @@ public class ComponentService {
 
         return orderComponents;
     }
+
+    public static List<Component> getAllComponentsByOrderId (int orderId, ConnectionPool connectionPool) throws DatabaseException {
+        List<Component> orderComponents;
+
+        orderComponents = ComponentMapper.getAllComponentsByOrderId(orderId, connectionPool);
+
+        return orderComponents;
+    }
 }

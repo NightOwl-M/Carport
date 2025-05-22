@@ -13,3 +13,12 @@
     text-align:center;
     font-size:30px;
 }
+
+.custom-btn {
+    width: 20%;
+    margin-top: 20px;
+    padding: 5px;
+    background-color: white;
+    color: black;
+    cursor: pointer;
+}
