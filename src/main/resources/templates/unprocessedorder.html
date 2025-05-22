@@ -3,30 +3,31 @@
 <head>
   <meta charset="UTF-8">
   <title>Ordre Detaljer - Unprocessed</title>
+  <link href="../public/css/unprocessedorder.css" th:href="@{/css/unprocessedorder.css}" rel="stylesheet"/>
 </head>
 <body>
-<h3>Ordre Detaljer - Unprocessed</h3>
+<h3 class="title">Ny order</h3>
 
-<div>
-  <p>Ordre ID: <span th:text="${order.orderId}"></span></p>
-  <p>Kunde Navn: <span th:text="${order.customer.customerName}"></span></p>
-  <p>Email: <span th:text="${order.customer.customerEmail}"></span></p>
-  <p>Adresse: <span th:text="${order.customer.customerAddress}"></span></p>
-  <p>Postnummer: <span th:text="${order.customer.customerZipcode}"></span></p>
-  <p>Telefon: <span th:text="${order.customer.customerPhone}"></span></p>
-  <p>Bredde: <span th:text="${order.carportWidth}"></span> cm</p>
-  <p>Længde: <span th:text="${order.carportLength}"></span> cm</p>
-  <p>Tagtype: <span th:text="${order.roof}"></span></p>
-  <p>Kunde Kommentar: <span th:text="${order.customerText}"></span></p>
+<div class="order-details">
+  <p>Ordre ID: <span th:text="${session.order.orderId}"></span></p>
+  <p>Kunde Navn: <span th:text="${session.order.customer.customerName}"></span></p>
+  <p>Email: <span th:text="${session.order.customer.customerEmail}"></span></p>
+  <p>Adresse: <span th:text="${session.order.customer.customerAddress}"></span></p>
+  <p>Postnummer: <span th:text="${session.order.customer.customerZipcode}"></span></p>
+  <p>Telefon: <span th:text="${session.order.customer.customerPhone}"></span></p>
+  <p>Bredde: <span th:text="${session.order.carportWidth}"></span> cm</p>
+  <p>Længde: <span th:text="${session.order.carportLength}"></span> cm</p>
+  <p>Tagtype: <span th:text="${session.order.roof}"></span></p>
+  <p>Kunde Kommentar: <span th:text="${session.order.customerText}"></span></p>
 </div>
 
 <!-- Tilbage-knap -->
-<a href="/admin/orders/unprocessed">Tilbage til Unprocessed Orders</a>
+<a href="/admin/orders/unprocessed" class="return-button">Tilbage til Unprocessed Orders</a>
 
 <!-- Knap til at gå til offerPage.html -->
 <form th:action="@{/offerpage}" method="get">
-  <input type="hidden" name="orderId" th:value="${order.orderId}" />
-  <button type="submit">Gå til tilbudsside</button>
+  <input type="hidden" name="orderId" th:value="${session.order.orderId}" />
+  <button type="submit" class="return-button">Gå til tilbudsside</button>
 </form>
 
 

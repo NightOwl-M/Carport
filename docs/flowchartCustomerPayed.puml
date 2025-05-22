@@ -1,0 +1,28 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+left to right direction
+title Carport - Kunde Betalingsflow
+@startuml
+
+start
+
+:Kunden modtager tilbuds-email;
+:Klikker på betalingslink (med orderId);
+:GET /pay/{orderId};
+:OrderController.showPaymentPage();
+:OrderService.validateAndFetchOrder();
+if (Ordre fundet?) then (ja)
+  :Render pay.html med ordredetaljer;
+  :Kunde trykker 'Betal';
+  :POST /pay/{orderId}/confirm;
+  :OrderController.confirmPayment();
+  :OrderService.updateOrderStatus(orderId, 3);
+  :Redirect til /payed.html;
+  :Render payed.html med bekræftelse;
+else (nej)
+  :Redirect til / med fejlbesked;
+endif
+
+stop
+@enduml

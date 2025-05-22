@@ -4,8 +4,7 @@ import app.entities.Customer;
 import app.entities.Order;
 import app.exceptions.DatabaseException;
 import app.persistence.ConnectionPool;
-import app.service.order.CarportSvg;
-import app.service.customer.CustomerService;
+import app.service.svg.CarportSvg;
 import app.service.order.OrderService;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
@@ -154,31 +153,19 @@ public class OrderController {
             String email = ctx.sessionAttribute("email");
             String phone = ctx.sessionAttribute("phone");
 
-            if (width == null || length == null || roof == null || customerText == null ||
-                    name == null || address == null || zipCode == null || email == null || phone == null) {
-                ctx.sessionAttribute("errorMessage", "Ordreoplysninger mangler. Prøv igen.");
-                ctx.redirect("/carport/confirm");
-                return;
-            }
+            // Kald service-laget med alle data
+            OrderService.createOrderAndCustomer(name, email, address, zipCode, phone, width, length, roof, customerText, connectionPool);
 
-            Customer customer = CustomerService.saveSessionCustomer(name, email, address, zipCode, phone, connectionPool);
-            Order order = OrderService.saveSessionOrder(customer.getCustomerId(), width, length, roof, customerText, connectionPool);
-
-            // Ryd sessionen efter gemning
+            // Ryd sessionen
             ctx.req().getSession().invalidate();
-
             ctx.redirect("/thankyoupage");
 
         } catch (DatabaseException e) {
             ctx.sessionAttribute("errorMessage", "Databasefejl: " + e.getMessage());
             ctx.redirect("/carport/confirm");
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            ctx.sessionAttribute("errorMessage", "Ukendt fejl: " + e.getMessage());
-            ctx.redirect("/carport/confirm");
         }
     }
+
 
     private static void showPaymentPage(Context ctx, ConnectionPool connectionPool) {
         String orderIdParam = ctx.pathParam("orderId");
@@ -201,9 +188,6 @@ public class OrderController {
         }
     }
 
-
-
-
     private static void confirmPayment(Context ctx, ConnectionPool connectionPool) {
         String orderIdParam = ctx.pathParam("orderId");
 
@@ -224,9 +208,4 @@ public class OrderController {
             ctx.redirect("/pay/" + orderIdParam);
         }
     }
-
-
-
-
-
 }

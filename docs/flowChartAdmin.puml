@@ -2,35 +2,76 @@
 skinparam monochrome true
 skinparam shadowing false
 left to right direction
-title Carport Admin Flow
-
-start
+title Carport Admin Flow (opdelt i grene fra dashboard)
 @startuml
 
-:admin-login.html;
-:Admin indtaster email + kodeord;
+start
+
+:Admin åbner /adminlogin;
+:GET /adminlogin;
+:Render adminlogin.html;
+
+:Indtaster brugernavn og kode;
 :POST /admin/login;
-:AdminController.handleLogin();
-:UserMapper.findByEmailAndPassword();
+:AdminLoginService.handleAdminLogin();
+:AdminLoginMapper.checkAdminLoginCredentials();
+if (Gyldig login?) then (ja)
+  :Set isAdmin session attribut;
+  :Redirect til /admindashboard;
+  :Render admindashboard.html;
 
-if (Login success?) then (yes)
-  :Redirect to /admin/dashboard;
-  :AdminController.showDashboard();
-  :OrderMapper.getAllOrders();
+  split
+    :Klik på 'Unprocessed';
+    :GET /admin/orders/unprocessed;
+    :OrderService.getOrderSummariesByStatus(1);
+    :Render unprocessed.html;
 
-  :Admin vælger specifik ordre;
-  :GET /admin/order/:id;
-  :AdminController.showOrderDetails();
-  :OrderMapper.getOrderById();
+    :Klik på en ordre;
+    :GET /admin/orders/unprocessed/{orderId};
+    :OrderService.getUnprocessedOrderById();
+    :Render unprocessedorder.html;
 
-  :Admin skriver tilbud + kommentar;
-  :POST /admin/order/:id/send;
-  :AdminController.handleSendOffer();
-  :OrderMapper.updateOrder();
-  :EmailService.sendOfferEmail();
-  :Tilbud sendt til kunde;
-else (no)
-  :Vis login-fejl;
+    :Klik på 'Giv tilbud';
+    :GET /offerpage;
+    :Render offerpage.html;
+
+    :Indtast info og tryk 'Videre';
+    :POST /offerpage/generate-offer;
+    :Beregn pris;
+    :Render offerpageconfirmation.html;
+
+    :Klik på 'Se stykliste';
+    :GET /offerpage/show-bom;
+    :Render bompage.html;
+
+    :Klik på 'Send tilbud';
+    :POST /offerpage/send-offer;
+    :Opdater ordre og send email;
+    :Ryd sessiondata;
+    :Render admindashboard.html;
+  split again
+    :Klik på 'Pending';
+    :GET /admin/orders/pending;
+    :OrderService.getOrderSummariesByStatus(2);
+    :Render pending.html;
+
+    :Klik evt. på ordre for detaljer;
+    :GET /admin/orders/pending/{orderId};
+    :Render pendingorder.html;
+  split again
+    :Klik på 'Processed';
+    :GET /admin/orders/processed;
+    :OrderService.getOrderSummariesByStatus(3);
+    :Render processed.html;
+
+    :Klik evt. på ordre for detaljer;
+    :GET /admin/orders/processed/{orderId};
+    :Render processedorder.html;
+  end split
+
+else (nej)
+  :Redirect til adminlogin.html;
+  :Vis fejlmeddelelse;
 endif
 
 stop
