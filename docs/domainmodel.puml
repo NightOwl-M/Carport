@@ -1,43 +1,65 @@
 @startuml
-
 !pragma layout smetana
+skinparam classAttributeIconSize 0
 
-object User{
-role
+class users {
+  - name
+  - address
+  - email
+  - password
+  - phone_number
+  - role
 }
 
-object CarportOrder{
-orderStatus
+class zipcode {
+  - zipcode
+  - city
 }
 
-object Component {
-quantity
-useDescription
+class order {
+  - carport_width
+  - carport_length
+  - roof
+  - user_text
+  - admin_text
+  - sales_price
+  - created_at
 }
 
-object MaterialVariant{
-length
+class order_status {
+  - status
 }
 
-object Material {
+class component {
+  - quantity
+  - use_description
 }
 
-object Sketch
+class material_variant {
+  - length
+}
 
-object BillOfMaterials
+class material {
+  - name
+  - unit
+  - price
+}
 
+class admin {
+  - username
+  - password
+}
 
-User *-- CarportOrder
-
-CarportOrder *-- Sketch
-CarportOrder  *-- BillOfMaterials
-
-BillOfMaterials  *-- Component
-
-Component o-- MaterialVariant
-MaterialVariant o-- Material
+' Relationer
+users *-- order : places
+users o-- zipcode : lives in
+order *-- component : contains
+order o-- order_status : has
+component *-- material_variant : uses
+material_variant o-- material : based on
 
 @enduml
+
 
 implements ..|>
 extends <|-- (is-a)
