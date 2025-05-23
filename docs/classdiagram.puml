@@ -48,6 +48,7 @@ class OrderController {
 }
 }
 
+
 package "entities"{
 
 class Admin{
@@ -143,6 +144,7 @@ class Zipcode{
 
 +getters and setters()
 }
+}
 
 package "exceptions"{
      class DatabaseException {
@@ -187,6 +189,7 @@ class MaterialVariantMapper{
 + {static} List<MaterialVariant> getMaterialVariantsByIdAndMinLength(int materialId, int minLength, ConnectionPool connectionPool)
 }
 
+
 package "order"{
 
 class OrderMapper{
@@ -209,6 +212,7 @@ package "svg"{
 'Skal evt. slettes helt?'
 class SvgMapper{
 }
+
 
 package "persistence"{
 
@@ -337,7 +341,6 @@ class Svg{
 + String toString()
 
 }
-
 }
 
 Main -- "controllers"
@@ -347,11 +350,38 @@ Main -- "config"
 
 
 'Entitetsrelationer'
+Customer o-- Order
+Order *-- Customer
+MaterialVariant *-- Material
+Customer *-- Zipcode
+Component *-- MaterialVariant
+Order *-- OrderStatus
+
+Customer "1" --> "0..*" Order
+MaterialVariant "1" --> "1" Material
+Customer "1" --> "1" Zipcode
+Component "1" --> "1" MaterialVariant
+Order "1" --> "0..*" Component
+Order "1" --> "1" OrderStatus
+Order "1" --> "1" Svg
+
+
+
+
+
 
 
 
 
 @enduml
+1:1 → "1" --> "1"
+
+1:mange → "1" --> "0..*"
+
+mange:1 → "* " --> "1"
+
+evt. 0 → "0..1" eller "0..*"
+
 
 implements ..|>
 extends <|-- (is-a)
