@@ -196,11 +196,13 @@ class AdminLoginMapper {
 class AdminMapper{
 
 }
+}
 
 package "component"{
 
 class ComponentMapper{
 + {static} saveOrderComponentsToDB(List<Component> orderComponents, ConnectionPool connectionPool)
+}
 }
 
 package "customer"{
@@ -209,15 +211,19 @@ class CustomerMapper{
 + {static} Customer saveSessionCustomer(Customer customer, ConnectionPool connectionPool)
 + {static} String getCustomerEmailById(int customerId, ConnectionPool connectionPool)
 }
+}
 
 package "material"{
 'Skal evt. slettes helt?'
 class MaterialMapper{
 }
+}
+
 
 class MaterialVariantMapper{
 + {static} List<MaterialVariant> getMaterialVariantsByIdAndMinLength(int materialId, int minLength, ConnectionPool connectionPool)
 }
+
 
 
 package "order"{
@@ -237,10 +243,12 @@ class OrderMapper{
 class OrderStatusMapper{
 
 }
+}
 
 package "svg"{
 'Skal evt. slettes helt?'
 class SvgMapper{
+}
 }
 
 
@@ -257,6 +265,7 @@ package "persistence"{
 + getConnection()
 + close()
 + {static} createHikariConnectionPool(String user, String password, String url, String db)
+}
 }
 }
 
@@ -380,12 +389,12 @@ Main -- "config"
 
 
 'Entitetsrelationer'
-Customer o-- Order
-Order *-- Customer
-MaterialVariant *-- Material
-Customer *-- Zipcode
-Component *-- MaterialVariant
-Order *-- OrderStatus
+'Customer o-- Order'
+'Order *-- Customer'
+'MaterialVariant *-- Material'
+'Customer *-- Zipcode'
+'Component *-- MaterialVariant'
+'Order *-- OrderStatus'
 
 Customer "1" --> "0..*" Order
 MaterialVariant "1" --> "1" Material
