@@ -105,6 +105,19 @@ class OrderMapperTest {
                         "(2, 2, 600, 780, 'Plasttapezplader', 'Skal passe til huset', 'Afventer bekræftelse', 2, 15000, '2025-05-07 09:00:00')," +
                         "(3, 3, 600, 780, 'Plasttrapezplader', 'Ønsker det i sort', 'Tak for snakken', 3, 25000, '2025-05-08 12:30:15')");
 
+                stmt.execute("INSERT INTO test.material (material_id, name, unit, price)" +
+                        "VALUES (5, '97x97 mm. trykimp. Stolpe', 'stk', 75)," +
+                        "(11, '45x195 mm. spærtræ ubh.', 'stk', 37)");
+
+                stmt.execute("INSERT INTO test.material_variant (material_variant_id, material_id, length)" +
+                        "VALUES (1, 5, 300), (2, 11, 300), (3, 11, 360), (4, 11, 420), (5, 11, 480), (6, 11, 540), (7, 11, 600)");
+
+                stmt.execute("INSERT INTO test.zipcode (zipcode, city)" +
+                        "VALUES (2100, 'København Ø'), (5000, 'Odense'), (3000, 'Helsingør')");
+
+                stmt.execute("INSERT INTO test.order_status (status_id, status)" +
+                        "VALUES (1, 'unprocessed'), (2, 'pending'), (3, ' processed')");
+
                 stmt.execute("SELECT setval('test.orders_order_id_seq', COALESCE((SELECT MAX(order_id) + 1 FROM test.orders), 1), false)");
                 stmt.execute("SELECT setval('test.customer_customer_id_seq', COALESCE((SELECT MAX(customer_id) + 1 FROM test.customer), 1), false)");
                 stmt.execute("SELECT setval('test.admin_admin_id_seq', COALESCE((SELECT MAX(admin_id) + 1 FROM test.admin), 1), false)");
@@ -132,93 +145,33 @@ class OrderMapperTest {
     }
 
     @Test
-    void updateOrderStatus() {
-        try {
+    void updateOrderStatus() throws DatabaseException {
             //Arrange
             int expectedOrderStatus = 2;
 
             //Act
-            OrderMapper.updateOrderStatus(1,2, connectionPool);
+            OrderMapper.updateOrderStatus(1, 2, connectionPool);
             Order order = OrderMapper.getOrderById(1, connectionPool);
             int actualOrderStatus = order.getStatusId();
 
-
             //Assert
             assertEquals(expectedOrderStatus, actualOrderStatus);
-
-        } catch (DatabaseException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     @Test
-    void getOrderById() {
-        try {
-        //Arrange
-        Order expectedOrder = new Order (3, 3, 600, 780, "Plasttrapezplader",
-                "Ønsker det i sort", "Tak for snakken", 3, 25000, Timestamp.valueOf("2025-05-08 12:30:15"));
+    void getOrderById() throws DatabaseException {
+            //Arrange
+            Order expectedOrder = new Order(3, 3, 600, 780, "Plasttrapezplader",
+                    "Ønsker det i sort", "Tak for snakken", 3, 25000, Timestamp.valueOf("2025-05-08 12:30:15"));
 
-        //Act
+            //Act
             Order actualOrder = OrderMapper.getOrderById(3, connectionPool);
 
-        //Assert
-        assertEquals(expectedOrder, actualOrder);
-
-        } catch (DatabaseException e) {
-            throw new RuntimeException(e);
-        }
+            //Assert
+            assertEquals(expectedOrder, actualOrder);
     }
 
     @Test
     void getOrdersByStatus() {
     }
-
-    /* //TODO slet, Jons tests, lader dem stå lidt til inspiration
-    @Test
-    void getAllOrders()
-    {
-        try
-        {
-            List<Order> orders = OrderMapper.getAllOrders(connectionPool);
-            assertEquals(3, orders.size());
-        }
-        catch (DatabaseException e)
-        {
-            fail("Database fejl: " + e.getMessage());
-        }
-    }
-
-    @Test
-    void getOrderById()
-    {
-        try
-        {
-            User user = new User(1, "jon", "1234", "customer");
-            Order expected = new Order(1, 1, 600, 780, 20000, user);
-            Order dbOrder = OrderMapper.getOrderById(1, connectionPool);
-            assertEquals(expected, dbOrder);
-        }
-        catch (DatabaseException e)
-        {
-            fail("Database fejl: " + e.getMessage());
-        }
-    }
-
-    @Test
-    void insertOrder()
-    {
-        try
-        {
-            User user = new User(1, "jon", "1234", "customer");
-            Order newOrder = new Order(2, 550, 750, 20000, user);
-            newOrder = OrderMapper.insertOrder(newOrder, connectionPool);
-            Order dbOrder = OrderMapper.getOrderById(newOrder.getOrderId(), connectionPool);
-            assertEquals(newOrder, dbOrder);
-        }
-        catch (DatabaseException e)
-        {
-            fail("Database fejl: " + e.getMessage());
-        }
-    }
-     */
 }
