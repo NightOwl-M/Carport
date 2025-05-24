@@ -20,7 +20,8 @@ public class MaterialVariantMapper {
 
         String sql = "SELECT * FROM material_variant\n" +
                 "JOIN material USING (material_id)\n" +
-                "WHERE material_id = ? AND length >= ?";
+                "WHERE material_id = ? AND length >= ?\n" +
+                "ORDER BY length ASC";
 
         try (Connection connection = connectionPool.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql)) {
