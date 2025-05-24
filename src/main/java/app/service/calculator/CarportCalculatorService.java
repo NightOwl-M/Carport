@@ -1,4 +1,4 @@
-package app.service.order;
+package app.service.calculator;
 
 import app.entities.Component;
 import app.entities.MaterialVariant;
@@ -152,6 +152,13 @@ public class CarportCalculatorService {
         modules = (int) Math.ceil(carportLengthMinusEndRafter / moduleLength);
         int quantity = modules + 1;
         return quantity;
+    }
+
+    public List<Component> getCarportBOM(Order order) throws DatabaseException {
+        if (orderComponents.isEmpty()) {
+            calculateCarportBOM(order);
+        }
+        return orderComponents;
     }
 }
 

@@ -1,12 +1,16 @@
 package app.service.order;
 
 import app.entities.Component;
-import app.entities.Order;
+import app.entities.Material;
+import app.entities.MaterialVariant;
 import app.exceptions.DatabaseException;
 import app.persistence.ConnectionPool;
 import jdk.dynalink.linker.LinkerServices;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+
+import app.service.calculator.CarportCalculatorService;
+
 import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
@@ -139,26 +143,40 @@ class CarportCalculatorServiceTest {
 
     @Test
     void calculateCarportMaterialCost() throws DatabaseException {
-        /*
+
         //Arrange
         CarportCalculatorService carportCalculatorService = new CarportCalculatorService(780, 600, connectionPool);
-        Order order = new Order(780, 600, "intet tag", " ", " ");
-        List<Component> orderComponents;
+        List<Component> orderComponents = new ArrayList<>();
 
-        orderComponents = carportCalculatorService.calculateCarportBOM(order);
+        Material post = new Material(1, "stolpe", "stk", 75);
+        Material raft = new Material(2, "lægte", "stk", 37);
+
+        MaterialVariant postVariant300 = new MaterialVariant(1,  300, post);
+        MaterialVariant raftVariant360 = new MaterialVariant(2, 360, raft);
+        MaterialVariant raftVariant480 = new MaterialVariant(2, 480, raft);
+        MaterialVariant raftVariant600 = new MaterialVariant(3, 600, raft);
+
+        Component componentPostVariant300 = new Component(1, 1, 8, "Graves 90 cm ned", postVariant300);
+        Component componentRaftVariant360 = new Component(2, 1, 2, "Bruges som remme", raftVariant360);
+        Component componentRaftVariant480 = new Component(3, 1, 2, "Bruges som remme", raftVariant480);
+        Component componentRaftVariant600 = new Component(3, 1, 15, "Bruges som spær", raftVariant600);
+
+        orderComponents.add(componentRaftVariant480);
+        orderComponents.add(componentRaftVariant360);
+        orderComponents.add(componentRaftVariant600);
+        orderComponents.add(componentPostVariant300);
 
         //Act
-
-        Stolper = 8 stk * 300 cm * 75 kr/m = 1800 kr
-        Remme = 2 stk * 360 cm * 37/m + 2 stk * 480 * 37/m = 621.6 kr
-        Lægter = 15 stk * 600 cm * 37 kr/m = 3330 kr
+        // Stolper = 8 stk * 300 cm * 75 kr/m = 1800 kr
+        // Remme = 2 stk * 360 cm * 37/m + 2 stk * 480 * 37/m = 621.6 kr
+        // Lægter = 15 stk * 600 cm * 37 kr/m = 3330 kr
 
         double expectedPrice = 5751.6;
         double actualPrice = carportCalculatorService.calculateCarportMaterialCost(orderComponents);
 
         //Assert
         assertEquals(expectedPrice, actualPrice);
-        */
+
     }
 
     @Test

@@ -1,4 +1,4 @@
-package app.service.order;
+package app.service.svg;
 
 import java.util.Locale;
 

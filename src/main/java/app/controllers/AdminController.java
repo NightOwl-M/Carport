@@ -236,7 +236,7 @@ public class AdminController {
 
             //Beregning af pris
             double coverageRate = Double.parseDouble(ctx.formParam("coverage-rate"));
-            double materialCostPrice = 20000; //TODO hardcoded indtil videre //TODO Mangler metode der beregner carportens samlede materialepris
+            double materialCostPrice = OrderService.calculateMaterialCost(currentOrderSalesmanInput, connectionPool);
             double estimatedSalesPrice = OrderService.calculateEstimatedSalesPrice(coverageRate, materialCostPrice);
 
             ctx.sessionAttribute("coverageRate", coverageRate);
@@ -245,11 +245,9 @@ public class AdminController {
             ctx.sessionAttribute("currentOrderSalesmanInput", currentOrderSalesmanInput);
 
             ctx.render("offerpageconfirmation.html");
-            /*
         } catch (DatabaseException e) {
             ctx.sessionAttribute("errorMessage", "Databasefejl: " + e.getMessage());
             ctx.redirect(""); //TODO
-             */
         } catch (Exception e) {
             e.printStackTrace();
             ctx.sessionAttribute("errorMessage", "Ukendt fejl: " + e.getMessage());

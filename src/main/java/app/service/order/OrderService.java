@@ -1,10 +1,12 @@
 package app.service.order;
 
+import app.entities.Component;
 import app.entities.Customer;
 import app.entities.Order;
 import app.exceptions.DatabaseException;
 import app.mapper.order.OrderMapper;
 import app.persistence.ConnectionPool;
+import app.service.calculator.CarportCalculatorService;
 import app.service.email.EmailService;
 import app.service.customer.CustomerService;
 
@@ -109,4 +111,9 @@ public class OrderService {
         }
     }
 
+    public static double calculateMaterialCost(Order currentOrderSalesmanInput, ConnectionPool connectionPool) throws DatabaseException {
+        CarportCalculatorService calculator = new CarportCalculatorService(currentOrderSalesmanInput.getCarportLength(), currentOrderSalesmanInput.getCarportWidth(), connectionPool);
+        List<Component> orderComponents = calculator.getCarportBOM(currentOrderSalesmanInput);
+        return calculator.calculateCarportMaterialCost(orderComponents);
+    }
 }
