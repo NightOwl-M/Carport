@@ -65,13 +65,6 @@ CREATE TABLE component (
                            use_description VARCHAR
 );
 
--- Opret SVG tabel
-CREATE TABLE svg (
-                     svg_id SERIAL PRIMARY KEY,
-                     order_id INTEGER REFERENCES orders(order_id),
-                     svg_data TEXT NOT NULL,
-                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
 
 -- Indsæt postnumre
 INSERT INTO zipcode (zipcode, city) VALUES
@@ -89,8 +82,10 @@ INSERT INTO admin (username, password) VALUES
 
 -- Indsæt customers
 INSERT INTO customer (customer_name, customer_email, customer_address, customer_zipcode, customer_phone) VALUES
-                                                                                                             ('Mikkel Dam Binau', 'mikkel@fug.dk', 'Carportvej 12', 8000, '12345678'),
-                                                                                                             ('Test Kunde', 'test@kunde.dk', 'Testvej 23', 9000, '87654321');
+                                                                                                             ('Mikkel', 'Carportcarportnoreply@gmail.com', 'Carportvej 12', 8000, '12345678'),
+                                                                                                             ('Jeppe', 'Carportcarportnoreply@gmail.com', 'Testvej 53', 9000, '87654321'),
+                                                                                                             ('William', 'Carportcarportnoreply@gmail.com', 'Testvej 23b', 9000, '87654221'),
+                                                                                                             ('David', 'Carportcarportnoreply@gmail.com', 'Testvej 60', 2100, '26565646');
 
 -- Indsæt data i order_status
 INSERT INTO order_status (status_id, status) VALUES
@@ -109,20 +104,24 @@ INSERT INTO material (name, unit, price) VALUES
                                              ('Plastmo Ecolite blåtonet', 'stk', 50.0),
                                              ('Plastmo bundskruer 200 stk.', 'pakke', 25.0),
                                              ('Hulbånd 1x20 mm. 10 mtr.', 'rulle', 18.0),
-                                             ('Universal 190 mm højre', 'stk', 10.0);
+                                             ('Universal 190 mm højre', 'stk', 10.0),
+                                             ('45x195 mm. spærtræ ubh.', 'stk', 37.0);
 
 -- Indsæt material_variants
 INSERT INTO material_variant (material_id, length) VALUES
                                                        (1, 360), (1, 420), (2, 360), (3, 420),
                                                        (4, 270), (5, 300), (6, 600), (7, 0),
-                                                       (8, 0), (9, 0), (10, 0);
+                                                       (8, 0), (9, 0), (10, 0), (11, 300),
+                                                       (11, 360), (11, 420), (11, 480), (11, 540), (11, 600);
 
 -- Indsæt testordre
 INSERT INTO orders (
     customer_id, carport_width, carport_length, roof, customer_text, admin_text, status_id, sales_price
 ) VALUES
-      (1, 300, 600, 'plastmo', 'Ønsker overdækning i høj kvalitet', NULL, 1, 0.0),
-      (2, 350, 700, 'træ', 'Standard carport med trætag', NULL, 2, 5000.0);
+      (1, 300, 600, 'Plasttrapezplader', 'Ønsker overdækning i høj kvalitet', NULL, 1, 0.0),
+      (2, 360, 720, 'Plasttrapezplader', 'Vil have det i sort', NULL, 1, 0.0),
+      (3, 240, 700, 'Plasttrapezplader', ' ', NULL, 1, 0.0),
+      (4, 600, 780, 'Plasttrapezplader', 'Vil have det i sort', NULL, 1, 0.0);
 
 -- Indsæt komponenter
 INSERT INTO component (order_id, material_variant_id, quantity, use_description) VALUES
@@ -131,7 +130,4 @@ INSERT INTO component (order_id, material_variant_id, quantity, use_description)
                                                                                      (2, 3, 8, 'Lægter'),
                                                                                      (2, 4, 12, 'Reglar');
 
--- Indsæt SVG data
-INSERT INTO svg (order_id, svg_data) VALUES
-                                         (1, 'SVG data for ordre 1'),
-                                         (2, 'SVG data for ordre 2');
+
