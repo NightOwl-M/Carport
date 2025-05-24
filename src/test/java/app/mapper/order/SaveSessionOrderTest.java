@@ -5,12 +5,16 @@ import app.exceptions.DatabaseException;
 import app.persistence.ConnectionPool;
 import app.mapper.order.OrderMapper;
 import org.junit.jupiter.api.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class OrderMapper_SaveSessionOrderTest {
+
+    private static final Logger logger = LoggerFactory.getLogger(OrderMapper_SaveSessionOrderTest.class);
 
     private static final String USER = "postgres";
     private static final String PASSWORD = "postgres";
@@ -33,7 +37,6 @@ class OrderMapper_SaveSessionOrderTest {
                     "customer_address VARCHAR NOT NULL," +
                     "customer_zipcode INTEGER REFERENCES test.zipcode(zipcode)," +
                     "customer_phone VARCHAR NOT NULL)");
-
             stmt.execute("CREATE TABLE IF NOT EXISTS test.order_status (status_id INTEGER PRIMARY KEY, status VARCHAR NOT NULL)");
             stmt.execute("CREATE TABLE IF NOT EXISTS test.orders (" +
                     "order_id SERIAL PRIMARY KEY," +
@@ -47,7 +50,10 @@ class OrderMapper_SaveSessionOrderTest {
                     "sales_price DOUBLE PRECISION DEFAULT 0.0," +
                     "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)");
 
+            logger.info("Tabeller oprettet eller bekræftet i test-schemaet");
+
         } catch (SQLException e) {
+            logger.error("Fejl i @BeforeAll ved oprettelse af tabeller: {}", e.getMessage(), e);
             fail("Fejl i @BeforeAll ved oprettelse af tabeller: " + e.getMessage());
         }
     }
@@ -57,38 +63,44 @@ class OrderMapper_SaveSessionOrderTest {
         try (Connection conn = connectionPool.getConnection();
              Statement stmt = conn.createStatement()) {
 
-            // Truncate relevante tabeller
             stmt.execute("TRUNCATE TABLE test.orders RESTART IDENTITY CASCADE");
             stmt.execute("TRUNCATE TABLE test.customer RESTART IDENTITY CASCADE");
             stmt.execute("TRUNCATE TABLE test.order_status RESTART IDENTITY CASCADE");
             stmt.execute("TRUNCATE TABLE test.zipcode RESTART IDENTITY CASCADE");
 
-            // Insert testdata
             stmt.execute("INSERT INTO test.zipcode (zipcode, city) VALUES (8000, 'Aarhus')");
             stmt.execute("INSERT INTO test.customer (customer_name, customer_email, customer_address, customer_zipcode, customer_phone) " +
                     "VALUES ('Testperson', 'test@example.com', 'Testvej 1', 8000, '12345678')");
             stmt.execute("INSERT INTO test.order_status (status_id, status) VALUES (1, 'unprocessed')");
 
+            logger.info("Testdata indsat før hver test");
+
         } catch (SQLException e) {
+            logger.error("Fejl i @BeforeEach ved indsættelse af testdata: {}", e.getMessage(), e);
             fail("Fejl i @BeforeEach ved indsættelse af testdata: " + e.getMessage());
         }
     }
 
     @Test
     void testSaveSessionOrder_shouldInsertAndReturnOrderWithId() {
-        //Arrange
+        logger.info("Test: saveSessionOrder starter...");
+
+        // Arrange
         Order order = new Order(1, 300, 600, "Plast", "Testkommentar");
 
-        //Act
+        // Act
         Order savedOrder = null;
         try {
             savedOrder = OrderMapper.saveSessionOrder(order, connectionPool);
+            logger.info("saveSessionOrder blev kaldt og returnerede orderId={}", savedOrder.getOrderId());
         } catch (DatabaseException e) {
+            logger.error("DatabaseException blev kastet: {}", e.getMessage(), e);
             fail("DatabaseException blev kastet: " + e.getMessage());
         }
 
-        //Assert
+        // Assert
         assertNotNull(savedOrder);
         assertTrue(savedOrder.getOrderId() > 0, "OrderId skal være sat og større end 0");
+        logger.info("Test afsluttet uden fejl");
     }
 }
