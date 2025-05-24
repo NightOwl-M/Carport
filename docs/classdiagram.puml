@@ -217,12 +217,14 @@ package "material"{
 'Skal evt. slettes helt?'
 class MaterialMapper{
 }
-}
+
 
 
 class MaterialVariantMapper{
 + {static} List<MaterialVariant> getMaterialVariantsByIdAndMinLength(int materialId, int minLength, ConnectionPool connectionPool)
 }
+}
+
 
 
 
@@ -244,11 +246,6 @@ class OrderStatusMapper{
 
 }
 }
-
-package "svg"{
-'Skal evt. slettes helt?'
-class SvgMapper{
-}
 }
 
 
@@ -267,7 +264,7 @@ package "persistence"{
 + {static} createHikariConnectionPool(String user, String password, String url, String db)
 }
 }
-}
+
 
 
 package "service"{
@@ -280,6 +277,7 @@ class AdminLoginService{
 'Skal evt. slettes helt?'
 class AdminService{
 }
+}
 
 
 package "component" {
@@ -287,6 +285,7 @@ class ComponentService {
 + {static} saveOrderComponentsToDB(List<Component> orderComponents, ConnectionPool connectionPool)
 + {static} List<Component> calculateBom(Order order, ConnectionPool connectionPool)
 
+}
 }
 package "customer" {
 
@@ -305,7 +304,6 @@ class EmailService{
 }
 }
 
-}
 'Skal evt. slettes helt'?
 package "material" {
 class MaterialVariantService {
@@ -317,6 +315,26 @@ class MaterialService {
 }
 
 package "order" {
+
+class OrderService {
+
++ {static} createOrderAndCustomer(String name, String email, String address, int zipCode, String phone,
+   int width, int length, String roof, String customerText, ConnectionPool connectionPool)
++ {static} Order saveSessionOrder(int customerId, int width, int length, String roof, String userText, ConnectionPool connectionPool)
++ {static} updateOrderForSeller(int orderId, int width, int length, String roof, String customerText, String adminText, double salesPrice, int statusId, ConnectionPool connectionPool)
++ {static} updateOrderStatus(int orderId, int statusId, ConnectionPool connectionPool)
++ {static} Order getOrderById(int orderId, ConnectionPool connectionPool)
++ {static} List<Order> getOrderSummariesByStatus(int statusId, ConnectionPool connectionPool)
++ {static} Order getUnprocessedOrderById(int orderId, ConnectionPool connectionPool)
++ {static} updateOrderAndSendOffer(int orderId, int width, int length, String roof, String customerText, String adminText, double salesPrice, int statusId, ConnectionPool connectionPool)
++ {static} getOrderAndCustomerInfoByOrderId(int orderId, ConnectionPool connectionPool)
++ {static} double calculateEstimatedSalesPrice(double coverageRate, double carportTotalPrice)
++ {static} Order validateAndFetchOrder(String orderIdParam, ConnectionPool connectionPool)
+
+}
+}
+
+package "calculator" {
 class CarportCalculatorService{
 
 -ArrayList<Component> orderComponents
@@ -334,6 +352,9 @@ class CarportCalculatorService{
 + int calculateRaftersQuantity(int length)
 
 }
+}
+
+package "svg"{
 class CarportSvg{
 - Svg svgDrawing
 - int width
@@ -346,30 +367,6 @@ class CarportSvg{
 + addText()
 + String toString()
 }
-
-
-class OrderService {
-
-+ {static} createOrderAndCustomer(String name, String email, String address, int zipCode, String phone,
-   int width, int length, String roof, String customerText, ConnectionPool connectionPool)
-+ {static} Order saveSessionOrder(int customerId, int width, int length, String roof, String userText, ConnectionPool connectionPool)
-+ {static} updateOrderForSeller(int orderId, int width, int length, String roof, String customerText, String adminText, double salesPrice, int statusId, ConnectionPool connectionPool)
-+ {static} updateOrderStatus(int orderId, int statusId, ConnectionPool connectionPool)
-+ {static} Order getOrderById(int orderId, ConnectionPool connectionPool)
-+ {static} List<Order> getOrderSummariesByStatus(int statusId, ConnectionPool connectionPool)
-+ {static} Order getUnprocessedOrderById(int orderId, ConnectionPool connectionPool)
-+ {static} updateOrderAndSendOffer(int orderId, int width, int length, String roof, String customerText, String adminText, double salesPrice, int statusId, ConnectionPool connectionPool)
-+ {static} getOrderAndCustomerInfoByOrderId(int orderId, ConnectionPool connectionPool)
-+ {static} double calculateEstimatedSalesPrice(double coverageRate, double carportTotalPrice)
-+ {static} Order validateAndFetchOrder(String orderIdParam, ConnectionPool connectionPool)
-
-
-}
-'Skal evt. slettes helt?'
-class OrderStatusService{
-
-}
-
 class Svg{
 - StringBuilder svg
 
@@ -379,6 +376,7 @@ class Svg{
 + addMarker()
 + String toString()
 
+}
 }
 }
 
@@ -402,7 +400,6 @@ Customer "1" --> "1" Zipcode
 Component "1" --> "1" MaterialVariant
 Order "1" --> "0..*" Component
 Order "1" --> "1" OrderStatus
-Order "1" --> "1" Svg
 
 
 @enduml
