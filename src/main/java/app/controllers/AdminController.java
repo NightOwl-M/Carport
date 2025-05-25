@@ -7,6 +7,7 @@ import app.persistence.ConnectionPool;
 import app.service.admin.AdminLoginService;
 import app.service.component.ComponentService;
 import app.service.order.OrderService;
+import app.service.svg.CarportSvg;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 
@@ -42,6 +43,8 @@ public class AdminController {
         app.get("/offerpage/show-bom", ctx -> showBomPage(ctx, connectionPool));
         //Når admin trykker på "send tilbud
         app.post("/offerpage/send-offer", ctx -> sendOffer(ctx, connectionPool));
+        //Når admin trykker på "se skitse"
+        app.get("/offerpage/show-svg", ctx -> showSketch(ctx));
 
     }
     // Login
@@ -311,6 +314,15 @@ public class AdminController {
             ctx.sessionAttribute("errorMessage", "Ukendt fejl: " + e.getMessage());
             ctx.redirect(""); //TODO
         }
+    }
+    public static void showSketch (Context ctx) {
+        Order currentOrderSalesmanInput = ctx.sessionAttribute("currentOrderSalesmanInput");
+
+        CarportSvg carportSvg = new CarportSvg(currentOrderSalesmanInput.getCarportWidth(), currentOrderSalesmanInput.getCarportLength());
+        carportSvg.addElements();
+
+        ctx.attribute("svg", carportSvg.toString());
+        ctx.render("showSketch.html");
     }
 
     private static void clearSessionAttributes(Context ctx) {
