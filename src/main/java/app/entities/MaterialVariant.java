@@ -1,5 +1,7 @@
 package app.entities;
 
+import java.util.Objects;
+
 public class MaterialVariant {
     private int materialVariantId;
     private int materialId;
@@ -30,5 +32,18 @@ public class MaterialVariant {
 
     public Material getMaterial() {
         return material;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MaterialVariant that = (MaterialVariant) o;
+        return materialVariantId == that.materialVariantId && materialId == that.materialId && length == that.length && Objects.equals(material, that.material);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(materialVariantId, materialId, length, material);
     }
 }

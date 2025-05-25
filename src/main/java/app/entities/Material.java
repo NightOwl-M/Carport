@@ -1,5 +1,7 @@
 package app.entities;
 
+import java.util.Objects;
+
 public class Material {
     private int materialId;
     private String name;
@@ -24,4 +26,18 @@ public class Material {
 
     public double getPrice() { return price; }
     public void setPrice(double price) { this.price = price; }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Material material = (Material) o;
+        return materialId == material.materialId && Double.compare(price, material.price) == 0 && Objects.equals(name, material.name) && Objects.equals(unit, material.unit);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(materialId, name, unit, price);
+    }
 }
