@@ -1,0 +1,22 @@
+
+@startuml
+state "udfyldFormular" as UdfyldForumlar {
+    [*] --> form1
+    form1 --> form2 : Tryk "Næste"
+    form2 --> form3 : Tryk "Bekræft"
+    form3 --> thankyoupage : Tryk "Indsend ordre"
+
+}
+state "Betaling" as betaling {
+    pay --> payed : Tryk "Betal"
+    payed --> bompage : Tryk "Se stykliste"
+}
+
+note right of betaling
+  Kunde modtager en e-mail med betalingslink
+  og ordreinformation
+end note
+
+thankyoupage --> pay : Klik på link i e-mail
+@enduml
+
