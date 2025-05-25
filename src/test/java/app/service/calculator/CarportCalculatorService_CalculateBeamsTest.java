@@ -138,7 +138,7 @@ public class CarportCalculatorService_CalculateBeamsTest {
     void calculateBeams() throws DatabaseException {
         //Arrange
         Order order = new Order(3, 3, 600, 780, "Plasttrapezplader", "Ønsker det i sort", "Tak for snakken", 3, 25000, Timestamp.valueOf("2025-05-08 12:30:15"));
-        CarportCalculatorService calc = new CarportCalculatorService(780, 780, connectionPool);
+        CarportCalculatorService calc = new CarportCalculatorService(780, 600, connectionPool);
         List<Component> expectedOrderComponents = new ArrayList<>();
 
 
