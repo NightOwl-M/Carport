@@ -128,8 +128,7 @@ public class OrderController {
 
         // Generer SVG
         CarportSvg carport = new CarportSvg(width, length);
-        carport.addBeams();
-        carport.addText();
+        carport.addElements();
         ctx.attribute("svg", carport.toString());
 
         ctx.render("form3.html");
