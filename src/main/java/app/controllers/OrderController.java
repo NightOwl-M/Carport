@@ -36,10 +36,7 @@ public class OrderController {
         int length = ctx.queryParamAsClass("length", Integer.class).getOrDefault(600);
 
         CarportSvg carport = new CarportSvg(width, length);
-        carport.addBeams();
-        carport.addRafters();
-        carport.addPost();
-        carport.addText();
+        carport.addElements();
 
         ctx.contentType("text/html");
         ctx.result(carport.toString());
