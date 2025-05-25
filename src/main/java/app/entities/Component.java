@@ -1,5 +1,7 @@
 package app.entities;
 
+import java.util.Objects;
+
 public class Component {
     private int componentId;
     private int orderId;
@@ -50,5 +52,18 @@ public class Component {
 
     public MaterialVariant getMaterialVariant() {
         return materialVariant;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Component component = (Component) o;
+        return componentId == component.componentId && orderId == component.orderId && quantity == component.quantity && Objects.equals(useDescription, component.useDescription) && Objects.equals(materialVariant, component.materialVariant);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(componentId, orderId, materialVariantId, quantity, useDescription, materialVariant);
     }
 }

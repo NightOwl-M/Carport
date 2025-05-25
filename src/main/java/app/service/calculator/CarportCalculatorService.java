@@ -160,6 +160,10 @@ public class CarportCalculatorService {
         }
         return orderComponents;
     }
+
+    public List<Component> getOrderComponents() {
+        return orderComponents;
+    }
 }
 
 
