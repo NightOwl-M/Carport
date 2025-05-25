@@ -27,7 +27,6 @@ class OrderMapper_SaveSessionOrderTest {
         try (Connection conn = connectionPool.getConnection();
              Statement stmt = conn.createStatement()) {
 
-            // Opret tabeller hvis de ikke findes
             stmt.execute("CREATE TABLE IF NOT EXISTS test.zipcode (zipcode INTEGER PRIMARY KEY, city VARCHAR)");
             stmt.execute("CREATE TABLE IF NOT EXISTS test.admin (admin_id SERIAL PRIMARY KEY, username VARCHAR NOT NULL, password VARCHAR NOT NULL)");
             stmt.execute("CREATE TABLE IF NOT EXISTS test.customer (" +
