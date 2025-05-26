@@ -1,5 +1,6 @@
 package app.entities;
 
+
 public class Customer {
     private int customerId;
     private String customerName;
@@ -37,4 +38,16 @@ public class Customer {
     public String getCustomerAddress() { return customerAddress; }
     public int getCustomerZipcode() { return customerZipcode; }
     public String getCustomerPhone() { return customerPhone; }
+
+    @Override
+    public String toString() {
+        return "Customer{" +
+                "customerId=" + customerId +
+                ", customerName='" + customerName + '\'' +
+                ", customerEmail='" + customerEmail + '\'' +
+                ", customerAddress='" + customerAddress + '\'' +
+                ", customerZipcode=" + customerZipcode +
+                ", customerPhone='" + customerPhone + '\'' +
+                '}';
+    }
 }

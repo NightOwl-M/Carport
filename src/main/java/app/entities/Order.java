@@ -164,4 +164,21 @@ public class Order {
         Order order = (Order) o;
         return orderId == order.orderId && customerId == order.customerId && carportWidth == order.carportWidth && carportLength == order.carportLength && statusId == order.statusId && Double.compare(salesPrice, order.salesPrice) == 0 && Objects.equals(roof, order.roof) && Objects.equals(customerText, order.customerText) && Objects.equals(adminText, order.adminText) && Objects.equals(createdAt, order.createdAt) && Objects.equals(customer, order.customer);
     }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "orderId=" + orderId +
+                ", customerId=" + customerId +
+                ", carportWidth=" + carportWidth +
+                ", carportLength=" + carportLength +
+                ", roof='" + roof + '\'' +
+                ", customerText='" + customerText + '\'' +
+                ", adminText='" + adminText + '\'' +
+                ", statusId=" + statusId +
+                ", salesPrice=" + salesPrice +
+                ", createdAt=" + createdAt +
+                ", customer=" + customer +
+                '}';
+    }
 }

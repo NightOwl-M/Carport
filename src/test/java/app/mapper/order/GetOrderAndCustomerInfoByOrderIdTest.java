@@ -94,14 +94,14 @@ public class GetOrderAndCustomerInfoByOrderIdTest {
                 stmt.execute("DELETE FROM test.zipcode");
 
                 stmt.execute("INSERT INTO test.customer (customer_id, customer_name, customer_email, customer_address, customer_zipcode, customer_phone) " +
-                        "VALUES  (1, 'David', 'David.800@email.dk', 'Jollen 53', 3070, '12345678'), " +
-                        "(2, 'Jeppe', 'jeppe@email.dk', 'Havnevej 12', 2800, '87654321')," +
-                        "(3, 'Dennis', 'dennis@email.dk', 'Skovvej 5', 4000, '11223344')");
+                        "VALUES  (1, 'David', 'David.800@email.dk', 'Jollen 53', 3000, '12345678'), " +
+                        "(2, 'Jeppe', 'jeppe@email.dk', 'Havnevej 12', 2100, '87654321')," +
+                        "(3, 'Dennis', 'dennis@email.dk', 'Skovvej 5', 5000, '11223344')");
 
 
                 stmt.execute("INSERT INTO test.orders (order_id, customer_id, carport_width, carport_length, roof, customer_text, admin_text, status_id, sales_price, created_at) " +
                         "VALUES (1, 1, 600, 780, 'Plasttrapezplader', 'Skal være god kvalitet', 'Bemærkning fra sælger', 1, 20000, '2025-05-06 10:10:49.630419')," +
-                        "(2, 2, 600, 780, 'Plasttapezplader', 'Skal passe til huset', 'Afventer bekræftelse', 2, 15000, '2025-05-07 09:00:00')," +
+                        "(2, 2, 600, 780, 'Plasttrapezplader', 'Skal passe til huset', 'Afventer bekræftelse', 2, 15000, '2025-05-07 09:00:00')," +
                         "(3, 3, 600, 780, 'Plasttrapezplader', 'Ønsker det i sort', 'Tak for snakken', 3, 25000, '2025-05-08 12:30:15')");
 
                 stmt.execute("INSERT INTO test.material (material_id, name, unit, price)" +
@@ -137,18 +137,15 @@ public class GetOrderAndCustomerInfoByOrderIdTest {
         @Test
         void getOrderAndCustomerInfoByOrderId() throws DatabaseException {
             //Arrange
-            Customer expectedCustomer = new Customer(2, "Jeppe", "jeppe@email.dk", "Havnevej 12", 2800, "87654321");
+            Customer expectedCustomer = new Customer(2, "Jeppe", "jeppe@email.dk", "Havnevej 12", 2100, "87654321");
             Order expectedOrder = new Order (2, 2, 600, 780, "Plasttrapezplader",
                     "Skal passe til huset", "Afventer bekræftelse", 2, 15000, Timestamp.valueOf("2025-05-07 09:00:00"), expectedCustomer);
 
             //Act
             Order actualOrder = OrderMapper.getOrderAndCustomerInfoByOrderId(2, connectionPool);
 
-
-
             //Assert
             assertEquals(expectedOrder, actualOrder);
-
 
         }
 }

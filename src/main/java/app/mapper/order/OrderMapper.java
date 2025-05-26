@@ -211,7 +211,7 @@ public class OrderMapper {
 
 
                 Customer customer = new Customer(customerId, customerName, customerEmail, customerAddress, customerZipcode, customerPhone);
-                Order order = new Order(orderId, carportWidth, carportLength, roof, customerText, adminText, statusId, salesPrice, createdAt, customer);
+                Order order = new Order(orderId, customerId, carportWidth, carportLength, roof, customerText, adminText, statusId, salesPrice, createdAt, customer);
                 return order;
             }
         } catch (SQLException e) {
