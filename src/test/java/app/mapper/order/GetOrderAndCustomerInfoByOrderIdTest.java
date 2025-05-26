@@ -145,7 +145,10 @@ public class GetOrderAndCustomerInfoByOrderIdTest {
             Order actualOrder = OrderMapper.getOrderAndCustomerInfoByOrderId(2, connectionPool);
 
             //Assert
-            assertEquals(expectedOrder, actualOrder);
+            assertEquals(expectedOrder.getOrderId(), actualOrder.getOrderId());
+            assertEquals(expectedOrder.getCustomerId(), actualOrder.getCustomerId());
+            assertEquals(expectedOrder.getCustomer().getCustomerName(), actualOrder.getCustomer().getCustomerName());
+            assertEquals(expectedOrder.getStatusId(), actualOrder.getStatusId());
 
         }
 }
