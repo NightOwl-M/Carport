@@ -394,22 +394,23 @@ Main -- "config"
 
 
 'Entitetsrelationer'
-'Customer o-- Order'
-'Order *-- Customer'
-'MaterialVariant *-- Material'
-'Customer *-- Zipcode'
-'Component *-- MaterialVariant'
-'Order *-- OrderStatus'
+Customer o-- Order
+Order *-- Customer
+MaterialVariant *-- Material
+Customer *-- Zipcode
+Component *-- MaterialVariant
+Order *-- OrderStatus
 
+
+
+
+@enduml
 Customer "1" --> "0..*" Order
 MaterialVariant "1" --> "1" Material
 Customer "1" --> "1" Zipcode
 Component "1" --> "1" MaterialVariant
 Order "1" --> "0..*" Component
 Order "1" --> "1" OrderStatus
-
-
-@enduml
 1:1 → "1" --> "1"
 
 1:mange → "1" --> "0..*"
