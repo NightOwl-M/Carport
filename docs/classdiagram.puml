@@ -359,7 +359,14 @@ class CarportSvg{
 - Svg svgDrawing
 - int width
 - int length
-'Mangler resten af attributterne her'
+- {static} <<final>> int DISTANCE_TO_RAFTER_END
+- {static} <<final>> double RAFTER_WIDTH
+- {static} <<final>> double POST_WIDTH
+- {static} <<final>> int OVERHANG_FRONT
+- {static} <<final>> int OVERHANG_REAR
+- {static} <<final>> int MAX_DISTANCE_BETWEEN_POLES
+- {static} <<final>> int EMPTY_SPACE_BETWEEN_RAFTERS
+
 
 + addBeams()
 + addRafters()
