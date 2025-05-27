@@ -21,6 +21,13 @@ public class CarportSvg {
         svgDrawing = new Svg(0, 0, viewBox, "100%", "100%");
     }
 
+    public void addElements() {
+        addBeams();
+        addRafters();
+        addPost();
+        addText();
+    }
+
     public void addBeams() {
         svgDrawing.addRectangle(0, 0 + DISTANCE_TO_RAFTER_END, length, RAFTER_WIDTH, "stroke:black; fill:none; stroke-width:2;");
         svgDrawing.addRectangle(0, width - RAFTER_WIDTH - DISTANCE_TO_RAFTER_END, length, RAFTER_WIDTH, "stroke:black; fill:none; stroke-width:2;");
