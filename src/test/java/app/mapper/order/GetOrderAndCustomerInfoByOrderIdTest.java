@@ -147,8 +147,15 @@ public class GetOrderAndCustomerInfoByOrderIdTest {
             //Assert
             assertEquals(expectedOrder.getOrderId(), actualOrder.getOrderId());
             assertEquals(expectedOrder.getCustomerId(), actualOrder.getCustomerId());
-            assertEquals(expectedOrder.getCustomer().getCustomerName(), actualOrder.getCustomer().getCustomerName());
+            assertEquals(expectedOrder.getCarportWidth(), actualOrder.getCarportWidth());
+            assertEquals(expectedOrder.getCarportLength(), actualOrder.getCarportLength());
+            assertEquals(expectedOrder.getRoof(), actualOrder.getRoof());
+            assertEquals(expectedOrder.getCustomerText(), actualOrder.getCustomerText());
+            assertEquals(expectedOrder.getAdminText(), actualOrder.getAdminText());
             assertEquals(expectedOrder.getStatusId(), actualOrder.getStatusId());
+            assertEquals(expectedOrder.getSalesPrice(), actualOrder.getSalesPrice());
+            assertEquals(expectedOrder.getCreatedAt(), actualOrder.getCreatedAt());
+            assertEquals(expectedOrder.getCustomer(), actualOrder.getCustomer());
 
         }
 }
