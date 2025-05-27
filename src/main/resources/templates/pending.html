@@ -2,10 +2,14 @@
 <html lang="da">
 <head>
     <meta charset="UTF-8">
-    <title>Afventer Kunde Svar</title>
+    <link href="../public/css/pending.css" th:href="@{/css/pending.css}" rel="stylesheet"/>
+    <title>Afventer svar</title>
 </head>
 <body>
-<h3>Afventer Kunde Svar</h3>
+<div class="logo">
+<img src="/images/logo.png" alt="Fog carport logo" width="400" height="300">
+</div>
+<h3>Afventer svar fra kunde</h3>
 
 <table>
     <thead>
@@ -13,7 +17,7 @@
         <th>Order ID</th>
         <th>Email</th>
         <th>Oprettet</th>
-        <th>Se Ordre</th>
+        <th></th>
     </tr>
     </thead>
     <tbody>
@@ -27,6 +31,5 @@
     </tr>
     </tbody>
 </table>
-
 </body>
 </html>

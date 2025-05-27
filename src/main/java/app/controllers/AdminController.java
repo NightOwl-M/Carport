@@ -5,7 +5,7 @@ import app.entities.Order;
 import app.exceptions.DatabaseException;
 import app.persistence.ConnectionPool;
 import app.service.admin.AdminLoginService;
-import app.service.order.CarportCalculatorService;
+import app.service.component.ComponentService;
 import app.service.order.OrderService;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
@@ -29,75 +29,36 @@ public class AdminController {
         app.get("/admin/orders/processed", ctx -> showProcessedOrders(ctx, connectionPool));
         app.get("/admin/orders/processed/{orderId}", ctx -> showProcessedOrder(ctx, connectionPool));
 
-
         app.post("/admin/login", ctx -> adminLogin(ctx, connectionPool));
         app.get("/adminlogin", ctx -> ctx.render("adminlogin.html"));
         app.get("/admindashboard", AdminController::checkAdminLogin);
 
 
         //Viser offerpage med ordredata
-        app.get("/offerpage", ctx -> {
-            String orderIdParam = ctx.queryParam("orderId");
-
-            if (orderIdParam == null) {
-                ctx.sessionAttribute("errorMessage", "Ordre ID mangler.");
-                ctx.redirect("/admin/orders/unprocessed");
-                return;
-            }
-
-            try {
-                int orderId = Integer.parseInt(orderIdParam);
-                Order order = OrderService.getOrderAndCustomerInfoByOrderId(orderId, connectionPool);
-
-                if (order == null) {
-                    ctx.sessionAttribute("errorMessage", "Ordren eksisterer ikke.");
-                    ctx.redirect("/admin/orders/unprocessed");
-                    return;
-                }
-
-                // Gem ordren i sessionen
-                ctx.sessionAttribute("currentOrder", order);
-                ctx.render("offerPage.html");
-
-            } catch (NumberFormatException e) {
-                ctx.sessionAttribute("errorMessage", "Ugyldigt ordre ID.");
-                ctx.redirect("/admin/orders/unprocessed");
-            } catch (DatabaseException e) {
-                ctx.sessionAttribute("errorMessage", "Databasefejl: " + e.getMessage());
-                ctx.redirect("/admin/orders/unprocessed");
-            }
-        });
-
-        //Når man trykker på "beregn pris"
-        app.post("/offerpage/show-prices", ctx -> showPrices(ctx, connectionPool));
-        //Når admin trykker på "se stykliste" //TODO bruges hvis vi vil have at styklisten indlæses på en ny html-side og ikke på offerpage.html
+        app.get("/offerpage", ctx -> showOfferPage(ctx, connectionPool));
+        //Når man trykker på "videre"
+        app.post("/offerpage/generate-offer", ctx -> showOfferPageConfirmation(ctx, connectionPool));
+        //Når admin trykker på "se stykliste"
         app.get("/offerpage/show-bom", ctx -> showBomPage(ctx, connectionPool));
         //Når admin trykker på "send tilbud
         app.post("/offerpage/send-offer", ctx -> sendOffer(ctx, connectionPool));
 
     }
-
+    // Login
     private static void adminLogin(Context ctx, ConnectionPool connectionPool) {
         String username = ctx.formParam("username");
         String password = ctx.formParam("password");
 
         try {
-            boolean isAdmin = AdminLoginService.checkAdminLogin(username, password, connectionPool);
-
-            if (isAdmin) {
-                ctx.sessionAttribute("isAdmin", true);
-                ctx.redirect("/admindashboard");
-            } else {
-                ctx.sessionAttribute("errorMessage", "Forkert admin-brugernavn eller password.");
-                ctx.redirect("/adminlogin.html");
-            }
-
+            String redirectUrl = AdminLoginService.handleAdminLogin(username, password, ctx, connectionPool);
+            ctx.redirect(redirectUrl);
         } catch (DatabaseException e) {
             ctx.sessionAttribute("errorMessage", "Databasefejl: " + e.getMessage());
             ctx.redirect("/adminlogin.html");
         }
     }
 
+    // hvis man skulle udvide programmet senere hen.
     private static void checkAdminLogin(Context ctx) {
         Boolean isAdmin = ctx.sessionAttribute("isAdmin");
 
@@ -121,6 +82,7 @@ public class AdminController {
 
              // Status 2 = Pending (efter tilbud er sendt)
              int statusId = 2;
+             System.out.println("AdminController - Status ID sat til: " + statusId);
 
              // **Opdater ordre og send tilbud via email**
              OrderService.updateOrderAndSendOffer(orderId, width, length, roof, customerText, adminText, salesPrice, statusId, connectionPool);
@@ -136,7 +98,7 @@ public class AdminController {
              ctx.redirect("/admin/order/update");
          }
      }
-
+    // Opdaterer status
     private static void updateOrderStatus(Context ctx, ConnectionPool connectionPool) {
         try {
             int orderId = Integer.parseInt(ctx.formParam("orderId"));
@@ -177,7 +139,7 @@ public class AdminController {
 
         try {
             Order order = OrderService.getUnprocessedOrderById(orderId, connectionPool);
-            ctx.attribute("order", order);
+            ctx.sessionAttribute("order", order);
             ctx.render("unprocessedorder.html");
 
         } catch (DatabaseException e) {
@@ -241,12 +203,12 @@ public class AdminController {
     //Kaldes når sælger trykker på "vælg" på en unprocessed order
     private static void showOfferPage(Context ctx, ConnectionPool connectionPool) {
         try {
-            int orderId = 1; //TODO orderId hardcoded, skal hentes fra sessionen, når admin vælger en ordre at skulle bearbejde
+            Order order = ctx.sessionAttribute("order");
+            int orderId = order.getOrderId();
             Order currentOrder = OrderService.getOrderAndCustomerInfoByOrderId(orderId, connectionPool);
 
             ctx.sessionAttribute("currentOrder", currentOrder);
             ctx.render("offerpage.html");
-
         } catch (DatabaseException e) {
             ctx.sessionAttribute("errorMessage", "Databasefejl: " + e.getMessage());
             ctx.redirect(""); //TODO
@@ -258,19 +220,31 @@ public class AdminController {
         }
     }
 
-    //Kaldes når der trykkes på "beregn pris"
-    private static void showPrices(Context ctx, ConnectionPool connectionPool) {
+    //Kaldes når der trykkes på "videre"
+    private static void showOfferPageConfirmation(Context ctx, ConnectionPool connectionPool) {
         try {
-            double coverageRate = Double.parseDouble(ctx.formParam("coverage-rate"));
+            Order currentOrder = ctx.sessionAttribute("currentOrder");
 
-            //TODO Mangler metode der beregner carportens samlede materialepris
-            double materialCostPrice = 20000; //TODO hardcoded indtil ovenstående metode er lavet
+            //Nye mål på carport sat af sælger hentes og laves til ny order-objekt
+            int carportLength = Integer.parseInt(ctx.formParam("length"));
+            int carportWidth = Integer.parseInt(ctx.formParam("width"));
+            String roof = ctx.formParam("roof");
+            String adminText = ctx.formParam("admin-text");
+
+            Order currentOrderSalesmanInput = new Order(carportWidth, carportLength, roof, currentOrder.getCustomerText(), adminText);
+            currentOrderSalesmanInput.setOrderId(currentOrder.getOrderId());
+
+            //Beregning af pris
+            double coverageRate = Double.parseDouble(ctx.formParam("coverage-rate"));
+            double materialCostPrice = 20000; //TODO hardcoded indtil videre //TODO Mangler metode der beregner carportens samlede materialepris
             double estimatedSalesPrice = OrderService.calculateEstimatedSalesPrice(coverageRate, materialCostPrice);
 
+            ctx.sessionAttribute("coverageRate", coverageRate);
+            ctx.sessionAttribute("materialCostPrice", materialCostPrice);
+            ctx.sessionAttribute("estimatedSalesPrice", estimatedSalesPrice);
+            ctx.sessionAttribute("currentOrderSalesmanInput", currentOrderSalesmanInput);
 
-            ctx.attribute("materialCostPrice", materialCostPrice);
-            ctx.attribute("estimatedSalesPrice", estimatedSalesPrice);
-            ctx.render("offerpage.html");
+            ctx.render("offerpageconfirmation.html");
             /*
         } catch (DatabaseException e) {
             ctx.sessionAttribute("errorMessage", "Databasefejl: " + e.getMessage());
@@ -285,19 +259,14 @@ public class AdminController {
 
     private static void showBomPage(Context ctx, ConnectionPool connectionPool) {
         try {
-            Order currentOrder = ctx.sessionAttribute("currentOrder");
-
-            CarportCalculatorService carportCalculatorService = new CarportCalculatorService(currentOrder.getCarportLength(), currentOrder.getCarportWidth(), connectionPool); //TODO mangler tag
-            List<Component> orderComponents = carportCalculatorService.calculateCarportBOM(currentOrder);
+            Order currentOrderSalesmanInput = ctx.sessionAttribute("currentOrderSalesmanInput");
+            List<Component> orderComponents = ComponentService.calculateBom(currentOrderSalesmanInput, connectionPool);
 
             ctx.sessionAttribute("orderComponents", orderComponents);
             ctx.render("bompage.html");
-
-            /*
         } catch (DatabaseException e) {
             ctx.sessionAttribute("errorMessage", "Databasefejl: " + e.getMessage());
             ctx.redirect(""); //TODO
-             */
         } catch (Exception e) {
             e.printStackTrace();
             ctx.sessionAttribute("errorMessage", "Ukendt fejl: " + e.getMessage());
@@ -307,26 +276,50 @@ public class AdminController {
 
     private static void sendOffer(Context ctx, ConnectionPool connectionPool) {
         try {
-            Order currentOrder = ctx.sessionAttribute("currentOrder");
+            Double estimatedSalesPrice = ctx.sessionAttribute("estimatedSalesPrice");
+            Order currentOrderSalesmanInput = ctx.sessionAttribute("currentOrderSalesmanInput");
             List<Component> orderComponents = ctx.sessionAttribute("orderComponents");
 
-            //TODO kald metode der ændrer på ordrestatus og ændre orderStatus i DB
+            //Hvis ikke orderComponents er genereret, så laves den nu
+            if (orderComponents == null) {
+                orderComponents = ComponentService.calculateBom(currentOrderSalesmanInput, connectionPool);
+            }
 
-            //TODO kald på metode der indsætter components i DB
-           //Orderservice.insertOrderComponentsIntoDB(orderComponents, currentOrder.getOrderId(), connectionPool);
+            int statusId = 2; //TODO Hvor og hvordan vil vi sætte statusId = 2?
+            //Ordre opdateres med eventuelle ændringer, orderStatus ændres og email sendes
+            OrderService.updateOrderAndSendOffer
+                    (currentOrderSalesmanInput.getOrderId(),
+                            currentOrderSalesmanInput.getCarportWidth(),
+                            currentOrderSalesmanInput.getCarportLength(),
+                            currentOrderSalesmanInput.getRoof(),
+                            currentOrderSalesmanInput.getCustomerText(),
+                            currentOrderSalesmanInput.getAdminText(),
+                            estimatedSalesPrice,
+                            statusId,
+                            connectionPool);
 
-            //TODO nulstil sessionAttributes
+            //Components gemmes i DB
+            ComponentService.saveOrderComponentsToDB(orderComponents, connectionPool);
 
-            ctx.render("admindashboard.html"); //TODO hvor skal sælger hen efter sendt tilbud?
-            /*
+            //sessionAttributes nulstilles
+            clearSessionAttributes(ctx);
+
+            ctx.render("admindashboard.html");
         } catch (DatabaseException e) {
             ctx.sessionAttribute("errorMessage", "Databasefejl: " + e.getMessage());
             ctx.redirect(""); //TODO
-             */
         } catch (Exception e) {
             e.printStackTrace();
             ctx.sessionAttribute("errorMessage", "Ukendt fejl: " + e.getMessage());
             ctx.redirect(""); //TODO
         }
+    }
+
+    private static void clearSessionAttributes(Context ctx) {
+        ctx.sessionAttribute("currentOrder", null);
+        ctx.sessionAttribute("currentOrderSalesmanInput", null);
+        ctx.sessionAttribute("orderComponents", null);
+        ctx.sessionAttribute("estimatedSalesPrice", null);
+        ctx.sessionAttribute("materialCostPrice", null);
     }
 }

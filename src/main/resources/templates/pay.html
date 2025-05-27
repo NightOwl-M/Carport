@@ -2,16 +2,19 @@
 <html lang="da">
 <head>
     <meta charset="UTF-8">
+    <link href="../public/css/pay.css" th:href="@{/css/pay.css}" rel="stylesheet"/>
     <title>Betal din ordre</title>
 </head>
 <body>
+<div class="logo">
+    <img src="/images/logo.png" alt="Fog carport logo" width="400" height="300">
+</div>
 
 <h2>Betal din ordre</h2>
 
 <form method="post" th:action="@{/pay/{orderId}/confirm(orderId=${currentOrder.orderId})}">
-    <input type="hidden" name="orderId" th:value="${currentOrder.orderId}" />
-    <button type="submit">Betal</button>
+    <input type="hidden" name="orderId" th:value="${currentOrder.orderId}"/>
+        <button type="submit">Betal</button>
 </form>
-
 </body>
 </html>

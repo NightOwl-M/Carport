@@ -7,7 +7,7 @@ import app.persistence.ConnectionPool;
 import java.sql.*;
 
 public class CustomerMapper {
-
+    // Gemmer customer i sessionen
     public static Customer saveSessionCustomer(Customer customer, ConnectionPool connectionPool) throws Exception {
         String sql = "INSERT INTO customer (customer_name, customer_email, customer_address, customer_zipcode, customer_phone) VALUES (?, ?, ?, ?, ?)";
 
@@ -63,5 +63,4 @@ public class CustomerMapper {
 
         return null;
     }
-
 }

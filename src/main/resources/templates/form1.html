@@ -3,9 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <title>Konfigurer carport</title>
-  <link rel="stylesheet" href="/css/styleform1.css">
+  <link rel="stylesheet" href="/css/form1.css" th:href="@{/css/form1.css}">
   <script>
-
     function fetchSvg() {
       const width = document.querySelector("#width").value;
       const length = document.querySelector("#length").value;
@@ -18,11 +17,9 @@
       fetch(`/api/carport-svg?width=${width}&length=${length}`)
               .then(response => response.text())
               .then(svg => {
-                console.log("SVG Data:", svg); // Debugging
-
                 const svgContainer = document.getElementById("svgPreview");
-                svgContainer.innerHTML = ""; // Ryd tidligere indhold
-                svgContainer.innerHTML = svg; // Indsæt SVG som HTML
+                svgContainer.innerHTML = ""; // Rydder tidligere SVG
+                svgContainer.innerHTML = svg; // Indsætter SVG
 
                 document.getElementById("nextBtn").disabled = false;
               })
@@ -30,57 +27,34 @@
                 console.error("Fejl ved hentning af SVG:", err);
               });
     }
-
-
   </script>
 </head>
 
 <body>
 
-<h2>Trin 1: Indtast mål</h2>
+<h2>Indtast mål</h2>
 
 <form id="dimensionForm" method="post" action="/carport/info">
   <label for="width">Bredde (cm):</label>
   <select id="width" name="width" required>
     <option value=""></option>
-    <option value="240">240 cm</option>
-    <option value="270">270 cm</option>
     <option value="300">300 cm</option>
-    <option value="330">330 cm</option>
     <option value="360">360 cm</option>
-    <option value="390">390 cm</option>
     <option value="420">420 cm</option>
-    <option value="450">450 cm</option>
     <option value="480">480 cm</option>
-    <option value="510">510 cm</option>
     <option value="540">540 cm</option>
-    <option value="570">570 cm</option>
     <option value="600">600 cm</option>
   </select><br>
 
   <label for="length">Længde (cm):</label>
-    <select id="length" name="length" required>
-      <option value=""></option>
-      <option value="240">240 cm</option>
-      <option value="270">270 cm</option>
-      <option value="300">300 cm</option>
-      <option value="330">330 cm</option>
-      <option value="360">360 cm</option>
-      <option value="390">390 cm</option>
-      <option value="420">420 cm</option>
-      <option value="450">450 cm</option>
-      <option value="480">480 cm</option>
-      <option value="510">510 cm</option>
-      <option value="540">540 cm</option>
-      <option value="570">570 cm</option>
-      <option value="600">600 cm</option>
-      <option value="630">630 cm</option>
-      <option value="660">660 cm</option>
-      <option value="690">690 cm</option>
-      <option value="720">720 cm</option>
-      <option value="750">750 cm</option>
-      <option value="780">780 cm</option>
-    </select><br>
+  <select id="length" name="length" required>
+    <option value=""></option>
+    <option value="300">300 cm</option>
+    <option value="390">390 cm</option>
+    <option value="480">480 cm</option>
+    <option value="570">570 cm</option>
+    <option value="660">660 cm</option>
+  </select><br>
 
   <label for="user-text">Særlige bemærkninger:</label>
   <input type="text" id="user-text" name="user-text"><br>
@@ -90,14 +64,11 @@
     <option value=""></option>
     <option value="none">Uden tagplader</option>
     <option value="Plasttrapezplader">Plasttrapezplader</option>
-
   </select><br>
-
-
 
   <button type="button" onclick="fetchSvg()">Se tegning</button><br><br>
 
-  <div id="svgPreview" style="margin-top: 20px;"></div><br>
+  <div id="svgPreview" class="svg-container"></div><br>
 
   <button type="submit" id="nextBtn" disabled>Næste</button>
 </form>

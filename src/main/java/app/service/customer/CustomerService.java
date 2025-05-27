@@ -16,6 +16,4 @@ public class CustomerService {
         return CustomerMapper.getCustomerEmailById(customerId, connectionPool);
     }
 
-
-
 }

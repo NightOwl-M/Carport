@@ -3,11 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <title>Ordre Detaljer - Processed</title>
+  <link href="../public/css/processedorder.css" th:href="@{/css/processedorder.css}" rel="stylesheet"/>
 </head>
 <body>
-<h3>Ordre Detaljer - Processed</h3>
+<h3 class="title">Betalt</h3>
 
-<div>
+<div class="order-details">
   <p>Ordre ID: <span th:text="${order.orderId}"></span></p>
   <p>Kunde Navn: <span th:text="${order.customer.customerName}"></span></p>
   <p>Email: <span th:text="${order.customer.customerEmail}"></span></p>
@@ -23,7 +24,7 @@
 </div>
 
 <!-- Tilbage-knap -->
-<a href="/admin/orders/processed">Tilbage til Processed Orders</a>
+<a class="tilbage-knap" href="/admin/orders/processed">Tilbage til Processed Orders</a>
 
 </body>
 </html>

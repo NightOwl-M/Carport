@@ -12,91 +12,78 @@
 <div class="column-container">
 
     <div class="columns">
-        <h3>Indtast mål på carport</h3>
+        <h2>Indtast mål på carport</h2>
+        <form th:action="@{/offerpage/generate-offer}" method="post">
 
-        <label for="width">Bredde (cm):</label>
-        <select id="width" name="width" required>
-            <option value=""></option>
-            <option value="240">240 cm</option>
-            <option value="270">270 cm</option>
-            <option value="300">300 cm</option>
-            <option value="330">330 cm</option>
-            <option value="360">360 cm</option>
-            <option value="390">390 cm</option>
-            <option value="420">420 cm</option>
-            <option value="450">450 cm</option>
-            <option value="480">480 cm</option>
-            <option value="510">510 cm</option>
-            <option value="540">540 cm</option>
-            <option value="570">570 cm</option>
-            <option value="600">600 cm</option>
-        </select><br>
+            <label for="width">Bredde (cm):</label>
+            <select id="width" name="width" required>
+                <option th:value="${session.currentOrderSalesmanInput == null ? session.currentOrder.carportWidth : session.currentOrderSalesmanInput.carportWidth}"
+                        th:text="${session.currentOrderSalesmanInput == null ? session.currentOrder.carportWidth : session.currentOrderSalesmanInput.carportWidth + ' cm'}"
+                        selected>
+                </option>
+                <option value="240">240 cm</option>
+                <option value="270">270 cm</option>
+                <option value="300">300 cm</option>
+                <option value="330">330 cm</option>
+                <option value="360">360 cm</option>
+                <option value="390">390 cm</option>
+                <option value="420">420 cm</option>
+                <option value="450">450 cm</option>
+                <option value="480">480 cm</option>
+                <option value="510">510 cm</option>
+                <option value="540">540 cm</option>
+                <option value="570">570 cm</option>
+                <option value="600">600 cm</option>
+            </select><br>
 
-        <label for="length">Længde (cm):</label>
-        <select id="length" name="length" required>
-            <option value=""></option>
-            <option value="240">240 cm</option>
-            <option value="270">270 cm</option>
-            <option value="300">300 cm</option>
-            <option value="330">330 cm</option>
-            <option value="360">360 cm</option>
-            <option value="390">390 cm</option>
-            <option value="420">420 cm</option>
-            <option value="450">450 cm</option>
-            <option value="480">480 cm</option>
-            <option value="510">510 cm</option>
-            <option value="540">540 cm</option>
-            <option value="570">570 cm</option>
-            <option value="600">600 cm</option>
-            <option value="630">630 cm</option>
-            <option value="660">660 cm</option>
-            <option value="690">690 cm</option>
-            <option value="720">720 cm</option>
-            <option value="750">750 cm</option>
-            <option value="780">780 cm</option>
-        </select><br>
+            <label for="length">Længde (cm):</label>
+            <select id="length" name="length" required>
+                <option th:value="${session.currentOrderSalesmanInput == null ? session.currentOrder.carportLength : session.currentOrderSalesmanInput.carportLength}"
+                        th:text="${session.currentOrderSalesmanInput == null ? session.currentOrder.carportLength : session.currentOrderSalesmanInput.carportLength + ' cm'}"
+                        selected>
+                </option>
+                <option value="240">240 cm</option>
+                <option value="270">270 cm</option>
+                <option value="300">300 cm</option>
+                <option value="330">330 cm</option>
+                <option value="360">360 cm</option>
+                <option value="390">390 cm</option>
+                <option value="420">420 cm</option>
+                <option value="450">450 cm</option>
+                <option value="480">480 cm</option>
+                <option value="510">510 cm</option>
+                <option value="540">540 cm</option>
+                <option value="570">570 cm</option>
+                <option value="600">600 cm</option>
+                <option value="630">630 cm</option>
+                <option value="660">660 cm</option>
+                <option value="690">690 cm</option>
+                <option value="720">720 cm</option>
+                <option value="750">750 cm</option>
+                <option value="780">780 cm</option>
+            </select><br>
 
-        <label for="roof">Tag:</label>
-        <select id="roof" name="roof" required>
-            <option value=""></option>
-            <option value="none">Uden tagplader</option>
-            <option value="Plasttrapezplader">Plasttrapezplader</option>
-        </select><br>
+            <label for="roof">Tag:</label>
+            <select id="roof" name="roof" required>
+                <option th:value="${session.currentOrderSalesmanInput == null ? session.currentOrder.roof : session.currentOrderSalesmanInput.roof}"
+                        th:text="${session.currentOrderSalesmanInput == null ? session.currentOrder.roof : session.currentOrderSalesmanInput.roof}"
+                        selected>
+                </option>
+                <option value="Intet">Uden tagplader</option>
+                <option value="Plasttrapezplader">Plasttrapezplader</option>
+            </select><br>
 
-        <label for="admin-text">Besked til kunde:</label>
-        <input type="text" id="admin-text" name="admin-text"><br>
+            <label for="admin-text">Besked til kunde:</label>
+            <input type="text" id="admin-text" name="admin-text"
+                   th:value="${session.currentOrderSalesmanInput == null ? '' : session.currentOrderSalesmanInput.adminText }"><br>
 
 
-
-        <form th:action="@{/offerpage/show-prices}" method="post">
             <label for="coverage-rate">Dækningsgrad:</label>
-            <input type="number" id="coverage-rate" name="coverage-rate" placeholder="40" required><br>
+            <input type="number" id="coverage-rate" name="coverage-rate" value="40" placeholder="40" required
+                   th:value="${session.coverageRate == null ? 40 : session.coverageRate}"><br>
 
-            <button class="custom-btn" type="submit">Beregn pris</button>
+            <button class="custom-btn" type="submit">Vælg og gå videre</button>
         </form>
-
-        <form th:action="@{/offerpage/show-svg}" method="get">
-            <button class="custom-btn" type="submit">Se skitse</button>
-        </form>
-
-        <form th:action="@{/offerpage/show-bom}" method="get">
-            <button class="custom-btn" type="submit">Se stykliste</button>
-        </form>
-        <br>
-
-        <form th:action="@{/offerpage/send-offer}" method="post">
-            <button class="send-offer-button" type="submit">Send offer</button>
-        </form>
-
-    </div>
-
-
-    <div class="columns">
-        <h2>Her kommer der til at stå priser</h2>
-
-        <p>Indkøbspris: <span th:text="${materialCostPrice}"></span></p>
-        <p>Beregnet salgspris: <span th:text="${estimatedSalesPrice}"></span></p>
-
     </div>
 
 
@@ -117,7 +104,6 @@
         <p>Email: <span th:text="${session.currentOrder.customer.customerEmail}"></span></p>
         <p>Telefon: <span th:text="${session.currentOrder.customer.customerPhone}"></span></p>
     </div>
-
 </div>
 </body>
 </html>

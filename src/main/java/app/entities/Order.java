@@ -1,8 +1,11 @@
 package app.entities;
 
 import java.sql.Timestamp;
+import java.util.Objects;
 
 public class Order {
+
+
     private int orderId;
     private int customerId;
     private int carportWidth;
@@ -18,12 +21,12 @@ public class Order {
     /**
      * Constructor til midlertidig lagring i sessionen (uden customerId).
      */
-    public Order(int carportWidth, int carportLength, String roof, String customerText) {
+    public Order(int carportWidth, int carportLength, String roof, String customerText, String adminText) {
         this.carportWidth = carportWidth;
         this.carportLength = carportLength;
         this.roof = roof;
         this.customerText = customerText;
-        this.adminText = null;
+        this.adminText = adminText;
         this.statusId = 1;
         this.salesPrice = 0.0;
     }
@@ -56,6 +59,7 @@ public class Order {
         this.adminText = adminText;
         this.salesPrice = salesPrice;
         this.statusId = statusId;
+        System.out.println("Order Constructor - Status ID sat til: " + this.statusId);
     }
 
     /**
@@ -115,6 +119,26 @@ public class Order {
         this.customer = customer;
     }
 
+    /**
+     * Constructor med alle felter der bliver brugt til test af metoder i OrderMapperTest.
+     */
+
+
+    public Order(int orderId, int customerId, int carportWidth, int carportLength, String roof, String customerText, String adminText, int statusId, double salesPrice, Timestamp createdAt, Customer customer) {
+        this.orderId = orderId;
+        this.customerId = customerId;
+        this.carportWidth = carportWidth;
+        this.carportLength = carportLength;
+        this.roof = roof;
+        this.customerText = customerText;
+        this.adminText = adminText;
+        this.statusId = statusId;
+        this.salesPrice = salesPrice;
+        this.createdAt = createdAt;
+        this.customer = customer;
+    }
+
+
     // --- Getters ---
     public int getOrderId() { return orderId; }
     public int getCustomerId() { return customerId; }
@@ -131,5 +155,30 @@ public class Order {
     // --- Setters ---
     public void setOrderId(int orderId) {
         this.orderId = orderId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Order order = (Order) o;
+        return orderId == order.orderId && customerId == order.customerId && carportWidth == order.carportWidth && carportLength == order.carportLength && statusId == order.statusId && Double.compare(salesPrice, order.salesPrice) == 0 && Objects.equals(roof, order.roof) && Objects.equals(customerText, order.customerText) && Objects.equals(adminText, order.adminText) && Objects.equals(createdAt, order.createdAt) && Objects.equals(customer, order.customer);
+    }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "orderId=" + orderId +
+                ", customerId=" + customerId +
+                ", carportWidth=" + carportWidth +
+                ", carportLength=" + carportLength +
+                ", roof='" + roof + '\'' +
+                ", customerText='" + customerText + '\'' +
+                ", adminText='" + adminText + '\'' +
+                ", statusId=" + statusId +
+                ", salesPrice=" + salesPrice +
+                ", createdAt=" + createdAt +
+                ", customer=" + customer +
+                '}';
     }
 }

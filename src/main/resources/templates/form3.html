@@ -3,34 +3,53 @@
 <head>
   <meta charset="UTF-8">
   <title>Bekræft din ordre</title>
+  <link rel="stylesheet" href="/css/form3.css" th:href="@{/css/form3.css}">
 </head>
 <body>
 
-<h2>Trin 3: Bekræft din bestilling</h2>
+<div class="container">
 
-<h3>Carport</h3>
-<ul>
-  <li>Bredde: <span th:text="${currentOrder.carportWidth}">[bredde]</span> cm</li>
-  <li>Længde: <span th:text="${currentOrder.carportLength}">[længde]</span> cm</li>
-  <li>Tagtype: <span th:text="${currentOrder.roof}">[tag]</span></li>
-  <li>Kommentar: <span th:text="${currentOrder.customerText}">[kommentar]</span></li>
-</ul>
+  <div class="header">
+    <h2>Bekræft din bestilling</h2>
+  </div>
 
-<h3>Kundeoplysninger</h3>
-<ul>
-  <li>Navn: <span th:text="${currentCustomer.customerName}">[navn]</span></li>
-  <li>Adresse: <span th:text="${currentCustomer.customerAddress}">[adresse]</span></li>
-  <li>Postnummer: <span th:text="${currentCustomer.customerZipcode}">[postnummer]</span></li>
-  <li>Email: <span th:text="${currentCustomer.customerEmail}">[email]</span></li>
-  <li>Telefon: <span th:text="${currentCustomer.customerPhone}">[telefon]</span></li>
-</ul>
+  <div class="order-container">
 
-<h3>Carport Tegning</h3>
-<div th:utext="${svg}">[SVG vises her]</div>
+    <div class="details-column">
+      <div class="order-details">
+        <h3>Carport</h3>
+        <ul>
+          <li>Bredde: <span th:text="${currentOrder.carportWidth}">[bredde]</span> cm</li>
+          <li>Længde: <span th:text="${currentOrder.carportLength}">[længde]</span> cm</li>
+          <li>Tagtype: <span th:text="${currentOrder.roof}">[tag]</span></li>
+          <li>Kommentar: <span th:text="${currentOrder.customerText}">[kommentar]</span></li>
+        </ul>
+      </div>
 
-<form method="post" action="/carport/confirm/save">
-  <button type="submit">Gem ordre</button>
-</form>
+      <div class="customer-details">
+        <h3>Kundeoplysninger</h3>
+        <ul>
+          <li>Navn: <span th:text="${currentCustomer.customerName}">[navn]</span></li>
+          <li>Adresse: <span th:text="${currentCustomer.customerAddress}">[adresse]</span></li>
+          <li>Postnummer: <span th:text="${currentCustomer.customerZipcode}">[postnummer]</span></li>
+          <li>Email: <span th:text="${currentCustomer.customerEmail}">[email]</span></li>
+          <li>Telefon: <span th:text="${currentCustomer.customerPhone}">[telefon]</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="svg-container">
+      <div th:utext="${svg}">[SVG vises her]</div>
+    </div>
+
+  </div>
+
+  <form method="post" action="/carport/confirm/save">
+    <button type="submit">Indsend order</button>
+  </form>
+
+</div>
+
 
 </body>
 </html>
