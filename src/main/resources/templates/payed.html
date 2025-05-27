@@ -19,11 +19,9 @@
     <p>Har du spørgsmål, er du velkommen til at kontakte os.</p>
     <br>
 
-    <div th:if="${session.currentOrder.statusId == 3}">
     <form th:action="@{/payed/show-bom}" method="get">
             <button class="custom-btn" type="submit">Se stykliste</button>
         </form>
-    </div>
 
 </div>
 </body>
