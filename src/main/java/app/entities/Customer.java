@@ -1,6 +1,8 @@
 package app.entities;
 
 
+import java.util.Objects;
+
 public class Customer {
     private int customerId;
     private String customerName;
@@ -38,6 +40,18 @@ public class Customer {
     public String getCustomerAddress() { return customerAddress; }
     public int getCustomerZipcode() { return customerZipcode; }
     public String getCustomerPhone() { return customerPhone; }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Customer customer = (Customer) o;
+        return customerId == customer.customerId && customerZipcode == customer.customerZipcode && Objects.equals(customerName, customer.customerName) && Objects.equals(customerEmail, customer.customerEmail) && Objects.equals(customerAddress, customer.customerAddress) && Objects.equals(customerPhone, customer.customerPhone);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(customerId, customerName, customerEmail, customerAddress, customerZipcode, customerPhone);
+    }
 
     @Override
     public String toString() {
