@@ -1,13 +1,17 @@
 package app.controllers;
 
+import app.entities.Component;
 import app.entities.Customer;
 import app.entities.Order;
 import app.exceptions.DatabaseException;
 import app.persistence.ConnectionPool;
+import app.service.component.ComponentService;
 import app.service.svg.CarportSvg;
 import app.service.order.OrderService;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
+
+import java.util.List;
 
 
 public class OrderController {
@@ -27,6 +31,8 @@ public class OrderController {
         app.get("/pay/{orderId}", ctx -> showPaymentPage(ctx, connectionPool));
         app.post("/pay/{orderId}/confirm", ctx -> confirmPayment(ctx, connectionPool));
         app.get("/payed.html", ctx -> ctx.render("payed.html"));
+
+        app.get("/payed/show-bom", ctx -> showBomPageForCustomer(ctx, connectionPool));
 
     }
 
@@ -180,6 +186,7 @@ public class OrderController {
             }
 
             ctx.attribute("currentOrder", order);
+            ctx.sessionAttribute("currentOrder", order);
             ctx.render("pay.html");
 
         } catch (DatabaseException e) {
@@ -206,6 +213,23 @@ public class OrderController {
         } catch (DatabaseException e) {
             ctx.sessionAttribute("errorMessage", "Fejl ved opdatering af ordrestatus.");
             ctx.redirect("/pay/" + orderIdParam);
+        }
+    }
+
+    private static void showBomPageForCustomer(Context ctx, ConnectionPool connectionPool) {
+
+        Order currentOrder = ctx.sessionAttribute("currentOrder");
+        try {
+            List<Component> orderComponents = ComponentService.getAllComponentsByOrderId(currentOrder.getOrderId(), connectionPool);
+
+            ctx.sessionAttribute("orderComponents", orderComponents);
+            ctx.render("/bompage.html");
+        } catch (NumberFormatException e) {
+            ctx.sessionAttribute("errorMessage", "Ugyldigt ordre-ID.");
+            ctx.redirect("/pay/");
+        } catch (DatabaseException e) {
+            ctx.sessionAttribute("errorMessage", "Fejl ved opdatering af ordrestatus.");
+            ctx.redirect("/pay/");
         }
     }
 }
