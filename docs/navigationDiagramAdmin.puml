@@ -1,0 +1,27 @@
+@startuml
+state "Ikke logget ind" as notLoggedIn {
+    [*] --> adminlogin : Åbn admins login side
+
+}
+
+state "Logget ind" as loggedIn {
+    adminlogin --> admindashboard : Login OK
+    admindashboard --> unprocessed : Tryk "Nye forespørgelser"
+    admindashboard --> pending : Tryk "Afventer svar fra kunde"
+    admindashboard --> processed : Tryk "Betalte ordrer"
+
+    unprocessed --> unprocessedorder : Tryk "se hele ordren"
+    pending --> pendingorder : Tryk "se hele ordren"
+    processed --> processedorder : Tryk "se hele ordren"
+
+    pendingorder --> pending : Tryk "tilbage til pending"
+    processedorder --> processed : Tryk "tilbage til processed"
+    unprocessedorder --> offerpage : Tryk "gå til butiksside"
+    unprocessedorder --> unprocessed : Tryk "tilbage til unprocessed orders"
+
+    offerpage --> offerpageconfirmation : Tryk "vælg og gå videre"
+    offerpageconfirmation --> offerpage : Tryk "tilbage og rediger"
+    offerpageconfirmation --> admindashboard : Tryk "send tilbud"
+
+}
+@enduml
