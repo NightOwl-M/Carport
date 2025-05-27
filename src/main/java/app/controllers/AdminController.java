@@ -211,12 +211,12 @@ public class AdminController {
             ctx.render("offerpage.html");
         } catch (DatabaseException e) {
             ctx.sessionAttribute("errorMessage", "Databasefejl: " + e.getMessage());
-            ctx.redirect(""); //TODO
+            ctx.redirect("/admindashboard");
 
         } catch (Exception e) {
             e.printStackTrace();
             ctx.sessionAttribute("errorMessage", "Ukendt fejl: " + e.getMessage());
-            ctx.redirect(""); //TODO
+            ctx.redirect("/admindashboard");
         }
     }
 
@@ -247,11 +247,11 @@ public class AdminController {
             ctx.render("offerpageconfirmation.html");
         } catch (DatabaseException e) {
             ctx.sessionAttribute("errorMessage", "Databasefejl: " + e.getMessage());
-            ctx.redirect(""); //TODO
+            ctx.redirect("/admindashboard");
         } catch (Exception e) {
             e.printStackTrace();
             ctx.sessionAttribute("errorMessage", "Ukendt fejl: " + e.getMessage());
-            ctx.redirect(""); //TODO
+            ctx.redirect("/admindashboard");
         }
     }
 
@@ -264,11 +264,11 @@ public class AdminController {
             ctx.render("bompage.html");
         } catch (DatabaseException e) {
             ctx.sessionAttribute("errorMessage", "Databasefejl: " + e.getMessage());
-            ctx.redirect(""); //TODO
+            ctx.redirect("/admindashboard");
         } catch (Exception e) {
             e.printStackTrace();
             ctx.sessionAttribute("errorMessage", "Ukendt fejl: " + e.getMessage());
-            ctx.redirect(""); //TODO
+            ctx.redirect("/admindashboard");
         }
     }
 
@@ -283,7 +283,7 @@ public class AdminController {
                 orderComponents = ComponentService.calculateBom(currentOrderSalesmanInput, connectionPool);
             }
 
-            int statusId = 2; //TODO Hvor og hvordan vil vi sætte statusId = 2?
+            int statusId = 2;
             //Ordre opdateres med eventuelle ændringer, orderStatus ændres og email sendes
             OrderService.updateOrderAndSendOffer
                     (currentOrderSalesmanInput.getOrderId(),
@@ -305,11 +305,11 @@ public class AdminController {
             ctx.render("admindashboard.html");
         } catch (DatabaseException e) {
             ctx.sessionAttribute("errorMessage", "Databasefejl: " + e.getMessage());
-            ctx.redirect(""); //TODO
+            ctx.redirect("/admindashboard");
         } catch (Exception e) {
             e.printStackTrace();
             ctx.sessionAttribute("errorMessage", "Ukendt fejl: " + e.getMessage());
-            ctx.redirect(""); //TODO
+            ctx.redirect("/admindashboard");
         }
     }
 
